@@ -13,10 +13,10 @@ var params = {
    };
    console.log(process.argv[2]);
    ses.verifyEmailIdentity(params, function(err, data) {
-     if (err) console.log(err, err.stack); // an error occurred
-     else     console.log(data);           // successful response
-     /*
-     data = {
-     }
-     */
-   });
+     if (err) {
+        console.log(err, err.stack);
+      }
+     else  {
+        console.log(data);
+     }             
+});
