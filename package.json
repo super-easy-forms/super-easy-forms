@@ -1,0 +1,27 @@
+{
+  "name": "serverless-form-generator",
+  "version": "1.0.0",
+  "description": "a script that generates serverless backends for contact forms using AWS",
+  "main": "index.js",
+  "scripts": {
+    "test": "npm test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gkpty/serverless-form-generator.git"
+  },
+  "keywords": [
+    "node.js",
+    "aws-sdk-js"
+  ],
+  "author": "torus",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/gkpty/serverless-form-generator/issues"
+  },
+  "homepage": "https://github.com/gkpty/serverless-form-generator#readme",
+  "dependencies": {
+    "aws-sdk": "^2.452.0",
+    "dotenv": "^8.0.0"
+  }
+}
