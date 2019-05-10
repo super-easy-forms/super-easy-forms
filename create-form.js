@@ -7,6 +7,9 @@ var AWS = require('aws-sdk');
 //SES
 var ses = new AWS.SES({apiVersion: '2010-12-01'});
 
+//Dynamo DB
+var dynamodb = new AWS.DynamoDB({apiVersion: '2012-08-10'});
+
 const fs = require('fs');
 
 // package to use stdin/out
@@ -114,9 +117,79 @@ function checkVerifiedEmail(email) {
             console.log('Success!')
             break; 
           default:
-            console.log('Failure...')
+            console.log('It appears your address still hasnt been verified. Please verify your address and re-run the script.');
+            readline.close();
         }      
       } 
+   });
+}
+
+function createDB() {
+  var params = {
+    AttributeDefinitions: [
+       {
+      AttributeName: "Artist", 
+      AttributeType: "S"
+     }, 
+       {
+      AttributeName: "SongTitle", 
+      AttributeType: "S"
+     }
+    ], 
+    KeySchema: [
+       {
+      AttributeName: "Artist", 
+      KeyType: "HASH"
+     }, 
+       {
+      AttributeName: "SongTitle", 
+      KeyType: "RANGE"
+     }
+    ], 
+    ProvisionedThroughput: {
+     ReadCapacityUnits: 5, 
+     WriteCapacityUnits: 5
+    }, 
+    TableName: "Music"
+   };
+   dynamodb.createTable(params, function(err, data) {
+     if (err) console.log(err, err.stack); // an error occurred
+     else     console.log(data);           // successful response
+     /*
+     data = {
+      TableDescription: {
+       AttributeDefinitions: [
+          {
+         AttributeName: "Artist", 
+         AttributeType: "S"
+        }, 
+          {
+         AttributeName: "SongTitle", 
+         AttributeType: "S"
+        }
+       ], 
+       CreationDateTime: <Date Representation>, 
+       ItemCount: 0, 
+       KeySchema: [
+          {
+         AttributeName: "Artist", 
+         KeyType: "HASH"
+        }, 
+          {
+         AttributeName: "SongTitle", 
+         KeyType: "RANGE"
+        }
+       ], 
+       ProvisionedThroughput: {
+        ReadCapacityUnits: 5, 
+        WriteCapacityUnits: 5
+       }, 
+       TableName: "Music", 
+       TableSizeBytes: 0, 
+       TableStatus: "CREATING"
+      }
+     }
+     */
    });
 }
 
