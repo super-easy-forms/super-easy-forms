@@ -21,7 +21,7 @@ var dynamodb = new AWS.DynamoDB({apiVersion: '2012-08-10'});
 
 //Dynamo DB
 //var dynamodb = new AWS.DynamoDB({apiVersion: '2012-08-10'});
-
+jcro = {"id":"","firstName":"john", "lastName": "Dill", "eMail":"jdil@gmail.com"};
 //const fs = require('fs');
 const res = 'firstName lastName eMail'
 var response = res.split(" ");
@@ -33,7 +33,7 @@ jsonstringa = jsonstring.substring(0, (jsonstring.length -1))
 var json = JSON.parse(`{${jsonstringa}}`);
 
 Object.keys(json).map(function(key, index) {
-    json[key] = {S:key};
+    json[key] = {S:jcro[key]};
 });
 json['id'] = {S:uuidv1()};
 
