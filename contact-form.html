@@ -1,0 +1,82 @@
+<script>
+  $(function(){
+    $('#super-easy-form').submit(function(e){
+        e.preventDefault();
+        var formdata = toJSONString(this);
+        console.log(formdata);
+        $.ajax({
+            type: "POST",
+            url: "https://erkeqet3t0.execute-api.us-east-1.amazonaws.com/development/sendMail",
+            dataType: "json",
+            contentType: "application/json",
+            data: JSON.stringify( {"firstName": $('#firstName').val(), "lastName": $('#lastName').val(), "email": $('#email').val(), "message": $('#message').val()} ),
+            beforeSend: function(data) {
+                $('#super-easy-btn').prop('disabled', true);
+                $('#super-easy-form :input').prop('disabled', true);
+                $('#contact-status').html('Sending...').show();
+            },
+            success: function(data) {
+                console.log(data);
+                $('#contact-status').text('Gracias por contactarnos.').show();
+                $('#super-easy-form :input').removeProp('disabled');
+                $('#super-easy-btn').removeProp('disabled');
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                $('#contact-status').text('Error de envío.').show();
+                $('#super-easy-form :input').removeProp('disabled');
+                $('#super-easy-btn').removeProp('disabled');
+            }
+        });
+    }); 
+
+    function toJSONString (form) {
+    var obj = {};
+    var elements = form.querySelectorAll("input, select, textarea");
+    for(var i = 0; i < elements.length; ++i) {
+      var element = elements[i];
+      var name = element.name;
+      var value = element.value;
+      if(name) {
+        obj[name] = value;
+      }
+        }
+        return JSON.stringify(obj);
+    }
+  });
+</script>
+
+<!-- CONTACT SECTION -->
+    <section id="contact_us" class="straight-up">
+      <!-- Contact us Form -->
+      <div class="col-md-6 order-sm-0 order-md-12">
+        <form id="super-easy-form" class="" action="#">  
+            <div class="row">
+              <label>firstName</label>
+              <input type="text" class="form-control" id="firstName" name="firstName" placeholder="firstName" required>
+            </div>
+            <div class="row">
+              <label>lastName</label>
+              <input type="text" class="form-control" id="lastName" name="lastName" placeholder="lastName" required>
+            </div>
+            <div class="row">
+              <label>email</label>
+              <input type="text" class="form-control" id="email" name="email" placeholder="email" required>
+            </div>
+            <div class="row">
+              <label>email</label>
+              <input type="text" class="form-control" id="email" name="email" placeholder="email" required>
+            </div>
+            <div class="row">
+              <label>message</label>
+              <input type="text" class="form-control" id="message" name="message" placeholder="message" required>
+            </div>
+            <div class="row">
+              <h3 id="contact-status" class="sending-text" style="display:none;">Thanks for Contacting Us</h3>
+            </div> 
+            <div class="row">
+              <button class="btn submit" type="submit" id="super-easy-btn">Send</button>
+            </div> 
+          </div>
+        </form>
+      </div>               
+    </section>

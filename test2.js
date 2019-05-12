@@ -21,32 +21,35 @@ var dynamodb = new AWS.DynamoDB({apiVersion: '2012-08-10'});
 
 //Dynamo DB
 //var dynamodb = new AWS.DynamoDB({apiVersion: '2012-08-10'});
-jcro = {"id":"","firstName":"john", "lastName": "Dill", "eMail":"jdil@gmail.com"};
-//const fs = require('fs');
-const res = 'firstName lastName eMail'
-var response = res.split(" ");
-jsonstring = `"id":"${uuidv1()}",`
-for(let r of response){
-    jsonstring += `"${r}":"${r}",`;
-}
-jsonstringa = jsonstring.substring(0, (jsonstring.length -1))
-var json = JSON.parse(`{${jsonstringa}}`);
-
-Object.keys(json).map(function(key, index) {
-    json[key] = {S:jcro[key]};
-});
-json['id'] = {S:uuidv1()};
-
-console.log(json);
+payLoad = {"id":"","firstName":"john", "lastName": "Dill", "eMail":"jdil@gmail.com"};
 
 
-function stmt2(xtab) {
+
+function stmt2(formInput) {
+    //goes outside the lambda function
+    const res = 'firstName lastName eMail'
+    var response = res.split(" ");
+    var jstring = `"id":"id",`;
+    for(let r of response){
+        jstring += `"${r}":"${r}",`;
+    }
+    var jsonstring = jstring.substring(0, (jstring.length -1))
+    var json = JSON.parse(`{${jsonstring}}`);
+    console.log(json);
+
+    //goes inside lambda function
+    Object.keys(json).map(function(key, index) {
+        json[key] = {S:formInput[key]};
+    });
+    json['id'] = {S:uuidv1()};
+
+
     let rawdata = fs.readFileSync('variables.json');  
     obj = JSON.parse(rawdata);
     var source = obj.source;
     var tableName = obj.table;
     var params = {
-        Item: xtab, 
+        Item: json, 
         TableName: tableName,
     };
     dynamodb.putItem(params, function(err, data) {
@@ -54,6 +57,7 @@ function stmt2(xtab) {
             console.log(err, err.stack); // an error occurred
         }
         else {
+            console.log(json);
             console.log(data);   
             //SES SEND EMAIl
             var params = {
@@ -97,7 +101,7 @@ function stmt2(xtab) {
 
 }
 
-stmt2(json);
+stmt2(payLoad);
 
 // if no, go back to 4, if yes continue
 //7. Create a new DB table
