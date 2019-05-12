@@ -2,25 +2,17 @@
 require('dotenv').config();
 const uuidv1 = require('uuid/v1');
 
+//Import filesystem
 var fs = require("fs");
-var JSZip = require("jszip");
 
 //Import AWS SDK
 var AWS = require('aws-sdk');
 
-//import uuid for id generation
-//const uuidv1 = require('uuid/v1');
-
-//SES
+//Declare SES
 var ses = new AWS.SES({apiVersion: '2010-12-01'});
-//ADD ITEM TO DB
+//Declare Dynamo DB
 var dynamodb = new AWS.DynamoDB({apiVersion: '2012-08-10'});
 
-//SES
-//var ses = new AWS.SES({apiVersion: '2010-12-01'});
-
-//Dynamo DB
-//var dynamodb = new AWS.DynamoDB({apiVersion: '2012-08-10'});
 payLoad = {"id":"","firstName":"john", "lastName": "Dill", "eMail":"jdil@gmail.com"};
 
 
@@ -102,8 +94,3 @@ function stmt2(formInput) {
 }
 
 stmt2(payLoad);
-
-// if no, go back to 4, if yes continue
-//7. Create a new DB table
-//8. create the lambda function
-//9. create the//

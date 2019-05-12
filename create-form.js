@@ -131,7 +131,7 @@ function checkVerifiedEmail(email) {
 }
 
 function createDB() {
-  readline.question(`please enter the desired name for your contact form's data base table`, (dbName) => {
+  readline.question(`please enter the desired name for your contact form's data base table. It must be unique.`, (dbName) => {
       if(/^[a-zA-Z0-9]*$/.test(dbName)){
           addVars('table', dbName)
           var params = {
@@ -172,10 +172,14 @@ function createDB() {
 function formFields(table){
   var x = readline.question(`please enter your desired form fields sepparated by spaces`, (res) => {
     var response = res.split(" ");
-    var json = `"id": {S: ${uuidv1()}},`
-    for (let r of response) {
-        json += `"${r}": {S: ${r}},`
+    var jstring = `"id":"id",`;
+    for(let r of response){
+        jstring += `"${r}":"${r}",`;
     }
+    var jsonstring = jstring.substring(0, (jstring.length -1))
+    var json = JSON.parse(`{${jsonstring}}`);
+    console.log(json);
+
     createLambda(json, table)
     readline.close();
   });
@@ -186,7 +190,8 @@ function createLambda(tableItem, tableName) {
   obj = JSON.parse(rawdata);
   var source = obj.source;
 
-  const lambdaFunc = `const uuidv1 = require('uuid/v1');
+  const lambdaFunc = 
+  `const uuidv1 = require('uuid/v1');
   //Import AWS SDK
   var AWS = require('aws-sdk');
   
@@ -233,7 +238,7 @@ function createLambda(tableItem, tableName) {
               }, 
               ReplyToAddresses: [
               ], 
-              Source: ${source}, 
+              Source: "${source}", 
           };
           ses.sendEmail(params, function(err, data) {
               if (err) {
