@@ -34,39 +34,12 @@ function createDB() {
       BillingMode: "PAY_PER_REQUEST",
      };
      dynamodb.createTable(params, function(err, data) {
-       if (err) console.log(err, err.stack); // an error occurred
+       if(err){
+        console.log(err, err.stack);
+       }
        else  {
-        console.log(data);           // successful response
-        var params = {
-            Item: {
-                "id": {
-                    N: "1"
-                   }, 
-             "firstName": {
-               S: "gabriel"
-              }, 
-             "lastName": {
-               S: "kay"
-              }, 
-             "email": {
-               S: "gkardonski@gmail.com"
-              }
-            }, 
-            TableName: process.argv[2],
-           };
-           dynamodb.putItem(params, function(err, data) {
-             if (err) console.log(err, err.stack); // an error occurred
-             else     console.log(data);           // successful response
-             /*
-             data = {
-              ConsumedCapacity: {
-               CapacityUnits: 1, 
-               TableName: "Music"
-              }
-             }
-             */
-           });
-       }   
+        console.log(data);
+       }      
        /*
        data = {
         TableDescription: {
@@ -102,6 +75,7 @@ function createDB() {
         }
        }
        */
+    
      });
   }
 
