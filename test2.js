@@ -5,11 +5,16 @@ const uuidv1 = require('uuid/v1');
 var fs = require("fs");
 var JSZip = require("jszip");
 
-
 //Import AWS SDK
 var AWS = require('aws-sdk');
 
-var JSZip = require("jszip");
+//import uuid for id generation
+//const uuidv1 = require('uuid/v1');
+
+//SES
+var ses = new AWS.SES({apiVersion: '2010-12-01'});
+//ADD ITEM TO DB
+var dynamodb = new AWS.DynamoDB({apiVersion: '2012-08-10'});
 
 //SES
 //var ses = new AWS.SES({apiVersion: '2010-12-01'});
@@ -18,46 +23,31 @@ var JSZip = require("jszip");
 //var dynamodb = new AWS.DynamoDB({apiVersion: '2012-08-10'});
 
 //const fs = require('fs');
-
-// package to use stdin/out
-const readline = require('readline').createInterface({
-  input: process.stdin,
-  output: process.stdout
-});
-
-function stmt1(){
-  var x = readline.question(`please enter your desired form fields sepparated by spaces`, (res) => {
-    var response = res.split(" ");
-    var json = `"id": {S: ${uuidv1()}},`
-    for (let r of response) {
-        json += `"${r}": {S: ${r}},`
-    }
-    stmt2(json)
-    readline.close();
-  });
+const res = 'firstName lastName eMail'
+var response = res.split(" ");
+jsonstring = `"id":"${uuidv1()}",`
+for(let r of response){
+    jsonstring += `"${r}":"${r}",`;
 }
+jsonstringa = jsonstring.substring(0, (jsonstring.length -1))
+var json = JSON.parse(`{${jsonstringa}}`);
 
-function stmt2(item) {
-    const lambdaFunc = `//IMPORT AWS SDK
-    //load files from the .env file
-    require('dotenv').config();
-    const uuidv1 = require('uuid/v1');
+Object.keys(json).map(function(key, index) {
+    json[key] = {S:key};
+});
+json['id'] = {S:uuidv1()};
 
-    //Import AWS SDK
-    var AWS = require('aws-sdk');
-
-    //import uuid for id generation
-    //const uuidv1 = require('uuid/v1');
-
-    //SES
-    var ses = new AWS.SES({apiVersion: '2010-12-01'});
-    //ADD ITEM TO DB
-    var dynamodb = new AWS.DynamoDB({apiVersion: '2012-08-10'});
+console.log(json);
 
 
+function stmt2(xtab) {
+    let rawdata = fs.readFileSync('variables.json');  
+    obj = JSON.parse(rawdata);
+    var source = obj.source;
+    var tableName = obj.table;
     var params = {
-        Item: {${item}}, 
-        TableName: process.argv[2],
+        Item: xtab, 
+        TableName: tableName,
     };
     dynamodb.putItem(params, function(err, data) {
         if (err) {
@@ -90,36 +80,26 @@ function stmt2(item) {
                 }, 
                 ReplyToAddresses: [
                 ], 
-                Source: "gabriel@torus-digital.com", 
+                Source: source, 
             };
             ses.sendEmail(params, function(err, data) {
                 if (err) {
                     console.log(err); // an error occurred
+                    return err;
                 } 
                 else {
                     console.log(data);
+                    return data;
                 }   
             });
         }
-    });` 
+    }); 
 
-var zip = new JSZip();
-zip.file("lambdaFunc.js", lambdaFunc);
-// ... and other manipulations
-
-zip
-.generateNodeStream({type:'nodebuffer',streamFiles:true})
-.pipe(fs.createWriteStream('lambda.zip'))
-.on('finish', function () {
-    // JSZip generates a readable stream with a "end" event,
-    // but is piped here in a writable stream which emits a "finish" event.
-    console.log("lambda.zip written.");
-});
 }
 
-stmt1();
+stmt2(json);
 
 // if no, go back to 4, if yes continue
 //7. Create a new DB table
 //8. create the lambda function
-//9. create the API
+//9. create the//

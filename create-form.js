@@ -1,17 +1,16 @@
 //Import .env
 require('dotenv').config();
-
+const uuidv1 = require('uuid/v1');
 //Import AWS SDK
 var AWS = require('aws-sdk');
-
 //SES
 var ses = new AWS.SES({apiVersion: '2010-12-01'});
-
 //Dynamo DB
 var dynamodb = new AWS.DynamoDB({apiVersion: '2012-08-10'});
-
-const fs = require('fs');
-
+//package to use the file system
+var fs = require("fs");
+//pazkage to zip files
+var JSZip = require("jszip");
 // package to use stdin/out
 const readline = require('readline').createInterface({
   input: process.stdin,
@@ -33,7 +32,7 @@ function convertInput(input) {
   return output;
 }
 
-// ADD THE VALUES TO THE VARIABLES.JSON FILE
+// Adds values to the variables.json file
 function addVars(jsonVar, jsonVal){
   let rawdata = fs.readFileSync('variables.json');  
   obj = JSON.parse(rawdata);
@@ -44,6 +43,7 @@ function addVars(jsonVar, jsonVal){
   return 'Success';
 }
 
+//validates an email using regex
 function validate(email){
   if(/(?!.*\.{2})^([a-z\d!#$%&'*+\-\/=?^_`{|}~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+(\.[a-z\d!#$%&'*+\-\/=?^_`{|}~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+)*|"((([ \t]*\r\n)?[ \t]+)?([\x01-\x08\x0b\x0c\x0e-\x1f\x7f\x21\x23-\x5b\x5d-\x7e\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|\\[\x01-\x09\x0b\x0c\x0d-\x7f\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))*(([ \t]*\r\n)?[ \t]+)?")@(([a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|[a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF][a-z\d\-._~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]*[a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])\.)+([a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|[a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF][a-z\d\-._~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]*[a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])\.?$/i.test(email)){
     return true;
@@ -53,6 +53,7 @@ function validate(email){
   }
 }
 
+//verifies an email with AWS SES
 async function verifyMail(senderEmail) {
   var params = {
       EmailAddress: senderEmail,
@@ -70,10 +71,6 @@ async function verifyMail(senderEmail) {
   });
 }
 
-//Have you already verified an email with SES?
-//yes stmt3()
-//no stmt1() 
-
 function stmt1(){
   readline.question(`Please enter the email address youd like to register with SES`, (res) => {
     if(validate(res)){
@@ -81,23 +78,31 @@ function stmt1(){
       verifyMail(res)
     }    
     else {
-      console.log('Please enter a valid email address.'); 
+      console.log('Enter a valid email address.');
+      stmt1(); 
     }  
   });
 }
 
-function stmt2(email){
-  readline.question(`Have you already verified your email address? [Y/n]`, (res2) => {
-      switch(convertInput(res2)) {
-          case 'y':
-              checkVerifiedEmail(email)
-              readline.close();
-              break;
-          default:
-              console.log('Noooo');
-              readline.close();
-      }
-  });
+function stmt2(){   
+  let rawdata = fs.readFileSync('variables.json');  
+  obj = JSON.parse(rawdata);
+  var email = obj.source;
+  console.log(email);
+  if(email.length < 4) {
+    stmt1();
+  }
+  else {
+    readline.question(`Have you already verified your email with SES? [Y/n]`, (res2) => {
+        switch(convertInput(res2)) {
+            case 'y':
+                checkVerifiedEmail(email)
+                break;
+            default:
+                stmt1()
+        }
+    });
+  }
 }
 
 function checkVerifiedEmail(email) {
@@ -115,85 +120,146 @@ function checkVerifiedEmail(email) {
           case 'Success':
             //stmt4()
             console.log('Success!')
+            createDB()
             break; 
           default:
-            console.log('It appears your address still hasnt been verified. Please verify your address and re-run the script.');
-            readline.close();
+            console.log('It appears your address still hasnt been verified... Lets try again.');
+            stmt2();
         }      
       } 
    });
 }
 
 function createDB() {
-  var params = {
-    AttributeDefinitions: [
-       {
-      AttributeName: "Artist", 
-      AttributeType: "S"
-     }, 
-       {
-      AttributeName: "SongTitle", 
-      AttributeType: "S"
-     }
-    ], 
-    KeySchema: [
-       {
-      AttributeName: "Artist", 
-      KeyType: "HASH"
-     }, 
-       {
-      AttributeName: "SongTitle", 
-      KeyType: "RANGE"
-     }
-    ], 
-    ProvisionedThroughput: {
-     ReadCapacityUnits: 5, 
-     WriteCapacityUnits: 5
-    }, 
-    TableName: "Music"
-   };
-   dynamodb.createTable(params, function(err, data) {
-     if (err) console.log(err, err.stack); // an error occurred
-     else     console.log(data);           // successful response
-     /*
-     data = {
-      TableDescription: {
-       AttributeDefinitions: [
-          {
-         AttributeName: "Artist", 
-         AttributeType: "S"
-        }, 
-          {
-         AttributeName: "SongTitle", 
-         AttributeType: "S"
-        }
-       ], 
-       CreationDateTime: <Date Representation>, 
-       ItemCount: 0, 
-       KeySchema: [
-          {
-         AttributeName: "Artist", 
-         KeyType: "HASH"
-        }, 
-          {
-         AttributeName: "SongTitle", 
-         KeyType: "RANGE"
-        }
-       ], 
-       ProvisionedThroughput: {
-        ReadCapacityUnits: 5, 
-        WriteCapacityUnits: 5
-       }, 
-       TableName: "Music", 
-       TableSizeBytes: 0, 
-       TableStatus: "CREATING"
+  readline.question(`please enter the desired name for your contact form's data base table`, (dbName) => {
+      if(/^[a-zA-Z0-9]*$/.test(dbName)){
+          addVars('table', dbName)
+          var params = {
+            AttributeDefinitions: [
+              {
+                  AttributeName: "id", 
+                  AttributeType: "S"
+              },
+            ], 
+            KeySchema: [
+              {
+              AttributeName: "id", 
+              KeyType: "HASH"
+            },
+            ], 
+            TableName: dbName,
+            BillingMode: "PAY_PER_REQUEST",
+          };
+          dynamodb.createTable(params, function(err, data) {
+            if(err){
+              console.log(err, err.stack);
+            }
+            else  {
+              console.log(data);
+              console.log('Succesfully created the DB table.')
+              formFields(dbName);
+            }       
+          });
       }
-     }
-     */
-   });
+      else {
+          console.log('table name invalid. Only alphanumeric characters. no spaces.');
+          createDB();
+      }
+  });
+    
 }
 
-stmt1();
+function formFields(table){
+  var x = readline.question(`please enter your desired form fields sepparated by spaces`, (res) => {
+    var response = res.split(" ");
+    var json = `"id": {S: ${uuidv1()}},`
+    for (let r of response) {
+        json += `"${r}": {S: ${r}},`
+    }
+    createLambda(json, table)
+    readline.close();
+  });
+}
+
+function createLambda(tableItem, tableName) {
+  let rawdata = fs.readFileSync('variables.json');  
+  obj = JSON.parse(rawdata);
+  var source = obj.source;
+
+  const lambdaFunc = `const uuidv1 = require('uuid/v1');
+  //Import AWS SDK
+  var AWS = require('aws-sdk');
+  
+  //import uuid for id generation
+  //const uuidv1 = require('uuid/v1');
+  
+  //SES
+  var ses = new AWS.SES({apiVersion: '2010-12-01'});
+  //ADD ITEM TO DB
+  var dynamodb = new AWS.DynamoDB({apiVersion: '2012-08-10'});
+  
+  var params = {
+      Item: ${tableItem}, 
+      TableName:${tableName},
+  };
+  dynamodb.putItem(params, function(err, data) {
+      if (err) {
+          console.log(err, err.stack); // an error occurred
+      }
+      else {
+          console.log(data);   
+          //SES SEND EMAIl
+          var params = {
+              Destination: {
+              ToAddresses: [
+                  "gabriel@torus-digital.com", 
+              ]
+              }, 
+              Message: {
+                  Body: {
+                      Html: {
+                          Charset: "UTF-8", 
+                          Data: "This message body contains HTML formatting. It can, for example, contain links like this one: <a class=\"ulink\" href=\"http://docs.aws.amazon.com/ses/latest/DeveloperGuide\" target=\"_blank\">Amazon SES Developer Guide</a>."
+                      }, 
+                      Text: {
+                          Charset: "UTF-8", 
+                          Data: "This is the message body in text format."
+                      }
+                  }, 
+                  Subject: {
+                  Charset: "UTF-8", 
+                  Data: "Test email"
+                  }
+              }, 
+              ReplyToAddresses: [
+              ], 
+              Source: ${source}, 
+          };
+          ses.sendEmail(params, function(err, data) {
+              if (err) {
+                  console.log(err); // an error occurred
+              } 
+              else {
+                  console.log(data);
+              }   
+          });
+      }
+  });`; 
+
+  var zip = new JSZip();
+  zip.file("lambdaFunc.js", lambdaFunc);
+
+  zip
+  .generateNodeStream({type:'nodebuffer',streamFiles:true})
+  .pipe(fs.createWriteStream('lambda.zip'))
+  .on('finish', function () {
+      // JSZip generates a readable stream with a "end" event,
+      // but is piped here in a writable stream which emits a "finish" event.
+      console.log("lambda.zip written.");
+  });
+}
+
+stmt2();
 
 // if no, go back to 4, if yes continue
 //7. Create a new DB table

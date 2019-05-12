@@ -13,7 +13,7 @@ function createDB() {
       AttributeDefinitions: [
         {
             AttributeName: "id", 
-            AttributeType: "N"
+            AttributeType: "s"
         },
         {
             AttributeName: "firstName", 
@@ -40,41 +40,6 @@ function createDB() {
        else  {
         console.log(data);
        }      
-       /*
-       data = {
-        TableDescription: {
-         AttributeDefinitions: [
-            {
-           AttributeName: "Artist", 
-           AttributeType: "S"
-          }, 
-            {
-           AttributeName: "SongTitle", 
-           AttributeType: "S"
-          }
-         ], 
-         CreationDateTime: <Date Representation>, 
-         ItemCount: 0, 
-         KeySchema: [
-            {
-           AttributeName: "Artist", 
-           KeyType: "HASH"
-          }, 
-            {
-           AttributeName: "SongTitle", 
-           KeyType: "RANGE"
-          }
-         ], 
-         ProvisionedThroughput: {
-          ReadCapacityUnits: 5, 
-          WriteCapacityUnits: 5
-         }, 
-         TableName: "Music", 
-         TableSizeBytes: 0, 
-         TableStatus: "CREATING"
-        }
-       }
-       */
     
      });
   }
