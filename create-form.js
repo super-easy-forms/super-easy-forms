@@ -45,7 +45,7 @@ function addVars(jsonVar, jsonVal){
   obj[jsonVar] = jsonVal;
   jsonObj = JSON.stringify(obj);
   fs.writeFileSync('variables.json', jsonObj);
-  console.log('saved your public site name in the variables.json file')
+  console.log('saved your variable.')
   return 'Success';
 }
 
@@ -122,11 +122,15 @@ function checkVerifiedEmail(email) {
         console.log(err, err.stack);
      } 
      else {
+       console.log()
         switch(data.VerificationAttributes[email].VerificationStatus) {
           case 'Success':
             //stmt4()
             console.log('Success!')
-            createDB()
+            const sesArn = `arn:aws:ses:${process.env.AWS_REGION}:${process.env.AWS_ACCOUNT_NUMBER}:identity/${email}`;
+            console.log(sesArn);
+            addVars('emailArn', sesArn);
+            createDB();
             break; 
           default:
             console.log('It appears your address still hasnt been verified... Lets try again.');
@@ -161,9 +165,11 @@ function createDB() {
               console.log(err, err.stack);
             }
             else  {
-              console.log(data);
+              const tableArn = data.TableDescription.TableArn;
+              console.log(tableArn);
+              addVars('tableArn', tableArn);
               console.log('Succesfully created the DB table.')
-              formFields(dbName);
+              formFields(dbName, tableArn);
             }       
           });
       }
@@ -196,6 +202,9 @@ function createLambda(itemString, tableName) {
   let rawdata = fs.readFileSync('variables.json');  
   obj = JSON.parse(rawdata);
   var source = obj.source;
+  var mailId = obj.emailArn;
+  var tableId = obj.tableArn;
+  console.log(mailId, tableId);
 
   const lambdaFunc = 
   `//Import AWS SDK
@@ -229,7 +238,7 @@ function createLambda(itemString, tableName) {
               var params = {
                   Destination: {
                   ToAddresses: [
-                      "gabriel@torus-digital.com", 
+                      "${source}", 
                   ]
                   }, 
                   Message: {
@@ -277,15 +286,15 @@ function createLambda(itemString, tableName) {
       // JSZip generates a readable stream with a "end" event,
       // but is piped here in a writable stream which emits a "finish" event.
       console.log("lambda.zip written.");
-      lambdaScript();
+      lambdaScript(mailId, tableId);
   });
 }
 
 stmt2();
 
-function lambdaScript(){
+function lambdaScript(sesarn, tablearn){
 	const trustRel =`{"Version": "2012-10-17","Statement": [{"Effect": "Allow","Principal": {"Service": "lambda.amazonaws.com"},"Action": "sts:AssumeRole"}]}`;
-	const uniqNow = new Date().toISOString().replace(/-/, '').replace(/-/, '').replace(/T/, '').replace(/\..+/, '').replace(/:/, '').replace(/:/, '');
+  const uniqNow = new Date().toISOString().replace(/-/, '').replace(/-/, '').replace(/T/, '').replace(/\..+/, '').replace(/:/, '').replace(/:/, '');
 	const contactPolicy = (
 	`{
     "Version": "2012-10-17",
@@ -293,29 +302,19 @@ function lambdaScript(){
         {
             "Effect": "Allow",
             "Action": [
-                "dynamodb:BatchGetItem",
                 "dynamodb:GetItem",
-                "dynamodb:Query",
-                "dynamodb:Scan",
-                "dynamodb:BatchWriteItem",
                 "dynamodb:PutItem",
                 "dynamodb:UpdateItem"
             ],
-            "Resource": "arn:aws:dynamodb:us-east-1:790629462609:table/letseeform"
+            "Resource": "${tablearn}"
         },
         {
-            "Sid": "AuthorizeMarketer",
             "Effect": "Allow",
-            "Resource": "arn:aws:ses:us-east-1:888888888888:identity/example.com",
+            "Resource": "${sesarn}",
             "Action": [
                 "SES:SendEmail",
                 "SES:SendRawEmail"
-            ],
-            "Condition": {
-                "StringLike": {
-                    "ses:FromAddress": "marketing+.*@example.com"
-                }
-            }
+            ]
         }
     ]
 }`
