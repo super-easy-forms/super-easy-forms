@@ -218,7 +218,7 @@ function createLambda(itemString, tableName) {
   exports.handler = (event, context, callback) => {     
       //goes inside lambda function
       var jsonBase = ${json};
-      let uniqNow = Math.floor(Math.random() * 900000000000000000).toString(28) + new Date().toISOString().replace(/-/, '-').replace(/-/, '-').replace(/T/, '-').replace(/\..+/, '-').replace(/:/, '').replace(/:/, '') + Math.floor(Math.random() * 90000000).toString(28);
+      let uniqNow = Math.floor(Math.random() * 900000000000000000).toString(28) + new Date().toISOString().replace(":","-").replace(":","-").replace(".","-") + Math.floor(Math.random() * 90000000).toString(28);
       Object.keys(event).map(function(key, index) {
           jsonBase[key] = {S:event[key]};
       });
