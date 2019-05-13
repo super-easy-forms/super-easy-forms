@@ -529,10 +529,10 @@ function createApi(arn, funcName) {
                                                                       console.log('Your Invoke URL: ', invokeUrl);
                                                                       // WRITE THE API URL TO VARIABLES.JSON
                                                                       addVars('apiUrl', invokeUrl)
-                                                                  
+                                                                      //Create the HTML form
                                                                   }
                                                               });
-                                                              
+  
                                                           }     
                                                       });
                                                   }            
@@ -552,11 +552,6 @@ function createApi(arn, funcName) {
         }     
     });
 }
-
-// if no, go back to 4, if yes continue
-//7. Create a new DB table
-//8. create the lambda function
-//9. create the API
 
 
 
