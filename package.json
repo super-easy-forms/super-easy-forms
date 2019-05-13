@@ -23,6 +23,8 @@
   "dependencies": {
     "aws-sdk": "^2.452.0",
     "dotenv": "^8.0.0",
-    "uuid": "^3.3.2"
+    "uuid": "^3.3.2",
+    "file-saver": "^2.0.1",
+    "jszip": "^3.2.1"
   }
 }
