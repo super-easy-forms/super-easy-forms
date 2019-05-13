@@ -1,74 +1,34 @@
-<script>
-  $(function(){
-    $('#super-easy-form').submit(function(e){
-        e.preventDefault();
-        var formdata = toJSONString(this);
-        console.log(formdata);
-        $.ajax({
-            type: "POST",
-            url: "https://erkeqet3t0.execute-api.us-east-1.amazonaws.com/development/sendMail",
-            dataType: "json",
-            contentType: "application/json",
-            data: JSON.stringify( {"firstName": $('#firstName').val(), "lastName": $('#lastName').val(), "email": $('#email').val(), "message": $('#message').val()} ),
-            beforeSend: function(data) {
-                $('#super-easy-btn').prop('disabled', true);
-                $('#super-easy-form :input').prop('disabled', true);
-                $('#contact-status').html('Sending...').show();
-            },
-            success: function(data) {
-                console.log(data);
-                $('#contact-status').text('Gracias por contactarnos.').show();
-                $('#super-easy-form :input').removeProp('disabled');
-                $('#super-easy-btn').removeProp('disabled');
-            },
-            error: function(jqXHR, textStatus, errorThrown) {
-                $('#contact-status').text('Error de envío.').show();
-                $('#super-easy-form :input').removeProp('disabled');
-                $('#super-easy-btn').removeProp('disabled');
-            }
-        });
-    }); 
+<!DOCTYPE html>
+<html lang="en">
 
-    function toJSONString (form) {
-    var obj = {};
-    var elements = form.querySelectorAll("input, select, textarea");
-    for(var i = 0; i < elements.length; ++i) {
-      var element = elements[i];
-      var name = element.name;
-      var value = element.value;
-      if(name) {
-        obj[name] = value;
-      }
-        }
-        return JSON.stringify(obj);
-    }
-  });
-</script>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="A serverless contact form for your website in less than a minute." content="">
+    <meta name="Torus" content="">
+    <title>Super Easy From</title>
 
-<!-- CONTACT SECTION -->
-    <section id="contact_us" class="straight-up">
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  </head>
+
+  <body>
+    <!-- CONTACT SECTION -->
+    <section>
       <!-- Contact us Form -->
-      <div class="col-md-6 order-sm-0 order-md-12">
+      <div class="col-md-6">
         <form id="super-easy-form" class="" action="#">  
             <div class="row">
               <label>firstName</label>
-              <input type="text" class="form-control" id="firstName" name="firstName" placeholder="firstName" required>
+              <input type="text" class="form-control" id="first" name="first" placeholder="first" required>
             </div>
             <div class="row">
               <label>lastName</label>
-              <input type="text" class="form-control" id="lastName" name="lastName" placeholder="lastName" required>
+              <input type="text" class="form-control" id="last" name="last" placeholder="last" required>
             </div>
             <div class="row">
               <label>email</label>
               <input type="text" class="form-control" id="email" name="email" placeholder="email" required>
-            </div>
-            <div class="row">
-              <label>email</label>
-              <input type="text" class="form-control" id="email" name="email" placeholder="email" required>
-            </div>
-            <div class="row">
-              <label>message</label>
-              <input type="text" class="form-control" id="message" name="message" placeholder="message" required>
             </div>
             <div class="row">
               <h3 id="contact-status" class="sending-text" style="display:none;">Thanks for Contacting Us</h3>
@@ -80,3 +40,60 @@
         </form>
       </div>               
     </section>
+
+    <!--Javascript-->
+    <script
+      src="https://code.jquery.com/jquery-3.4.1.min.js"
+      integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+      crossorigin="anonymous">
+    </script>
+    <script>
+      $(function(){
+        $('#super-easy-form').submit(function(e){
+            e.preventDefault();
+            var formdata = toJSONString(this);
+            console.log(formdata);
+            $.ajax({
+                type: "POST",
+                url: "https://hdupr7o1we.execute-api.us-east-1.amazonaws.com/deployment2019-05-13T16-48-23-840Z/",
+                dataType: "json",
+                contentType: "application/json",
+                data: JSON.stringify( {"first": $('#first').val(), "last": $('#last').val(), "email": $('#email').val() } ),
+                beforeSend: function(data) {
+                    $('#super-easy-btn').prop('disabled', true);
+                    $('#super-easy-form :input').prop('disabled', true);
+                    $('#contact-status').html('Sending...').show();
+                },
+                success: function(data) {
+                    console.log(data);
+                    $('#contact-status').text('Gracias por contactarnos.').show();
+                    $('#super-easy-form :input').removeProp('disabled');
+                    $('#super-easy-btn').removeProp('disabled');
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    $('#contact-status').text('Error de envío.').show();
+                    $('#super-easy-form :input').removeProp('disabled');
+                    $('#super-easy-btn').removeProp('disabled');
+                }
+            });
+        }); 
+    
+        function toJSONString (form) {
+        var obj = {};
+        var elements = form.querySelectorAll("input, select, textarea");
+        for(var i = 0; i < elements.length; ++i) {
+          var element = elements[i];
+          var name = element.name;
+          var value = element.value;
+          if(name) {
+            obj[name] = value;
+          }
+            }
+            return JSON.stringify(obj);
+        }
+      });
+    </script>
+
+  </body>
+
+</html>
