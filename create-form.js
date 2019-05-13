@@ -3,10 +3,16 @@ require('dotenv').config();
 const uuidv1 = require('uuid/v1');
 //Import AWS SDK
 var AWS = require('aws-sdk');
+//IAM
+var iam = new AWS.IAM({apiVersion: '2010-05-08'});
 //SES
 var ses = new AWS.SES({apiVersion: '2010-12-01'});
 //Dynamo DB
 var dynamodb = new AWS.DynamoDB({apiVersion: '2012-08-10'});
+//Lambda
+var lambda = new AWS.Lambda({apiVersion: '2015-03-31'});
+//API Gateway
+//var apigateway = new AWS.APIGateway({apiVersion: '2015-07-09'});
 //package to use the file system
 var fs = require("fs");
 //pazkage to zip files
@@ -271,12 +277,137 @@ function createLambda(itemString, tableName) {
       // JSZip generates a readable stream with a "end" event,
       // but is piped here in a writable stream which emits a "finish" event.
       console.log("lambda.zip written.");
+      lambdaScript();
   });
 }
 
 stmt2();
 
+function lambdaScript(){
+	const trustRel =`{"Version": "2012-10-17","Statement": [{"Effect": "Allow","Principal": {"Service": "lambda.amazonaws.com"},"Action": "sts:AssumeRole"}]}`;
+	const uniqNow = new Date().toISOString().replace(/-/, '').replace(/-/, '').replace(/T/, '').replace(/\..+/, '').replace(/:/, '').replace(/:/, '');
+	const contactPolicy = (
+	`{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "dynamodb:BatchGetItem",
+                "dynamodb:GetItem",
+                "dynamodb:Query",
+                "dynamodb:Scan",
+                "dynamodb:BatchWriteItem",
+                "dynamodb:PutItem",
+                "dynamodb:UpdateItem"
+            ],
+            "Resource": "arn:aws:dynamodb:us-east-1:790629462609:table/letseeform"
+        },
+        {
+            "Sid": "AuthorizeMarketer",
+            "Effect": "Allow",
+            "Resource": "arn:aws:ses:us-east-1:888888888888:identity/example.com",
+            "Action": [
+                "SES:SendEmail",
+                "SES:SendRawEmail"
+            ],
+            "Condition": {
+                "StringLike": {
+                    "ses:FromAddress": "marketing+.*@example.com"
+                }
+            }
+        }
+    ]
+}`
+	);
+	// CREATE THE IAM POLICY
+	var policyParams = {
+		PolicyDocument: contactPolicy, /* required */
+		PolicyName: `easyContactPolicy${uniqNow}`, /* required */
+		Description: 'the IAM policy that allows the role to communicate with the dynamo DB table'
+	};
+	iam.createPolicy(policyParams, function(err, data) {  
+		if (err){
+			console.log(err, err.stack);
+		} 
+		else {
+			console.log('Succesfully created the IAM policy: ', data.Policy.PolicyName);
+			var policyArn = data.Policy.Arn;         
+			// CREATE THE IAM ROLE
+			var rolParams = {
+				AssumeRolePolicyDocument: trustRel, /* required */
+				RoleName: `easyContactRole${uniqNow}`, /* required */
+				Description: 'The Role that allows the Lambda function to interact with the IAM policy',
+				Tags: [
+					{
+						Key: 'name', /* required */
+						Value: `easyContactRole${uniqNow}` /* required */
+					},
+				]
+			};
+			iam.createRole(rolParams, function(err, data) {
+				if (err) {
+					console.log(err, err.stack);
+				}
+				else {
+					console.log('Succesfully created the IAM Role: ', data.Role.RoleName);
+					const rolArn = data.Role.Arn;
+					const rolName = data.Role.RoleName;
+					// ATTACH THE IAM POLICY TO THE NEW ROLE
+					var attachParams = {
+						PolicyArn: policyArn, 
+						RoleName: rolName
+					};
+					iam.attachRolePolicy(attachParams, function(err, data) {
+						if (err) {
+								console.log(err, err.stack);
+						}
+							
+						else {
+							console.log('Please wait 10 seconds ...');                        
+							// WAIT 10 SECONDS 
+							setTimeout(
+								function createCopyFunc(){
+									// CREATE THE LAMBDA COPY BUCKET FUNCTION
+									var funcParams = {
+										Code: {
+												ZipFile: fs.readFileSync('lambda.zip') 
+										}, 
+										Description: "This Lambda Function Adds your contact info. to a Dynamo DB table and then sends you an email.", 
+										FunctionName: `superEasyFunction${uniqNow}`, 
+										Handler: "lambdaFunc.handler",
+										MemorySize: 128, 
+										Publish: true, 
+										Role: rolArn,
+										Runtime: "nodejs8.10", 
+										Timeout: 30,   
+									};
+									lambda.createFunction(funcParams, function(err, data) {
+											if (err) {
+													console.log(err, err.stack); 
+											}
+											else {
+												console.log('Succesfully created your Lambda function: ', data.FunctionName);
+												const copyFuncArn = data.FunctionArn;
+												const copyFuncName = data.FunctionName;     
+												
+												// CALL THE CREATE API FUNCTION
+														
+											}
+									});
+							}, 10000); 
+						}     
+					});
+				}
+			})  
+		}
+	})
+}
+
 // if no, go back to 4, if yes continue
 //7. Create a new DB table
 //8. create the lambda function
 //9. create the API
+
+
+
