@@ -117,7 +117,7 @@ exports.script = function lambdaScript(iam, fs, lambda, apigateway, domainName, 
 // CREATE THE API
 function createApi(arn, funcName) {
     var params = {
-        name: `almostCopyApi${uniqNow}`, /* required */
+        name: `easyFormApi${uniqNow}`, /* required */
         apiKeySource: 'HEADER',
         description: 'The REST API for the lambda copy function',
         endpointConfiguration: {
@@ -239,7 +239,7 @@ function createApi(arn, funcName) {
                                                                         console.log('Succesfully deployed your REST API: ', data.id);
                                                                         const invokeUrl = `https://${rest_api_id}.execute-api.${process.env.AWS_REGION}.amazonaws.com/${deployParams.stageName}/`;
                                                                         console.log('Your Invoke URL: ', invokeUrl);
-                                                                        console.log('Add a REACT_APP_COPY_BUCKET_URL variable in .env with this value.');
+                                                                        addVars('apiUrl', invokeUrl)
                                                                         // WRITE THE API URL TO VARIABLES.JSON
                                                                     
                                                                     }
