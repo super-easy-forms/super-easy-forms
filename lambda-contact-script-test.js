@@ -1,6 +1,6 @@
 //Import .env
 require('dotenv').config();
-const uuidv1 = require('uuid/v1');
+//const uuidv1 = require('uuid/v1');
 
 //Import filesystem
 var fs = require("fs");
@@ -18,6 +18,7 @@ payLoad = {"id":"","firstName":"john", "lastName": "Dill", "eMail":"jdil@gmail.c
 
 
 function stmt2(formInput) {
+    let uniqNow = Math.floor(Math.random() * 900000000000000000).toString(28) + new Date().toISOString().replace(/-/, '-').replace(/-/, '-').replace(/T/, '-').replace(/\..+/, '-').replace(/:/, '').replace(/:/, '') + Math.floor(Math.random() * 90000000).toString(28);
     //goes outside the lambda function
     const res = 'firstName lastName eMail'
     var response = res.split(" ");
@@ -33,7 +34,7 @@ function stmt2(formInput) {
     Object.keys(json).map(function(key, index) {
         json[key] = {S:formInput[key]};
     });
-    json['id'] = {S:uuidv1()};
+    json['id'] = {S:uniqNow};
 
 
     let rawdata = fs.readFileSync('variables.json');  

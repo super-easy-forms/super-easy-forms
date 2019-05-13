@@ -1,28 +1,23 @@
 //Import AWS SDK
 var AWS = require('aws-sdk');
-
 //Declare SES
 var ses = new AWS.SES({apiVersion: '2010-12-01'});
-
 //Declare Dynamo DB
 var dynamodb = new AWS.DynamoDB({apiVersion: '2012-08-10'});
-
-//Import UUID
-const uuidv1 = require('uuid/v1');
 
 //Main function
 exports.handler = (event, context, callback) => {     
     //goes inside lambda function
+    var jsonBase = { id: "id", first: 'first', last: 'last', email: 'email', message: 'message' };
+    let uniqNow = Math.floor(Math.random() * 900000000000000000).toString(28) + new Date().toISOString().replace(/-/, '-').replace(/-/, '-').replace(/T/, '-').replace(/\..+/, '-').replace(/:/, '').replace(/:/, '') + Math.floor(Math.random() * 90000000).toString(28);
     Object.keys(event).map(function(key, index) {
-        event[key] = {S:formInput[key]};
+        jsonBase[key] = {S:event[key]};
     });
-    event['id'] = {S:uuidv1()};
-    let rawdata = fs.readFileSync('variables.json');  
-    obj = JSON.parse(rawdata);
-    var source = obj.source;
-    var tableName = obj.table;
+    jsonBase['id'] = {S:uniqNow};
+    var source = "gkardonski@gmail.com";
+    var tableName = "instantformtable1";
     var params = {
-        Item: json, 
+        Item: jsonBase, 
         TableName: tableName,
     };
     dynamodb.putItem(params, function(err, data) {
@@ -30,7 +25,7 @@ exports.handler = (event, context, callback) => {
             console.log(err, err.stack); // an error occurred
         }
         else {
-            console.log(json);
+            console.log(event);
             console.log(data);   
             //SES SEND EMAIl
             var params = {
@@ -73,4 +68,3 @@ exports.handler = (event, context, callback) => {
     });
    callback(null, 'All Done!');
 };
-
