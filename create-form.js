@@ -177,79 +177,89 @@ function formFields(table){
         jstring += `"${r}":"${r}",`;
     }
     var jsonstring = jstring.substring(0, (jstring.length -1))
-    var json = JSON.parse(`{${jsonstring}}`);
-    console.log(json);
+    
 
-    createLambda(json, table)
+    createLambda(jsonstring, table)
     readline.close();
   });
 }
 
-function createLambda(tableItem, tableName) {
+function createLambda(itemString, tableName) {
+  var json = `{${itemString}}`;
+  console.log(json);
   let rawdata = fs.readFileSync('variables.json');  
   obj = JSON.parse(rawdata);
   var source = obj.source;
 
   const lambdaFunc = 
-  `const uuidv1 = require('uuid/v1');
-  //Import AWS SDK
+  `//Import AWS SDK
   var AWS = require('aws-sdk');
-  
-  //import uuid for id generation
-  //const uuidv1 = require('uuid/v1');
-  
-  //SES
+  //Declare SES
   var ses = new AWS.SES({apiVersion: '2010-12-01'});
-  //ADD ITEM TO DB
+  //Declare Dynamo DB
   var dynamodb = new AWS.DynamoDB({apiVersion: '2012-08-10'});
   
-  var params = {
-      Item: ${tableItem}, 
-      TableName:${tableName},
-  };
-  dynamodb.putItem(params, function(err, data) {
-      if (err) {
-          console.log(err, err.stack); // an error occurred
-      }
-      else {
-          console.log(data);   
-          //SES SEND EMAIl
-          var params = {
-              Destination: {
-              ToAddresses: [
-                  "gabriel@torus-digital.com", 
-              ]
-              }, 
-              Message: {
-                  Body: {
-                      Html: {
-                          Charset: "UTF-8", 
-                          Data: "This message body contains HTML formatting. It can, for example, contain links like this one: <a class=\"ulink\" href=\"http://docs.aws.amazon.com/ses/latest/DeveloperGuide\" target=\"_blank\">Amazon SES Developer Guide</a>."
+  //Main function
+  exports.handler = (event, context, callback) => {     
+      //goes inside lambda function
+      var jsonBase = ${json};
+      let uniqNow = Math.floor(Math.random() * 900000000000000000).toString(28) + new Date().toISOString().replace(/-/, '-').replace(/-/, '-').replace(/T/, '-').replace(/\..+/, '-').replace(/:/, '').replace(/:/, '') + Math.floor(Math.random() * 90000000).toString(28);
+      Object.keys(event).map(function(key, index) {
+          jsonBase[key] = {S:event[key]};
+      });
+      jsonBase['id'] = {S:uniqNow};
+      var params = {
+          Item: jsonBase, 
+          TableName: "${tableName}",
+      };
+      dynamodb.putItem(params, function(err, data) {
+          if (err) {
+              console.log(err, err.stack); // an error occurred
+          }
+          else {
+              console.log(event);
+              console.log(data);   
+              //SES SEND EMAIl
+              var params = {
+                  Destination: {
+                  ToAddresses: [
+                      "gabriel@torus-digital.com", 
+                  ]
+                  }, 
+                  Message: {
+                      Body: {
+                          Html: {
+                              Charset: "UTF-8", 
+                              Data: 'This message body contains HTML formatting. It can, for example, contain links like this one: <a href="http://docs.aws.amazon.com/ses/latest/DeveloperGuide" target="_blank">Amazon SES Developer Guide</a>.'
+                          }, 
+                          Text: {
+                              Charset: "UTF-8", 
+                              Data: "This is the message body in text format."
+                          }
                       }, 
-                      Text: {
-                          Charset: "UTF-8", 
-                          Data: "This is the message body in text format."
+                      Subject: {
+                      Charset: "UTF-8", 
+                      Data: "Test email"
                       }
                   }, 
-                  Subject: {
-                  Charset: "UTF-8", 
-                  Data: "Test email"
-                  }
-              }, 
-              ReplyToAddresses: [
-              ], 
-              Source: "${source}", 
-          };
-          ses.sendEmail(params, function(err, data) {
-              if (err) {
-                  console.log(err); // an error occurred
-              } 
-              else {
-                  console.log(data);
-              }   
-          });
-      }
-  });`; 
+                  ReplyToAddresses: [
+                  ], 
+                  Source: "${source}", 
+              };
+              ses.sendEmail(params, function(err, data) {
+                  if (err) {
+                      console.log(err); // an error occurred
+                      return err;
+                  } 
+                  else {
+                      console.log(data);
+                      return data;
+                  }   
+              });
+          }
+      });
+     callback(null, 'All Done!');
+  };`;
 
   var zip = new JSZip();
   zip.file("lambdaFunc.js", lambdaFunc);
