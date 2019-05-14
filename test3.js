@@ -21,5 +21,13 @@ var params = {
     if (err) console.log(err, err.stack); // an error occurred
     else     console.log(data);           // successful response
   });
-
+  var params = {
+    httpMethod: 'OPTIONS', /* required */
+    resourceId: '6y4s6jxp7i', /* required */
+    restApiId: 'hdupr7o1we', /* required */
+  };
+  apigateway.getMethod(params, function(err, data) {
+    if (err) console.log(err, err.stack); // an error occurred
+    else     console.log(data);           // successful response
+  });
 
