@@ -1,6 +1,5 @@
 //Import .env
 require('dotenv').config();
-const uuidv1 = require('uuid/v1');
 //Import AWS SDK
 var AWS = require('aws-sdk');
 //IAM
@@ -23,6 +22,7 @@ const readline = require('readline').createInterface({
   output: process.stdout
 });
 const uniqNow = new Date().toISOString().replace(":","-").replace(":","-").replace(".","-");
+const formGenerator = require('./form-generator');
 
 //converts console input to y and n
 function convertInput(input) {
@@ -185,6 +185,7 @@ function createDB() {
 function formFields(table){
   var x = readline.question(`please enter your desired form fields sepparated by spaces`, (res) => {
     var response = res.split(" ");
+    addVars('formFields', response);
     var jstring = `"id":"id",`;
     for(let r of response){
         jstring += `"${r}":"${r}",`;
@@ -546,19 +547,6 @@ function createApi(arn, funcName) {
                                                                                 }
                                                                                 else {
                                                                                   console.log('succesfully create dthe integration with options method');
-                                                                                  // ASSIGN POLICY TO THE LAMBDA COPY BUCKET FUNCTION 
-                                                                                  var params = {
-                                                                                    Action: "lambda:InvokeFunction", 
-                                                                                    FunctionName: funcName, 
-                                                                                    Principal: "apigateway.amazonaws.com", 
-                                                                                    SourceArn: `arn:aws:execute-api:${process.env.AWS_REGION}:${process.env.AWS_ACCOUNT_NUMBER}:${rest_api_id}/*/OPTIONS/`,
-                                                                                    StatementId: `ID-Options-${uniqNow}`
-                                                                                    };
-                                                                                    lambda.addPermission(params, function(err, data) {
-                                                                                        if (err) {
-                                                                                            console.log(err, err.stack);
-                                                                                        } 
-                                                                                        else {
                                                                                         // CREATE THE METHOD RESPONSE
                                                                                           var params = {
                                                                                             httpMethod: 'OPTIONS', /* required */
@@ -617,7 +605,8 @@ function createApi(arn, funcName) {
                                                                                                             const invokeUrl = `https://${rest_api_id}.execute-api.${process.env.AWS_REGION}.amazonaws.com/${deployParams.stageName}/`;
                                                                                                             console.log('Your Invoke URL: ', invokeUrl);
                                                                                                             // WRITE THE API URL TO VARIABLES.JSON
-                                                                                                            addVars('apiUrl', invokeUrl)
+                                                                                                            addVars('apiUrl', invokeUrl);
+                                                                                                            formGenerator.script(invokeUrl);
                                                                                                             //Create the HTML form
                                                                                                           }
                                                                                                       });
@@ -633,8 +622,7 @@ function createApi(arn, funcName) {
                                                                     }
                                                               });
                                                           
-                                              }    
-                                          });   
+                                    
                                       }                
                                   });             
             

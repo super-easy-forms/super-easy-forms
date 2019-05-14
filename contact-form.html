@@ -12,33 +12,36 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
   </head>
 
-  <body>
+  <body class="p-5 bg-light">
     <!-- CONTACT SECTION -->
-    <section>
-      <!-- Contact us Form -->
-      <div class="col-md-6">
-        <form id="super-easy-form" class="" action="#">  
-            <div class="row">
-              <label>firstName</label>
-              <input type="text" class="form-control" id="first" name="first" placeholder="first" required>
-            </div>
-            <div class="row">
-              <label>lastName</label>
-              <input type="text" class="form-control" id="last" name="last" placeholder="last" required>
-            </div>
-            <div class="row">
-              <label>email</label>
-              <input type="text" class="form-control" id="email" name="email" placeholder="email" required>
-            </div>
-            <div class="row">
-              <h3 id="contact-status" class="sending-text" style="display:none;">Thanks for Contacting Us</h3>
-            </div> 
-            <div class="row">
-              <button class="btn submit" type="submit" id="super-easy-btn">Send</button>
-            </div> 
-          </div>
-        </form>
-      </div>               
+    <section class="bg-white py-4">
+      <div class="container">
+        <div class="row">
+					<div class="col-md-6">
+							<h4 class="h2 pb-2">Contact Us</h4>
+							<form id="super-easy-form" class="" action="#">  
+			
+									<label for="first" class="small mb-0">firstName</label>
+									<input type="text" class="form-control" id="first" name="first" placeholder="first" required>
+		
+		
+									<label for="last" class="small mb-0">lastName</label>
+									<input type="text" class="form-control" id="last" name="last" placeholder="last" required>
+		
+		
+									<label for="email" class="small mb-0">email</label>
+									<input type="text" class="form-control" id="email" name="email" placeholder="email" required>
+		
+		
+									<h5 id="contact-status" class="text-secondary" style="display:none;">Thanks for Contacting Us</h5>
+			
+		
+									<button class="btn btn-primary mt-3" type="submit" id="super-easy-btn">Send</button>
+			
+						</form>
+					</div>   
+        </div>
+      </div>         
     </section>
 
     <!--Javascript-->
@@ -66,12 +69,12 @@
                 },
                 success: function(data) {
                     console.log(data);
-                    $('#contact-status').text('Gracias por contactarnos.').show();
+                    $('#contact-status').text(`We'll get back to you soon`).show();
                     $('#super-easy-form :input').removeProp('disabled');
                     $('#super-easy-btn').removeProp('disabled');
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
-                    $('#contact-status').text('Error de envío.').show();
+                    $('#contact-status').text('Error. Please try again soon.').show();
                     $('#super-easy-form :input').removeProp('disabled');
                     $('#super-easy-btn').removeProp('disabled');
                 }
