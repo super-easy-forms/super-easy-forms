@@ -15,11 +15,11 @@ var params = {
   };
   apigateway.getMethodResponse(params, function(err, data) {
     if (err) console.log(err, err.stack); // an error occurred
-    else     console.log(data);           // successful response
+    else     console.log('method response', data);           // successful response
   });
   apigateway.getIntegrationResponse(params, function(err, data) {
     if (err) console.log(err, err.stack); // an error occurred
-    else     console.log(data);           // successful response
+    else     console.log('integration response', data);           // successful response
   });
   var params = {
     httpMethod: 'OPTIONS', /* required */
@@ -28,10 +28,10 @@ var params = {
   };
   apigateway.getMethod(params, function(err, data) {
     if (err) console.log(err, err.stack); // an error occurred
-    else     console.log(data);           // successful response
+    else     console.log('method', data);           // successful response
   });
   apigateway.getIntegration(params, function(err, data) {
     if (err) console.log(err, err.stack); // an error occurred
-    else     console.log(data);           // successful response
+    else     console.log('integration', data);           // successful response
   });
 

@@ -566,10 +566,9 @@ function createApi(arn, funcName) {
                                                                                             restApiId: rest_api_id, /* required */
                                                                                             statusCode: '200', /* required */
                                                                                             responseParameters: { 
-                                                                                              'method.response.header.Access-Control-Allow-Headers':
-                                                                                              "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
-                                                                                              'method.response.header.Access-Control-Allow-Methods': "'POST,OPTIONS'",
-                                                                                              'method.response.header.Access-Control-Allow-Origin': "'*'" 
+                                                                                              'method.response.header.Access-Control-Allow-Headers': false,
+                                                                                              'method.response.header.Access-Control-Allow-Methods': false,
+                                                                                              'method.response.header.Access-Control-Allow-Origin': false 
                                                                                             },
                                                                                             responseModels: { 
                                                                                                 'application/json': 'Empty' 
@@ -588,10 +587,13 @@ function createApi(arn, funcName) {
                                                                                                       restApiId: rest_api_id, /* required */
                                                                                                       statusCode: '200', /* required */
                                                                                                       responseParameters: { 
-                                                                                                          'method.response.header.Access-Control-Allow-Origin': "'*'" 
+                                                                                                        'method.response.header.Access-Control-Allow-Headers':
+                                                                                                        "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
+                                                                                                        'method.response.header.Access-Control-Allow-Methods': "'POST,OPTIONS'",
+                                                                                                        'method.response.header.Access-Control-Allow-Origin': "'*'"
                                                                                                       },
                                                                                                       responseTemplates: { 
-                                                                                                          'application/json': '' 
+                                                                                                          'application/json': null 
                                                                                                       }
                                                                                                   };
                                                                                                   apigateway.putIntegrationResponse(params, function(err, data) {
