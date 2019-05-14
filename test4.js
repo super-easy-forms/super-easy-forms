@@ -8,9 +8,9 @@ var AWS = require('aws-sdk');
 var apigateway = new AWS.APIGateway({apiVersion: '2015-07-09'});
 
 var params = {
-    httpMethod: 'OPTIONS', /* required */
-    resourceId: '6y4s6jxp7i', /* required */
-    restApiId: 'hdupr7o1we', /* required */
+    httpMethod: 'POST', /* required */
+    resourceId: '9wsuqazfya', /* required */
+    restApiId: 'mwtidiwbj8', /* required */
     statusCode: '200' /* required */
   };
   apigateway.getMethodResponse(params, function(err, data) {
@@ -22,9 +22,9 @@ var params = {
     else     console.log(data);           // successful response
   });
   var params = {
-    httpMethod: 'OPTIONS', /* required */
-    resourceId: '6y4s6jxp7i', /* required */
-    restApiId: 'hdupr7o1we', /* required */
+    httpMethod: 'POST', /* required */
+    resourceId: '9wsuqazfya', /* required */
+    restApiId: 'mwtidiwbj8', /* required */
   };
   apigateway.getMethod(params, function(err, data) {
     if (err) console.log(err, err.stack); // an error occurred
@@ -34,4 +34,3 @@ var params = {
     if (err) console.log(err, err.stack); // an error occurred
     else     console.log(data);           // successful response
   });
-
