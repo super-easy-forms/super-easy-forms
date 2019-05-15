@@ -9,6 +9,6 @@ Super Easy Forms is a CLI tool that lets you create html forms in seconds (liter
 
 ## Steps
 1. Clone the repository
-2. Go into the directory of the project ` cd torus_cms `
+2. Go into the directory of the project ` cd super_easy_forms `
 3. Install all dependencies by running ` npm install`
 4. Run the CLI ` node super-easy-forms.js `
