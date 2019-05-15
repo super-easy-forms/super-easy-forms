@@ -1,1 +1,0 @@
-console.log('DATE:', new Date().toISOString().replace(/\:/g,"-").replace(/\./g,"-"));
