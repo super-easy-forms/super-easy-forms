@@ -18,14 +18,14 @@ function addVars(jsonVar, jsonVal){
   obj[jsonVar] = jsonVal;
   jsonObj = JSON.stringify(obj);
   fs.writeFileSync('variables.json', jsonObj);
-  console.log('saved your variable.')
+  //console.log('\x1b[33m', 'Variable saved.', '\x1b[0m')
   return 'Success';
 }
 
 // CREATE THE API
 exports.script = function createApi(arn, funcName, uniqNow) {
 	var params = {
-		name: `easyFormApi${uniqNow}`, /* required */
+		name: `easyFormApi${uniqNow}`,
 		apiKeySource: 'HEADER',
 		description: 'The REST API for the lambda copy function',
 		endpointConfiguration: {
@@ -40,12 +40,11 @@ exports.script = function createApi(arn, funcName, uniqNow) {
 			console.log(err, err.stack);
 		} 
 		else {
-			console.log('Succesfully created your REST API endpoint: ', data.name);
+			console.log('\x1b[32m', 'Succesfully created your REST API endpoint: ', data.name, '\x1b[0m');
 			const rest_api_id = data.id;
-			
 			// GET THE PARENT RESOURCE ID
 			var params = {
-				restApiId: rest_api_id, /* required */
+				restApiId: rest_api_id,
 			};
 			apigateway.getResources(params, function(err, data) {
 				if (err) {
@@ -53,7 +52,6 @@ exports.script = function createApi(arn, funcName, uniqNow) {
 				}
 				else {
 					const parent_id = data.items[0].id; 
-					console.log('get parent resource success');
 					// CREATE THE POST METHOD 
 					createPostMethod(parent_id, rest_api_id, arn, funcName, uniqNow);
 				}
@@ -65,10 +63,10 @@ exports.script = function createApi(arn, funcName, uniqNow) {
 // CREATE THE POST METHOD 
 function createPostMethod(parent_id, rest_api_id, arn, funcName, uniqNow) {
 	var params = {
-		authorizationType: 'NONE', /* required */
-		httpMethod: 'POST', /* required */
-		resourceId: parent_id, /* required */
-		restApiId: rest_api_id, /* required */
+		authorizationType: 'NONE',
+		httpMethod: 'POST',
+		resourceId: parent_id,
+		restApiId: rest_api_id,
 		apiKeyRequired: false,
 	};
 	apigateway.putMethod(params, function(err, data) {
@@ -78,11 +76,11 @@ function createPostMethod(parent_id, rest_api_id, arn, funcName, uniqNow) {
 		else {
 			// CREATE THE INTEGRATION WITH THE LAMBDA FUNCTION
 			var params = {
-				httpMethod: 'POST', /* required */
+				httpMethod: 'POST',
 				integrationHttpMethod: 'POST',
-				resourceId: parent_id, /* required */
-				restApiId: rest_api_id, /* required */
-				type: 'AWS', /* required */
+				resourceId: parent_id,
+				restApiId: rest_api_id,
+				type: 'AWS',
 				uri: `arn:aws:apigateway:${process.env.AWS_REGION}:lambda:path/2015-03-31/functions/${arn}/invocations`
 			};
 			apigateway.putIntegration(params, function(err, data) {
@@ -105,10 +103,10 @@ function createPostMethod(parent_id, rest_api_id, arn, funcName, uniqNow) {
 						else {
 							// CREATE THE METHOD RESPONSE
 							var params = {
-								httpMethod: 'POST', /* required */
-								resourceId: parent_id, /* required */
-								restApiId: rest_api_id, /* required */
-								statusCode: '200', /* required */
+								httpMethod: 'POST',
+								resourceId: parent_id,
+								restApiId: rest_api_id,
+								statusCode: '200',
 								responseParameters: { 
 									'method.response.header.Access-Control-Allow-Origin': false 
 								},
@@ -121,13 +119,12 @@ function createPostMethod(parent_id, rest_api_id, arn, funcName, uniqNow) {
 									console.log(err, err.stack);
 								} 
 								else {
-									console.log('post method response success');
 									// CREATE THE INTEGRATION RESPONSE
 									var params = {
-										httpMethod: 'POST', /* required */
-										resourceId: parent_id, /* required */
-										restApiId: rest_api_id, /* required */
-										statusCode: '200', /* required */
+										httpMethod: 'POST',
+										resourceId: parent_id,
+										restApiId: rest_api_id,
+										statusCode: '200',
 										responseParameters: { 
 												'method.response.header.Access-Control-Allow-Origin': "'*'" 
 										},
@@ -140,7 +137,7 @@ function createPostMethod(parent_id, rest_api_id, arn, funcName, uniqNow) {
 											console.log(err, err.stack);
 										}
 										else {
-											console.log('succesfull integration with lambda');
+											console.log('\x1b[32m', 'Succesfully created the POST method.', '\x1b[0m');
 											//CREATE THE OPTIONS METHOD
 											createOptionsMethod(parent_id, rest_api_id, arn, uniqNow);
 										}
@@ -159,10 +156,10 @@ function createPostMethod(parent_id, rest_api_id, arn, funcName, uniqNow) {
 // CREATE THE OPTIONS METHOD 
 function createOptionsMethod(parent_id, rest_api_id, arn, uniqNow) {
 	var params = {
-	authorizationType: 'NONE', /* required */
-	httpMethod: 'OPTIONS', /* required */
-	resourceId: parent_id, /* required */
-	restApiId: rest_api_id, /* required */
+	authorizationType: 'NONE',
+	httpMethod: 'OPTIONS',
+	resourceId: parent_id,
+	restApiId: rest_api_id,
 	apiKeyRequired: false,
 	};
 	apigateway.putMethod(params, function(err, data) {
@@ -170,14 +167,13 @@ function createOptionsMethod(parent_id, rest_api_id, arn, uniqNow) {
 			console.log(err, err.stack);
 		} 
 		else {
-			console.log('succefully create options method')
 			// CREATE THE INTEGRATION WITH THE LAMBDA FUNCTION
 			var params = {
-				httpMethod: 'OPTIONS', /* required */
+				httpMethod: 'OPTIONS',
 				integrationHttpMethod: 'OPTIONS',
-				resourceId: parent_id, /* required */
-				restApiId: rest_api_id, /* required */
-				type: 'MOCK', /* required */
+				resourceId: parent_id,
+				restApiId: rest_api_id,
+				type: 'MOCK',
 				requestTemplates: { 'application/json': '{"statusCode": 200}' },
 				passthroughBehavior: 'WHEN_NO_MATCH',
 				timeoutInMillis: 29000,
@@ -189,13 +185,12 @@ function createOptionsMethod(parent_id, rest_api_id, arn, uniqNow) {
 					console.log(err, err.stack);
 				}
 				else {
-					console.log('succesfully create dthe integration with options method');
 					// CREATE THE METHOD RESPONSE
 					var params = {
-						httpMethod: 'OPTIONS', /* required */
-						resourceId: parent_id, /* required */
-						restApiId: rest_api_id, /* required */
-						statusCode: '200', /* required */
+						httpMethod: 'OPTIONS',
+						resourceId: parent_id,
+						restApiId: rest_api_id,
+						statusCode: '200',
 						responseParameters: { 
 							'method.response.header.Access-Control-Allow-Headers': false,
 							'method.response.header.Access-Control-Allow-Methods': false,
@@ -210,13 +205,12 @@ function createOptionsMethod(parent_id, rest_api_id, arn, uniqNow) {
 							console.log(err, err.stack);
 						} 
 						else {
-							console.log('post method response success');
 							// CREATE THE INTEGRATION RESPONSE
 							var params = {
-								httpMethod: 'OPTIONS', /* required */
-								resourceId: parent_id, /* required */
-								restApiId: rest_api_id, /* required */
-								statusCode: '200', /* required */
+								httpMethod: 'OPTIONS',
+								resourceId: parent_id,
+								restApiId: rest_api_id,
+								statusCode: '200',
 								responseParameters: { 
 									'method.response.header.Access-Control-Allow-Headers':
 									"'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
@@ -232,7 +226,7 @@ function createOptionsMethod(parent_id, rest_api_id, arn, uniqNow) {
 									console.log(err, err.stack);
 								}
 								else {
-									console.log('Succesfully created the POST method')
+									console.log('\x1b[32m', 'Succesfully created the OPTIONS method', '\x1b[0m')
 									// DEPLOY THE API
 									deployApi(rest_api_id, uniqNow);
 								}
@@ -248,8 +242,8 @@ function createOptionsMethod(parent_id, rest_api_id, arn, uniqNow) {
 //DEPLOY THE API  
 function deployApi(rest_api_id, uniqNow) {
 	var deployParams = {
-		restApiId: rest_api_id, /* required */
-		description: 'deployment for the REST API for the lambda copy function',
+		restApiId: rest_api_id,
+		description: 'deployment of the REST API for the lambda copy function',
 		stageDescription: `stage ${uniqNow} of the REST API for the lambda copy function deployment`,
 		stageName: `deployment${uniqNow}`,
 	};
@@ -258,9 +252,9 @@ function deployApi(rest_api_id, uniqNow) {
 			console.log(err, err.stack);
 		}
 		else {
-			console.log('Succesfully deployed your REST API: ', data.id);
+			console.log('\x1b[32m', 'Succesfully deployed your REST API with ID: ', data.id, '\x1b[0m');
 			const invokeUrl = `https://${rest_api_id}.execute-api.${process.env.AWS_REGION}.amazonaws.com/${deployParams.stageName}/`;
-			console.log('Your Invoke URL: ', invokeUrl);
+			console.log('\x1b[33m', 'Your Invoke URL: ', invokeUrl, '\x1b[0m');
 			// WRITE THE API URL TO VARIABLES.JSON
 			addVars('apiUrl', invokeUrl);
 			formGenerator.script(invokeUrl);

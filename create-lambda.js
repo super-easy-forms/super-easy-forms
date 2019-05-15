@@ -15,13 +15,12 @@ const uniqNow = new Date().toISOString().replace(":","-").replace(":","-").repla
 
 exports.script = function createLambda(itemString, tableName) {
   var json = `{${itemString}}`;
-  console.log(json);
+  console.log('\x1b[33m', json, '\x1b[0m');
   let rawdata = fs.readFileSync('variables.json');  
   obj = JSON.parse(rawdata);
   var source = obj.source;
   var mailId = obj.emailArn;
   var tableId = obj.tableArn;
-  console.log(mailId, tableId);
 
   const lambdaFunc = 
   `//Import AWS SDK
@@ -107,7 +106,7 @@ exports.script = function createLambda(itemString, tableName) {
   .on('finish', function () {
       // JSZip generates a readable stream with a "end" event,
       // but is piped here in a writable stream which emits a "finish" event.
-      console.log("lambda.zip written.");
+      console.log('\x1b[32m', 'Succesfully created and zipped your lambda function.', '\x1b[0m');
       lambdaScript(mailId, tableId);
   });
 }
@@ -149,7 +148,7 @@ function lambdaScript(sesarn, tablearn){
 			console.log(err, err.stack);
 		} 
 		else {
-			console.log('Succesfully created the IAM policy: ', data.Policy.PolicyName);
+			console.log('\x1b[32m', 'Succesfully created the IAM policy: ', data.Policy.PolicyName, '\x1b[0m');
 			var policyArn = data.Policy.Arn;         
 			// CREATE THE IAM ROLE
 			var rolParams = {
@@ -168,7 +167,7 @@ function lambdaScript(sesarn, tablearn){
 					console.log(err, err.stack);
 				}
 				else {
-					console.log('Succesfully created the IAM Role: ', data.Role.RoleName);
+					console.log('\x1b[32m', 'Succesfully created the IAM Role: ', data.Role.RoleName, '\x1b[0m');
 					const rolArn = data.Role.Arn;
 					const rolName = data.Role.RoleName;
 					// ATTACH THE IAM POLICY TO THE NEW ROLE
@@ -204,7 +203,7 @@ function lambdaScript(sesarn, tablearn){
 											console.log(err, err.stack); 
 										}
 										else {
-											console.log('Succesfully created your Lambda function: ', data.FunctionName);
+											console.log('\x1b[32m', 'Succesfully created your Lambda function: ', data.FunctionName, '\x1b[0m');
 											const functionArn = data.FunctionArn;
 											const functionName = data.FunctionName;
 											// CALL THE CREATE API FUNCTION

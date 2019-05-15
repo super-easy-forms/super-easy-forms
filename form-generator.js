@@ -11,7 +11,7 @@ exports.script = function formGenerator(url) {
 		formBody += `
 			<label for="${f}" class="small mb-0">${f}</label>
 			<input type="text" class="form-control" id="${f}" name="${f}" placeholder="${f}" required>
-		`;  
+		`; 
 	};
 	var fieldVars = '"id": "",';
 	for(let fv of fields) {
@@ -113,7 +113,8 @@ exports.script = function formGenerator(url) {
 			console.log(err);
 		}
 		else {
-			console.log("The file was saved!");
+			console.log('\x1b[32m', 'Your form was succesfully saved as super-easy-form.html', '\x1b[0m');
+			console.log('\x1b[32m', "Wasn't that Super Easy?", '\x1b[0m');
 			open('super-easy-form.html');
 		}
 	});

@@ -38,7 +38,7 @@ function addVars(jsonVar, jsonVal){
   obj[jsonVar] = jsonVal;
   jsonObj = JSON.stringify(obj);
   fs.writeFileSync('variables.json', jsonObj);
-  console.log('saved your variable.')
+  //console.log('\x1b[33m', 'Variable saved.', '\x1b[0m')
   return 'Success';
 }
 
@@ -63,7 +63,6 @@ async function verifyMail(senderEmail) {
           return false;
         }
        else  {
-          console.log(data);
           addVars('source', senderEmail);
           stmt2(senderEmail);
        }             
@@ -72,13 +71,13 @@ async function verifyMail(senderEmail) {
 
 //CLI statement 1
 function stmt1(){
-  readline.question(`Please enter the email address youd like to register with SES`, (res) => {
+  readline.question(`Please enter the email address youd like to register with SES `, (res) => {
     if(validate(res)){
       console.log('You will shortly recieve an email from AWS. Please click on the verification link.');
       verifyMail(res)
     }    
     else {
-      console.log('Enter a valid email address.');
+      console.log('\x1b[31m', 'Enter a valid email address.', '\x1b[0m');
       stmt1(); 
     }  
   });
@@ -89,12 +88,12 @@ function stmt2(){
   let rawdata = fs.readFileSync('variables.json');  
   obj = JSON.parse(rawdata);
   var email = obj.source;
-  console.log(email);
-  if(email.length < 4) {
+  if(!email) {
     stmt1();
   }
   else {
-    readline.question(`Have you already verified your email with SES? [Y/n]`, (res2) => {
+    console.log('\x1b[33m', email, '\x1b[0m');
+    readline.question(`Have you already verified your email with SES? [Y/n] `, (res2) => {
         switch(convertInput(res2)) {
             case 'y':
                 checkVerifiedEmail(email)
@@ -122,14 +121,13 @@ function checkVerifiedEmail(email) {
         switch(data.VerificationAttributes[email].VerificationStatus) {
           case 'Success':
             //stmt4()
-            console.log('Success!')
+            console.log('\x1b[32m', 'The following email was succesfully verified with SES: ', email, '\x1b[0m');
             const sesArn = `arn:aws:ses:${process.env.AWS_REGION}:${process.env.AWS_ACCOUNT_NUMBER}:identity/${email}`;
-            console.log(sesArn);
             addVars('emailArn', sesArn);
             createDB();
             break; 
           default:
-            console.log('It appears your address still hasnt been verified... Lets try again.');
+            console.log('\x1b[31m', 'It appears your address still hasnt been verified... Lets try again.', '\x1b[0m');
             stmt2();
         }      
       } 
@@ -138,7 +136,7 @@ function checkVerifiedEmail(email) {
 
 //function that creates a Dynamo DB table
 function createDB() {
-  readline.question(`please enter the desired name for your contact form's data base table. It must be unique.`, (dbName) => {
+  readline.question(`please enter the desired name for your contact form's data base table. It must be unique. `, (dbName) => {
       if(/^[a-zA-Z0-9]*$/.test(dbName)){
           addVars('table', dbName)
           var params = {
@@ -163,15 +161,14 @@ function createDB() {
             }
             else  {
               const tableArn = data.TableDescription.TableArn;
-              console.log(tableArn);
               addVars('tableArn', tableArn);
-              console.log('Succesfully created the DB table.')
+              console.log('\x1b[32m', 'Succesfully created a Dynamo DB table w/ the name: ', dbName, '\x1b[0m')
               formFields(dbName, tableArn);
             }       
           });
       }
       else {
-          console.log('table name invalid. Only alphanumeric characters. no spaces.');
+          console.log('\x1b[31m', 'Table name invalid. Only alphanumeric characters. No spaces.', '\x1b[0m');
           createDB();
       }
   });
@@ -180,7 +177,7 @@ function createDB() {
 
 //creates a JSON structure with the form fields provided by the user
 function formFields(table){
-  var x = readline.question(`please enter your desired form fields sepparated by spaces`, (res) => {
+  var x = readline.question(`Please enter your desired form fields sepparated by spaces `, (res) => {
     var response = res.split(" ");
     addVars('formFields', response);
     var jstring = `"id":"id",`;
