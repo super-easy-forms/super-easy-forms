@@ -1,25 +1,4 @@
-var fs = require("fs");
-const open = require('open');
- 
-exports.script = function formGenerator(url) {
-	let rawdata = fs.readFileSync('variables.json');  
-  obj = JSON.parse(rawdata);
-  const fields = obj.formFields;
-	
-	var formBody = ''
-	for(let f of fields) {
-		formBody += `
-			<label for="${f}" class="small mb-0">${f}</label>
-			<input type="text" class="form-control" id="${f}" name="${f}" placeholder="${f}" required>
-		`; 
-	};
-	var fieldVars = '"id": "",';
-	for(let fv of fields) {
-		fieldVars += `"${fv}": $('#${fv}').val(),`;  
-	};
-	var jqVars= fieldVars.substring(0, (fieldVars.length -1));
 
-	var htmlForm = `
 		<!DOCTYPE html>
 		<html lang="en">
 
@@ -41,12 +20,21 @@ exports.script = function formGenerator(url) {
 						<div class="row">
 								<div class="col-md-6">
 									<h4 class="h2 pb-2">Contact Us</h4>
-									<form id="super-easy-form" class="pb-3" action="#">
-										${formBody}  
+									<form id="super-easy-form" class="" action="#">
+										
+			<label for="firstName" class="small mb-0">firstName</label>
+			<input type="text" class="form-control" id="firstName" name="firstName" placeholder="firstName" required>
+		
+			<label for="lastName" class="small mb-0">lastName</label>
+			<input type="text" class="form-control" id="lastName" name="lastName" placeholder="lastName" required>
+		
+			<label for="email" class="small mb-0">email</label>
+			<input type="text" class="form-control" id="email" name="email" placeholder="email" required>
+		  
 										<h5 id="contact-status" class="text-secondary" style="display:none;">Thanks for Contacting Us</h5>
 										<button class="btn btn-primary mt-3" type="submit" id="super-easy-btn">Send</button>
 									</form>
-									<small>made with <a href="http://supereasyforms.com">super easy forms</a> <small> //it's bad etiquete to use free stuff without giving some cred to the creators :)
+									<small>made with <a href="http://supereasyforms.com">super easy forms</a> <small>
 								</div>   
 						</div>
 					</div>         
@@ -66,10 +54,10 @@ exports.script = function formGenerator(url) {
 								console.log(formdata);
 								$.ajax({
 										type: "POST",
-										url: "${url}",
+										url: "https://7d7pspnq7e.execute-api.us-east-1.amazonaws.com/deployment2019-05-15T06-40-12-052Z/",
 										dataType: "json",
 										contentType: "application/json",
-										data: JSON.stringify( { ${jqVars} } ),
+										data: JSON.stringify( { "id": "","firstName": $('#firstName').val(),"lastName": $('#lastName').val(),"email": $('#email').val() } ),
 										beforeSend: function(data) {
 												$('#super-easy-btn').prop('disabled', true);
 												$('#super-easy-form :input').prop('disabled', true);
@@ -108,15 +96,4 @@ exports.script = function formGenerator(url) {
 			</body>
 
 		</html>
-		`;
-	fs.writeFile("super-easy-form.html", htmlForm, function(err) {
-		if(err) {
-			console.log(err);
-		}
-		else {
-			console.log('\x1b[32m', 'Your form was succesfully saved as super-easy-form.html', '\x1b[0m');
-			console.log('\x1b[32m', "Wasn't that Super Easy?", '\x1b[0m');
-			open('super-easy-form.html');
-		}
-	});
-}
+		
