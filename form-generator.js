@@ -1,5 +1,24 @@
 var fs = require("fs");
 const open = require('open');
+
+function fieldType(field) {
+	var x = `<input type="text" class="form-control" id="${field}" name="${field}" placeholder="${fieldLabel(field)}" required>`;
+	if(field.includes("message")){
+		x = `<textarea type="text" class="form-control" id="${field}" name="${field}" placeholder="${fieldLabel(field)}" required></textarea>`; 
+	}
+	else if(field.includes("email")){
+		x = `<input type="email" class="form-control" id="${field}" name="${field}" placeholder="${fieldLabel(field)}" required>`;
+	}
+	else if(field.includes("number")){
+		x = `<input type="number" class="form-control" id="${field}" name="${field}" placeholder="${fieldLabel(field)}" required>`;
+	}
+	return x;
+}
+
+function fieldLabel(field) {
+	var str = field.replace(/-/g, ' ').replace(/_/g, ' ');
+	return str;
+}
  
 exports.script = function formGenerator(url) {
 	let rawdata = fs.readFileSync('variables.json');  
@@ -9,8 +28,8 @@ exports.script = function formGenerator(url) {
 	var formBody = ''
 	for(let f of fields) {
 		formBody += `
-			<label for="${f}" class="small mb-0">${f}</label>
-			<input type="text" class="form-control" id="${f}" name="${f}" placeholder="${f}" required>
+			<label for="${f}" class="small mb-0">${fieldLabel(f)}</label>
+			${fieldType(f)}
 		`; 
 	};
 	var fieldVars = '"id": "",';
