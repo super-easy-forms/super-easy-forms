@@ -23,6 +23,8 @@ Super Easy Forms is a CLI tool that lets you create html forms in seconds (liter
 ![image 18](img/account_number.png)
 5. Install all dependencies by running ` npm install`
 6. Start the CLI by running ` node super-easy-forms.js `
-**Labels:** Form fields must be one word. you can use - or _ to unite words for example you can use `first_name` or `first-name` and the label will automatically get split into first name.
-**Field Types** By default form fioelds will be set as text inputs. to use a textfield instead include the word message. To use input type email include the word email and to use an input type number include the word number.
+
+**Labels** : Form fields must be one word. you can use - or _ to unite words for example you can use `first_name` or `first-name` and the label will automatically get split into first name.
+
+**Field Types** : By default form fields will be set as text inputs. to use a textfield instead include the word message. For an input type email include the word email and for an input type number include the word number.
 
