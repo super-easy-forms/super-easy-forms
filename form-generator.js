@@ -41,12 +41,13 @@ exports.script = function formGenerator(url) {
 						<div class="row">
 								<div class="col-md-6">
 									<h4 class="h2 pb-2">Contact Us</h4>
-									<form id="super-easy-form" class="pb-3" action="#">
+									<!-- FORM BY SUPER EASY FORMS -->
+									<form id="super-easy-form" alt="Form by Super Easy Forms" class="pb-3" action="#">
 										${formBody}  
 										<h5 id="contact-status" class="text-secondary" style="display:none;">Thanks for Contacting Us</h5>
 										<button class="btn btn-primary mt-3" type="submit" id="super-easy-btn">Send</button>
 									</form>
-									<small>made with <a href="http://supereasyforms.com">super easy forms</a> <small> //it's bad etiquete to use free stuff without giving some cred to the creators :)
+									<small>made with <a href="http://supereasyforms.com">super easy forms</a> <small> <!-- it's bad etiquette to use free stuff without giving some cred to the creators :) -->
 								</div>   
 						</div>
 					</div>         
