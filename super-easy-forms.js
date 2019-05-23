@@ -8,6 +8,8 @@ var ses = new AWS.SES({apiVersion: '2010-12-01'});
 var dynamodb = new AWS.DynamoDB({apiVersion: '2012-08-10'});
 //package to use the file system
 var fs = require("fs");
+// Package to open browser window
+const open = require('open');
 //package to use stdin/out
 const readline = require('readline').createInterface({
   input: process.stdin,
@@ -144,6 +146,54 @@ async function verifyMail(senderEmail) {
   });
 }
 
+//create the IAM user
+function init(){
+  readline.question(`Have you already created the IAM user for Super Easy Forms? [Y/n] `, (res) => {
+    switch(convertInput(res)) {
+        case 'y':
+            afterIam();
+            break;
+        case 'n':
+            createIam();
+        default:
+            console.log('please enter a valid yes/no response');
+            init();
+      }
+  });
+}
+
+function createIam() {
+  readline.question(`Please enter the name of your IAM user `, (userName) => {
+    if(/^[a-zA-Z0-9]*$/.test(userName)){
+      console.log('please click on', "\x1b[44m", 'create user', "\x1b[0m");
+      console.log("\x1b[32m", 'Then add the', "\x1b[0m", 'AWS_ACCESS_KEY_ID', "\x1b[32m", 'and', "\x1b[0m", 'AWS_SECRET_ACCESS_KEY', "\x1b[32m", 'env variables', "\x1b[0m");
+      console.log("\x1b[32m", 'Dont forget the', "\x1b[0m", 'AWS_REGION', "\x1b[32m", 'and', "\x1b[0m", 'AWS_ACCOUNT_NUMBER');
+      console.log("\x1b[32m", 'Your region has been set to the default', "\x1b[0m", 'us-east-1');
+      (async () => {
+        await open(`https://console.aws.amazon.com/iam/home?region=us-east-1#/users$new?step=review&accessKey&userNames=${userName}&permissionType=policies&policies=arn:aws:iam::aws:policy%2FAdministratorAccess`);
+      })();
+      afterIam();
+    }
+    else {
+      console.log('\x1b[31m', 'Name invalid. Only alphanumeric characters. No spaces.', '\x1b[0m')
+      createIam();
+    }
+  });
+}
+
+function afterIam(){
+  readline.question(`Have you finished configuring the env variables? [Y/n] `, (res5) => {
+    switch(convertInput(res5)) {
+      case 'y':
+        stmt1();
+        break;
+      default:
+        console.log('please enter a valid yes/no response');
+        afterIam();
+    }
+  });
+}
+
 //CLI statement 1
 function stmt1(){
   readline.question(`Please enter the email address youd like to register with SES `, (res) => {
@@ -160,12 +210,11 @@ function stmt1(){
 
 //CLI statement 2
 function stmt2(){
-  console.log('\x1b[33m', super_easy_form, '\x1b[0m');
   let rawdata = fs.readFileSync('variables.json');  
   obj = JSON.parse(rawdata);
   var email = obj.source;
   if(!email) {
-    stmt1();
+    init();
   }
   else {
     console.log('\x1b[33m', email, '\x1b[0m');
@@ -173,6 +222,9 @@ function stmt2(){
         switch(convertInput(res2)) {
             case 'y':
                 checkVerifiedEmail(email)
+                break;
+            case 'n':
+                init();
                 break;
             default:
                 stmt1()
@@ -266,6 +318,8 @@ function formFields(table){
   });
 }
 
+//welcome user
+console.log('\x1b[33m', super_easy_form, '\x1b[0m');
 //Execute the script.
 stmt2();
 
