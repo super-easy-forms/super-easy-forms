@@ -1,0 +1,10 @@
+{
+    "defaults":{
+        "email_provider":"",
+        "sender_email":"",
+        "recipients":""
+    },
+    "emails":[
+        {"provider":"gmail", "alias":"default", "email":"gkardonski@gmail.com"},
+    ]   
+}

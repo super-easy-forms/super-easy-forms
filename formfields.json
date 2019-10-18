@@ -1,0 +1,28 @@
+{
+    "fields":{
+        "firstName": {"type":"text", "label":"First Name"},
+        "lastName": "text",
+        "paymentOptions": {"type":"select", "label": "Payment Options", "options":{"visa":"Visa", "mastercard":"Master Card", "cash":"Cash"}},
+        "email": "email",
+        "message":"text-box"
+    },
+    "style":{
+        "container":["container"],
+        "form":["form-control"],
+        "title": 
+    },
+    "settings":{
+        "send_address":"email@email.com",
+        "recipients":["email@email.com", "email@email.com"],
+        "recaptcha":true,
+        "template":"myTemplate",
+        "sending_message":"Sending..",
+        "success_message":"Thank you for contacting us!",
+        "error_message":"There was an error. please try again.",
+        "title":"My Form",
+        "button":"Send"
+    },
+    "resources":{
+
+    }
+}
