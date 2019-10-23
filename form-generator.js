@@ -1,16 +1,48 @@
+var forms = {
+	"default":{
+		"stylesheet":``,
+		"input":``,
+		"textbox":``,
+		"select":``,
+	},
+	"floating-label":{
+		"stylesheet":``,
+		"input":``,
+		"textbox":``,
+		"select":``,
+	},
+	"modern":{
+		"stylesheet":``,
+		"input":``,
+		"textbox":``,
+		"select":``,
+	},
+}
+
+
 var fs = require("fs");
 const open = require('open');
 
+const htmlInputTypes = ["button", "checkbox", "color", "date", "datetime-local", "email", "file", "hidden", "image", "month", "number", "password", "radio", "range", "reset", "search", "submit", "tel", "text", "time", "url", "week"];
+
+//the template function will return the object for the form. inside the build form this object will be called to get the inputs and the classes.
+
+//FUNCTION THAT MAPS INPUTS
+//TEMPLATE FUNCTION CALL (pass it mapInputs)
+//will read the template and choose the inputs from the template object loaded
 function fieldType(field) {
-	var x = `<input type="text" class="form-control" id="${field}" name="${field}" placeholder="${fieldLabel(field)}" required>`;
-	if(field.includes("message")){
+	//map json form fields object.
+	//for each field, execute a switch statement that takes in the inputType
+	//in the switch statement
+	//if input === select x= formTemplate.default.select
+	if(field.includes("text-box")){
 		x = `<textarea type="text" class="form-control" id="${field}" name="${field}" placeholder="${fieldLabel(field)}" required></textarea>`; 
 	}
-	else if(field.includes("email")){
-		x = `<input type="email" class="form-control" id="${field}" name="${field}" placeholder="${fieldLabel(field)}" required>`;
+	else if(field.includes("select")){
+		//make the select list and put in the options
 	}
-	else if(field.includes("number")){
-		x = `<input type="number" class="form-control" id="${field}" name="${field}" placeholder="${fieldLabel(field)}" required>`;
+	else{
+		x = `<input type="${type}" class="form-control" id="${field}" name="${field}" placeholder="${fieldLabel(field)}" required>`;
 	}
 	return x;
 }
