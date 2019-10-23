@@ -1,10 +1,10 @@
 {
   "fields":{
       "firstName": {"type":"text", "label":"First Name"},
-      "lastName": "text",
+      "lastName": {"type":"text", "label":"First Name"},
       "paymentOptions": {"type":"select", "label": "Payment Options", "options":{"visa":"Visa", "mastercard":"Master Card", "cash":"Cash"}},
-      "email": "email",
-      "message":"text-box"
+      "email": {"type":"email", "label":"First Name"},
+      "message":{"type":"textarea", "label":"Message"}
   },
   "style":{
       "container":["container"],

@@ -1,25 +1,3 @@
-var forms = {
-	"default":{
-		"stylesheet":``,
-		"input":``,
-		"textbox":``,
-		"select":``,
-	},
-	"floating-label":{
-		"stylesheet":``,
-		"input":``,
-		"textbox":``,
-		"select":``,
-	},
-	"modern":{
-		"stylesheet":``,
-		"input":``,
-		"textbox":``,
-		"select":``,
-	},
-}
-
-
 var fs = require("fs");
 const open = require('open');
 
@@ -35,7 +13,7 @@ function fieldType(field) {
 	//for each field, execute a switch statement that takes in the inputType
 	//in the switch statement
 	//if input === select x= formTemplate.default.select
-	if(field.includes("text-box")){
+	if(field.includes("textbox")){
 		x = `<textarea type="text" class="form-control" id="${field}" name="${field}" placeholder="${fieldLabel(field)}" required></textarea>`; 
 	}
 	else if(field.includes("select")){
