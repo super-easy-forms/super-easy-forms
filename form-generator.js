@@ -22,8 +22,9 @@ function fieldLabel(field) {
  
 exports.script = function formGenerator(url) {
 	let rawdata = fs.readFileSync('variables.json');  
-  obj = JSON.parse(rawdata);
-  const fields = obj.formFields;
+	obj = JSON.parse(rawdata);
+	const formName = obj.form;
+	const fields = obj.formFields;
 	
 	var formBody = ''
 	for(let f of fields) {
@@ -129,14 +130,14 @@ exports.script = function formGenerator(url) {
 
 		</html>
 		`;
-	fs.writeFile("super-easy-form.html", htmlForm, function(err) {
+	fs.writeFile(`forms/${formName}`, htmlForm, function(err) {
 		if(err) {
 			console.log(err);
 		}
 		else {
-			console.log('\x1b[32m', 'Your form was succesfully saved as super-easy-form.html', '\x1b[0m');
+			console.log('\x1b[32m', `Your form was succesfully saved in forms/${formName}`, '\x1b[0m');
 			console.log('\x1b[32m', "Wasn't that Super Easy?", '\x1b[0m');
-			open('super-easy-form.html');
+			open(`forms/${formName}`);
 		}
 	});
 }

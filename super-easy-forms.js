@@ -264,9 +264,9 @@ function checkVerifiedEmail(email) {
 
 //function that creates a Dynamo DB table
 function createDB() {
-  readline.question(`please enter the desired name for your contact form's data base table. It must be unique. `, (dbName) => {
-      if(/^[a-zA-Z0-9]*$/.test(dbName)){
-          addVars('table', dbName)
+  readline.question(`please enter the desired name for your contact form. It must be unique. `, (formName) => {
+      if(/^[a-zA-Z0-9]*$/.test(formName)){
+          addVars('form', formName)
           var params = {
             AttributeDefinitions: [
               {
@@ -280,7 +280,7 @@ function createDB() {
               KeyType: "HASH"
             },
             ], 
-            TableName: dbName,
+            TableName: formName,
             BillingMode: "PAY_PER_REQUEST",
           };
           dynamodb.createTable(params, function(err, data) {
@@ -290,8 +290,8 @@ function createDB() {
             else  {
               const tableArn = data.TableDescription.TableArn;
               addVars('tableArn', tableArn);
-              console.log('\x1b[32m', 'Succesfully created a Dynamo DB table w/ the name: ', dbName, '\x1b[0m')
-              formFields(dbName, tableArn);
+              console.log('\x1b[32m', 'Succesfully created a Dynamo DB table w/ the name: ', formName, '\x1b[0m')
+              formFields(formName, tableArn);
             }       
           });
       }
