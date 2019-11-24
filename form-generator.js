@@ -130,14 +130,14 @@ exports.script = function formGenerator(url) {
 
 		</html>
 		`;
-	fs.writeFile(`forms/${formName}`, htmlForm, function(err) {
+	fs.writeFile(`forms/${formName}/${formName}.html`, htmlForm, function(err) {
 		if(err) {
 			console.log(err);
 		}
 		else {
 			console.log('\x1b[32m', `Your form was succesfully saved in forms/${formName}`, '\x1b[0m');
 			console.log('\x1b[32m', "Wasn't that Super Easy?", '\x1b[0m');
-			open(`forms/${formName}`);
+			open(`forms/${formName}/${formName}.html`);
 		}
 	});
 }
