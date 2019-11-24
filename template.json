@@ -1,0 +1,141 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Resources": {
+      "FormApi": {
+          "Type": "AWS::ApiGateway::RestApi",
+          "Properties": {
+            "name": "FormApi",
+            "apiKeySource": "HEADER",
+            "description": "The REST API for for your Super Easy Form",
+            "endpointConfiguration": {
+            "types": [
+              "REGIONAL"
+              ]
+            }
+          }
+      },
+      "FormModel": {
+        "Type": "AWS::ApiGateway::Model",
+        "Properties": {
+          "ContentType": "application/json",
+          "Name": "Form",
+          "RestApiId": {"Ref": "RestApi"},
+          "Schema": {
+            "$schema": "http://json-schema.org/draft-04/schema#",
+            "title": "Form",
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "uid": {
+                "type": "string"
+              },
+              "email": {
+                "type": "string"
+              },
+              "phone": {
+                "type": "string"
+              }
+            },
+            "required": ["uid", "email", "phone"]
+          }
+        }
+      },
+      "FormResource": {
+        "Type": "AWS::ApiGateway::Resource",
+        "Properties": {
+          "RestApiId": {"Ref": "RestApi"},
+          "ParentId": {"Fn::GetAtt": ["RestApi", "RootResourceId"]},
+          "PathPart": "FORM_NAME"
+        }
+      },
+      "FormPost": {
+        "Type": "AWS::ApiGateway::Method",
+        "Properties": {
+          "AuthorizationType": "NONE",
+          "HttpMethod": "POST",
+          "ResourceId": {"Ref": "FormResource"},
+          "RestApiId": {"Ref": "FormApi"},
+          "ApiKeyRequired": false,
+          "Integration": {
+            "Type": "AWS",
+            "IntegrationHttpMethod": "POST",
+            "Uri": {"Fn::Join" : ["", ["arn:aws:apigateway:", {"Ref": "AWS::Region"}, ":lambda:path/2015-03-31/functions/", {"Fn::GetAtt": ["Lambda", "Arn"]}, "/invocations"]]},
+            "IntegrationResponses": [{
+              "ResponseTemplates": {
+                "application/json": "$input.json('$.body')"
+              },
+              "ResponseParameters": {
+                "method.response.header.Link": "integration.response.body.headers.next"
+              },
+              "StatusCode": 200
+            }],
+            "PassthroughBehavior": "NEVER",
+            "RequestTemplates": {
+              "application/json": "{\"fun\": \"getUsers\", \"parameters\": {\"limit\": \"$input.params('limit')\", \"next\": \"$input.params('next')\"}}"
+            }
+          },
+          "RequestParameters": {
+            "method.request.querystring.limit": false,
+            "method.request.querystring.next": false
+          },
+          "MethodResponses": [{
+            "httpMethod": "POST",
+            "ResponseModels": {
+              "application/json": {"Ref": "FormModel"}
+            },
+            "ResponseParameters": {
+              "method.response.header.Link": true
+            },
+            "StatusCode": 200
+          }]
+        }
+      },
+      "FormTable": {
+          "Type": "AWS::DynamoDB::Table",
+          "Properties": {},
+      },
+      "FormFunction": {
+        "Type": "AWS::Lambda::Function",
+        "Properties" : {
+          "Code" : {
+            "ZipFile": "ZIP_FILE" 
+          },
+          "Description" : "This Lambda Function Adds your contact info. to a Dynamo DB table and then sends you an email.",
+          "Environment" : "nodejs12.x",
+          "FunctionName" : "FUNCTION_NAME",
+          "Handler": "lambdaFunc.handler",
+          "MemorySize": 128, 
+          "Role" : {"Ref": "FormRole"},
+          "Runtime": "nodejs12.x",
+          "Tags" : [ {"FormName":"FormName"} ],
+          "Timeout" : 30
+        },
+        "DependsOn": [
+            "FormRole"
+        ]
+      },
+      "LambdaPermission": {
+          "Type": "AWS::Lambda::Permission",
+          "Properties": {
+              "Action": "lambda:InvokeFunction",
+              "FunctionName": {
+                "Ref": "FormFunction"
+              }, 
+              "Principal": "apigateway.amazonaws.com",
+              "SourceArn": {"Fn::Join" : ["", ["arn:aws:execute-api:", {"Ref": "AWS::Region"}, ":", {"Ref": "AWS::Region"}, ":", {"Ref": "FormApi"}, "/*/POST/"]]}
+          }
+      },
+      "FormPolicy": {
+          "Type": "AWS::IAM::Policy",
+          "Properties": {},
+      },
+      "FormRole": {
+          "Type": "AWS::IAM::Role",
+          "Properties": {},
+          },
+          "DependsOn": [
+              "FormPolicy"
+          ]
+      }
+    }
+}
