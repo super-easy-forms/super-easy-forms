@@ -4,7 +4,7 @@
     "RestApi": {
       "Type": "AWS::ApiGateway::RestApi",
       "Properties": {
-        "name": "FORTM_NAME_RestApi",
+        "name": "${formName}RestApi",
         "apiKeySource": "HEADER",
         "description": "The REST API for for your Super Easy Form",
         "endpointConfiguration": {
@@ -18,25 +18,15 @@
       "Type": "AWS::ApiGateway::Model",
       "Properties": {
         "ContentType": "application/json",
-        "Name": "FORM_NAME_ApiModel",
+        "Name": "${formName}ApiModel",
         "RestApiId": {"Ref": "RestApi"},
         "Schema": {
           "$schema": "http://json-schema.org/draft-04/schema#",
-          "title": "FORM_NAME",
+          "title": "${formName}",
           "type": "object",
           "additionalProperties": false,
-          "properties": {
-            "id": {
-              "type": "string"
-            },
-            "name": {
-              "type": "string"
-            },
-            "message": {
-              "type": "string"
-            }
-          },
-          "required": ["id", "name", "message"]
+          "properties": "${formFields}",
+          "required": "${requiredFields}"
         }
       }
     },
@@ -46,7 +36,7 @@
           "RestApiId": {
             "Ref": "RestApi"
           },
-          "Name" : "FORM_NAME_Validation",
+          "Name" : "${formName}Validation",
           "ValidateRequestBody" : true,
           "ValidateRequestParameters" : true
       }
@@ -56,7 +46,7 @@
       "Properties": {
         "AuthorizationType": "NONE",
         "HttpMethod": "POST",
-        "ResourceId": {"Ref": "FormResource"},
+        "ResourceId": { "Fn::GetAtt": ["RestApi", "RootResourceId"] },
         "RestApiId": {"Ref": "FormApi"},
         "ApiKeyRequired": false,
         "Integration": {
@@ -105,7 +95,7 @@
               "KeyType": "HASH"
             }
           ], 
-          "TableName": "FORM_NAME",
+          "TableName": "${formName}",
           "BillingMode": "PAY_PER_REQUEST"
         }
     },
@@ -113,7 +103,7 @@
       "Type": "AWS::Lambda::Function",
       "Properties" : {
         "Code" : {
-          "ZipFile": "ZIP_FILE" 
+          "ZipFile": "fs.readFileSync(forms/${formName}/lambda.zip)" 
         },
         "Description" : "This Lambda Function Adds your contact info. to a Dynamo DB table and then sends you an email.",
         "Environment" : "nodejs12.x",
@@ -122,7 +112,7 @@
         "MemorySize": 128, 
         "Role" : {"Ref": "IamRole"},
         "Runtime": "nodejs12.x",
-        "Tags" : [ {"FormName":"FORM_NAME"} ],
+        "Tags" : [ {"FormName":"${formName}"} ],
         "Timeout" : 30
       },
       "DependsOn": [
@@ -157,7 +147,7 @@
               },
               {
                 "Effect": "Allow",
-                "Resource": "${sesarn}",
+                "Resource": "${emailArn}",
                 "Action": [
                   "SES:SendEmail",
                   "SES:SendRawEmail"
@@ -165,9 +155,8 @@
               }
             ]
           },
-          "PolicyName" : "FORM_NAME_IamPolicy",
-          "Roles" : [ {"Ref":"IamRole"} ],
-          "Users" : [ "IAM_USER" ]
+          "PolicyName" : "${formName}Policy",
+          "Roles" : [ {"Ref":"IamRole"} ]
         }
     },
     "IamRole": {
@@ -187,7 +176,7 @@
           },
           "Description" : "Role that allows the Lambda function to interact with the IAM policy",
           "Policies" : {"Ref":"IamPolicy"},
-          "RoleName" : "FORM_NAME_FormIamRole"
+          "RoleName" : "${formName}FormRole"
         }
         },
         "DependsOn": [
@@ -197,7 +186,7 @@
     "ApiDeployment": {
       "Type" : "AWS::ApiGateway::Deployment",
       "Properties" : {
-          "Description" : "deployment of the REST API for the FORM_NAME form",
+          "Description" : "deployment of the REST API for the ${formName} form",
           "RestApiId" : {"Ref":"RestApi"},
           "StageName" : "DeploymentStage"
         }

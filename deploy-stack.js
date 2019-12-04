@@ -1,3 +1,9 @@
+//Import .env
+require('dotenv').config();
+//Import AWS SDK
+var AWS = require('aws-sdk');
+//cloudformation
+var cloudformation = new AWS.CloudFormation({apiVersion: '2010-05-15'});
 const createLambda = require('./create-lambda');
 const createTemplate = require('./create-template');
 

@@ -162,8 +162,7 @@ exports.script = function createTemplate(formName, formFields, requiredFields, e
               ]
             },
             "PolicyName" : `${formName}Policy`,
-            "Roles" : [ {"Ref":"IamRole"} ],
-            "Users" : [ process.env.IAM_USER ]
+            "Roles" : [ {"Ref":"IamRole"} ]
           }
       },
       "IamRole": {
