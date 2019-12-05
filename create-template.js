@@ -3,7 +3,7 @@ require('dotenv').config();
 //package to use the file system
 var fs = require("fs");
 
-exports.script = function createTemplate(formName, formFields, requiredFields, emailArn) {
+module.exports = function createTemplate(formName, formFields, requiredFields, emailArn) {
   var template = {
     "AWSTemplateFormatVersion": "2010-09-09",
     "Resources": {
@@ -198,6 +198,7 @@ exports.script = function createTemplate(formName, formFields, requiredFields, e
           }
       }
   }
-  fs.writeFileSync(`forms/${formName}/template.json`, template);
-  return template;
+  tempString = JSON.stringify(template);
+  fs.writeFileSync(`forms/${formName}/template.json`, tempString);
+  return tempString;
 }

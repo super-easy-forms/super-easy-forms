@@ -3,8 +3,9 @@ var fs = require("fs");
 //pazkage to zip files
 var JSZip = require("jszip");
 
-exports.script = function createLambda(formFields, tableName, sourceEmail, callback) {
+var deployStack = require('./deploy-stack.js');
 
+module.exports = function createLambda(formFields, tableName, sourceEmail, callback) {
   const lambdaFunc = 
   `//Import AWS SDK
   var AWS = require('aws-sdk');
@@ -85,13 +86,13 @@ exports.script = function createLambda(formFields, tableName, sourceEmail, callb
 
   zip
   .generateNodeStream({type:'nodebuffer',streamFiles:true})
-  .pipe(fs.createWriteStream(`forms/${formName}/lambda.zip`))
+  .pipe(fs.createWriteStream(`forms/${tableName}/lambda.zip`))
   .on('finish', function () {
       // JSZip generates a readable stream with a "end" event,
       // but is piped here in a writable stream which emits a "finish" event.
 			console.log('\x1b[32m', 'Succesfully created and zipped your lambda function.', '\x1b[0m');
-			if(callback && typeof(callback) === "function"){
-				callback()
+			if(callback && callback === "deploy"){
+				deployStack(tableName)
 			}
   });
 }

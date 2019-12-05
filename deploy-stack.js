@@ -1,15 +1,14 @@
 //Import .env
 require('dotenv').config();
+//package to use the file system
+var fs = require("fs");
 //Import AWS SDK
 var AWS = require('aws-sdk');
 //cloudformation
 var cloudformation = new AWS.CloudFormation({apiVersion: '2010-05-15'});
-const createLambda = require('./create-lambda');
-const createTemplate = require('./create-template');
 
-const sourceEmail = "mailer@torus-digital.com";
-const emailArn = "arn:aws:ses:us-east-1:519275522978:identity/mailer@torus-digital.com";
-const form = "testform";
+var createTemplate = require('./create-template.js');
+
 const myFormModel = {
   "id": {
     "type": "string"
@@ -24,13 +23,10 @@ const myFormModel = {
 
 const myRequiredFields = ["id", "name", "message"]
 
-const myFormFields = {
-  "id":"id",
-  "name":"name",
-  "message":"message"
-}
+const emailArn = "arn:aws:ses:us-east-1:519275522978:identity/mailer@torus-digital.com";
 
-function deployStack(formName) {
+
+module.exports = function deployStack(formName) {
 	var params = {
     StackName: `${formName}Form`, /* required */
     TemplateBody: createTemplate(formName, myFormModel, myRequiredFields, emailArn),
@@ -41,9 +37,8 @@ function deployStack(formName) {
       console.log(err, err.stack); // an error occurred
     } 
     else {
+      console.log('SUCCESS')
       console.log(data); // successful response
     }    
   });
 }
-
-createLambda(myFormFields, form, sourceEmail, deployStack(form))
