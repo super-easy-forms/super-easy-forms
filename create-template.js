@@ -5,11 +5,13 @@ var fs = require("fs");
 
 var createLambda = require('./create-lambda.js');
 
-const myFields = {
+const formFields = {
   "id":"id",
   "name":"name",
   "message":"message"
-}
+};
+
+const myFields = JSON.stringify(formFields);
 
 const sourceEmail = "mailer@torus-digital.com";
 
