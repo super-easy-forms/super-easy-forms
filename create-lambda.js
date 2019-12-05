@@ -96,6 +96,6 @@ module.exports = function createLambda(formFields, tableName, sourceEmail, callb
 			}
 	});
 	*/
-	fs.writeFileSync(`${tableName}Function.js`, lambdaFunc);
+	fs.writeFileSync(`forms/${tableName}/lambdaFunction.js`, lambdaFunc);
 	return lambdaFunc;
 }

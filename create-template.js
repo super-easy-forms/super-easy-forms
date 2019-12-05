@@ -122,7 +122,7 @@ module.exports = function createTemplate(formName, formModel, requiredFields, em
           },
           "Description" : "This Lambda Function Adds your contact info. to a Dynamo DB table and then sends you an email.",
           "FunctionName" : `${formName}Function`,
-          "Handler": "lambdaFunc.handler",
+          "Handler": "index.handler",
           "MemorySize": 128, 
           "Role" : {"Fn::GetAtt": ["IamRole", "Arn"]},
           "Runtime": "nodejs10.x",

@@ -39,4 +39,4 @@ function getEndPoint(formName) {
 
 }
 
-getEndPoint("testeighteen")
+getEndPoint("testwenty")

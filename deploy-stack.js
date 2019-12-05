@@ -9,6 +9,8 @@ var cloudformation = new AWS.CloudFormation({apiVersion: '2010-05-15'});
 
 var createTemplate = require('./create-template.js');
 
+var addVar = require('./addVars.js');
+
 const myFormModel = {
   "id": {
     "type": "string"
@@ -40,8 +42,8 @@ module.exports = function deployStack(formName) {
       console.log(err, err.stack); // an error occurred
     } 
     else {
-      console.log('SUCCESS')
-      console.log(data); // successful response
+      console.log(`Succesfully deployed the stack with ARN ${data.StackId}`); // successful response
+      addVar(formName, "stackId",data.StackId);
     }    
   });
 }
