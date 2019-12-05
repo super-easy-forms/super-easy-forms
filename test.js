@@ -8,7 +8,7 @@ var deployStack = require('./deploy-stack.js');
 //var createLambda = require('./create-lambda.js');
 
 const sourceEmail = "mailer@torus-digital.com";
-const form = "testsixteen";
+const form = "testseventeen";
 
 function initDeployment(formName) {
   var dir = `forms/${formName}`;

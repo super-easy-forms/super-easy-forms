@@ -139,7 +139,7 @@ module.exports = function createTemplate(formName, formModel, requiredFields, em
               "Ref": "LambdaFunction"
             }, 
             "Principal": "apigateway.amazonaws.com",
-            "SourceArn": {"Fn::Join" : ["", ["arn:aws:execute-api:", {"Ref": "AWS::Region"}, ":", {"Ref": "AWS::Region"}, ":", {"Ref": "RestApi"}, "/*/POST/"]]}
+            "SourceArn": {"Fn::Join" : ["", ["arn:aws:execute-api:", {"Ref": "AWS::Region"}, ":", {"Ref": "AWS::AccountId"}, ":", {"Ref": "RestApi"}, "/*/POST/"]]}
         },
         "DependsOn": [
           "ApiPostMethod"
