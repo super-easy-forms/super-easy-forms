@@ -3,7 +3,7 @@ var fs = require("fs");
 //pazkage to zip files
 var JSZip = require("jszip");
 
-var deployStack = require('./deploy-stack.js');
+//var deployStack = require('./deploy-stack.js');
 
 module.exports = function createLambda(formFields, tableName, sourceEmail, callback) {
   const lambdaFunc = 
@@ -80,7 +80,7 @@ module.exports = function createLambda(formFields, tableName, sourceEmail, callb
       });
      callback(null, 'All Done!');
   };`;
-
+	/*
   var zip = new JSZip();
   zip.file("lambdaFunc.js", lambdaFunc);
 
@@ -94,5 +94,7 @@ module.exports = function createLambda(formFields, tableName, sourceEmail, callb
 			if(callback && callback === "deploy"){
 				deployStack(tableName)
 			}
-  });
+	});
+	*/
+	return lambdaFunc;
 }

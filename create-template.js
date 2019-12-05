@@ -3,7 +3,17 @@ require('dotenv').config();
 //package to use the file system
 var fs = require("fs");
 
-module.exports = function createTemplate(formName, formFields, requiredFields, emailArn) {
+var createLambda = require('./create-lambda.js');
+
+const myFields = {
+  "id":"id",
+  "name":"name",
+  "message":"message"
+}
+
+const sourceEmail = "mailer@torus-digital.com";
+
+module.exports = function createTemplate(formName, formModel, requiredFields, emailArn) {
   var template = {
     "AWSTemplateFormatVersion": "2010-09-09",
     "Resources": {
@@ -30,7 +40,7 @@ module.exports = function createTemplate(formName, formFields, requiredFields, e
             "title": `${formName}`,
             "type": "object",
             "additionalProperties": false,
-            "properties": formFields,
+            "properties": formModel,
             "required": requiredFields
           }
         }
@@ -63,15 +73,13 @@ module.exports = function createTemplate(formName, formFields, requiredFields, e
                 "application/json": "$input.json('$.body')"
               },
               "ResponseParameters": {
-                "method.response.header.Link": "integration.response.body.headers.next",
-                "method.response.header.Access-Control-Allow-Origin": "'*'" 
+                "method.response.header.Link": "integration.response.body.headers.next" 
               },
               "StatusCode": 200
             }]
           },
           "RequestValidatorId": {"Ref": "ApiValidator"},
           "MethodResponses": [{
-            "httpMethod": "POST",
             "ResponseModels": {
               "application/json": {"Ref": "ApiModel"}
             },
@@ -108,18 +116,20 @@ module.exports = function createTemplate(formName, formFields, requiredFields, e
         "Type": "AWS::Lambda::Function",
         "Properties": {
           "Code": {
-            ZipFile: fs.readFileSync(`forms/${formName}/lambda.zip`) 
+            ZipFile: createLambda(myFields, formName, sourceEmail) 
           },
           "Description" : "This Lambda Function Adds your contact info. to a Dynamo DB table and then sends you an email.",
-          "Environment" : "nodejs12.x",
-          "FunctionName" : "FUNCTION_NAME",
+          "FunctionName" : `${formName}Function`,
           "Handler": "lambdaFunc.handler",
           "MemorySize": 128, 
-          "Role" : {"Ref": "IamRole"},
-          "Runtime": "nodejs12.x",
-          "Tags" : [ {"FormName":`${formName}`} ],
+          "Role" : {"Fn::GetAtt": ["IamRole", "Arn"]},
+          "Runtime": "nodejs10.x",
+          "Tags" : [ {"Key": "formName", "Value":`${formName}`} ],
           "Timeout" : 30
         },
+        "DependsOn": [
+          "DynamoDbTable", "IamRole"
+        ]
       },
       "LambdaPermission": {
         "Type": "AWS::Lambda::Permission",

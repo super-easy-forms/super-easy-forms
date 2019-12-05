@@ -3,18 +3,12 @@ require('dotenv').config();
 //package to use the file system
 var fs = require("fs");
 
+var deployStack = require('./deploy-stack.js');
 
-var createLambda = require('./create-lambda.js');
+//var createLambda = require('./create-lambda.js');
 
 const sourceEmail = "mailer@torus-digital.com";
-const form = "testseven";
-
-
-const myFormFields = {
-  "id":"id",
-  "name":"name",
-  "message":"message"
-}
+const form = "testsixteen";
 
 function initDeployment(formName) {
   var dir = `forms/${formName}`;
@@ -24,12 +18,12 @@ function initDeployment(formName) {
           throw err;
         }
         else {
-          createLambda(myFormFields, form, sourceEmail, "deploy")
+          deployStack(form)
         }
       });
   }
   else {
-    createLambda(myFormFields, form, sourceEmail, "deploy")
+    //createLambda(myFormFields, form, sourceEmail, "deploy")
   }
 }
 
