@@ -1,16 +1,29 @@
 {
   "fields":{
-      "firstName": {"type":"text", "label":"First Name"},
-      "lastName": {"type":"text", "label":"First Name"},
-      "paymentOptions": {"type":"select", "label": "Payment Options", "options":{"visa":"Visa", "mastercard":"Master Card", "cash":"Cash"}},
+      "firstName": {
+          "type":"text", 
+          "label":"First Name",
+          "required": true
+        },
+      "lastName": {
+          "type":"text", 
+          "label":"First Name",
+          "required": true
+        },
+      "paymentOptions": {
+          "type":"select", 
+          "label": "Payment Options",
+          "required": true, 
+          "options":{
+              "visa":"Visa", 
+              "mastercard":"Master Card", 
+              "cash":"Cash"
+            }
+        },
       "email": {"type":"email", "label":"First Name"},
       "message":{"type":"textarea", "label":"Message"}
   },
-  "style":{
-      "container":["container"],
-      "form":["form-control"],
-      "title": "myForm"
-  },
+  "stylesheet":"STYLESHEET_NAME",
   "settings":{
       "email_provider":"gmail",
       "sender_email":"default",
