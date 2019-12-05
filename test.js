@@ -8,7 +8,7 @@ var deployStack = require('./deploy-stack.js');
 //var createLambda = require('./create-lambda.js');
 
 const sourceEmail = "mailer@torus-digital.com";
-const form = "testseventeen";
+const form = "testeighteen";
 
 function initDeployment(formName) {
   var dir = `forms/${formName}`;
@@ -18,6 +18,7 @@ function initDeployment(formName) {
           throw err;
         }
         else {
+          fs.writeFileSync(`forms/${formName}/config.json`, {})
           deployStack(form)
         }
       });

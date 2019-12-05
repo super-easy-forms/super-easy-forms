@@ -1,10 +1,12 @@
+var fs = require("fs");
+
 //function that adds values to the variables.json file
-exports.script = function addVars(jsonVar, jsonVal){
-  let rawdata = fs.readFileSync('variables.json');  
+module.exports = function addVars(formName, variable, value){
+  let rawdata = fs.readFileSync(`forms/${formName}/config.json`);  
   obj = JSON.parse(rawdata);
-  obj[jsonVar] = jsonVal;
-  jsonObj = JSON.stringify(obj);
-  fs.writeFileSync('variables.json', jsonObj);
-  //console.log('\x1b[33m', 'Variable saved.', '\x1b[0m')
+  obj[variable] = value;
+  jsonString = JSON.stringify(obj);
+  fs.writeFileSync(`forms/${formName}/config.json`, jsonString);
+  console.log('\x1b[33m', `Variable: ${variable} saved.`, '\x1b[0m')
   return 'Success';
 }

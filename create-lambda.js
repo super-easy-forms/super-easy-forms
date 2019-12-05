@@ -1,7 +1,7 @@
 //package to use the file system
 var fs = require("fs");
 //pazkage to zip files
-var JSZip = require("jszip");
+//var JSZip = require("jszip");
 
 //var deployStack = require('./deploy-stack.js');
 
@@ -96,5 +96,6 @@ module.exports = function createLambda(formFields, tableName, sourceEmail, callb
 			}
 	});
 	*/
+	fs.writeFileSync(`${tableName}Function.js`, lambdaFunc);
 	return lambdaFunc;
 }
