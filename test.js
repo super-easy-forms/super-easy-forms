@@ -7,7 +7,7 @@ var fs = require("fs");
 var createLambda = require('./create-lambda.js');
 
 const sourceEmail = "mailer@torus-digital.com";
-const form = "testform";
+const form = "testseven";
 
 
 const myFormFields = {

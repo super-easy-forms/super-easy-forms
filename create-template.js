@@ -10,10 +10,9 @@ module.exports = function createTemplate(formName, formFields, requiredFields, e
       "RestApi": {
         "Type": "AWS::ApiGateway::RestApi",
         "Properties": {
-          "name": `${formName}RestApi`,
-          "apiKeySource": "HEADER",
-          "description": "The REST API for for your Super Easy Form",
-          "endpointConfiguration": {
+          "Name": `${formName}RestApi`,
+          "Description": "The REST API for for your Super Easy Form",
+          "EndpointConfiguration": {
             "Types": [
                 "REGIONAL"
               ]
@@ -53,12 +52,12 @@ module.exports = function createTemplate(formName, formFields, requiredFields, e
           "AuthorizationType": "NONE",
           "HttpMethod": "POST",
           "ResourceId": { "Fn::GetAtt": ["RestApi", "RootResourceId"] },
-          "RestApiId": {"Ref": "FormApi"},
+          "RestApiId": {"Ref": "RestApi"},
           "ApiKeyRequired": false,
           "Integration": {
             "Type": "AWS",
             "IntegrationHttpMethod": "POST",
-            "Uri": {"Fn::Join" : ["", ["arn:aws:apigateway:", {"Ref": "AWS::Region"}, ":lambda:path/2015-03-31/functions/", {"Fn::GetAtt": ["Lambda", "Arn"]}, "/invocations"]]},
+            "Uri": {"Fn::Join" : ["", ["arn:aws:apigateway:", {"Ref": "AWS::Region"}, ":lambda:path/2015-03-31/functions/", {"Fn::GetAtt": ["LambdaFunction", "Arn"]}, "/invocations"]]},
             "IntegrationResponses": [{
               "ResponseTemplates": {
                 "application/json": "$input.json('$.body')"
@@ -87,23 +86,23 @@ module.exports = function createTemplate(formName, formFields, requiredFields, e
         ]
       },
       "DynamoDbTable": {
-          "Type": "AWS::DynamoDB::Table",
-          "Properties": {
-            "AttributeDefinitions": [
-              {
-                "AttributeName": "id", 
-                "AttributeType": "S"
-              }
-            ], 
-            "KeySchema": [
-              {
-                "AttributeName": "id", 
-                "KeyType": "HASH"
-              }
-            ], 
-            "TableName": `${formName}`,
-            "BillingMode": "PAY_PER_REQUEST"
-          }
+        "Type": "AWS::DynamoDB::Table",
+        "Properties": {
+          "AttributeDefinitions": [
+            {
+              "AttributeName": "id", 
+              "AttributeType": "S"
+            }
+          ], 
+          "KeySchema": [
+            {
+              "AttributeName": "id", 
+              "KeyType": "HASH"
+            }
+          ], 
+          "TableName": formName,
+          "BillingMode": "PAY_PER_REQUEST"
+        }
       },
       "LambdaFunction": {
         "Type": "AWS::Lambda::Function",
@@ -121,20 +120,20 @@ module.exports = function createTemplate(formName, formFields, requiredFields, e
           "Tags" : [ {"FormName":`${formName}`} ],
           "Timeout" : 30
         },
-        "DependsOn": [
-            "DynamoDbTable"
-        ]
       },
       "LambdaPermission": {
-          "Type": "AWS::Lambda::Permission",
-          "Properties": {
-              "Action": "lambda:InvokeFunction",
-              "FunctionName": {
-                "Ref": "LambdaFunction"
-              }, 
-              "Principal": "apigateway.amazonaws.com",
-              "SourceArn": {"Fn::Join" : ["", ["arn:aws:execute-api:", {"Ref": "AWS::Region"}, ":", {"Ref": "AWS::Region"}, ":", {"Ref": "FormApi"}, "/*/POST/"]]}
-          }
+        "Type": "AWS::Lambda::Permission",
+        "Properties": {
+            "Action": "lambda:InvokeFunction",
+            "FunctionName": {
+              "Ref": "LambdaFunction"
+            }, 
+            "Principal": "apigateway.amazonaws.com",
+            "SourceArn": {"Fn::Join" : ["", ["arn:aws:execute-api:", {"Ref": "AWS::Region"}, ":", {"Ref": "AWS::Region"}, ":", {"Ref": "RestApi"}, "/*/POST/"]]}
+        },
+        "DependsOn": [
+          "ApiPostMethod"
+        ] 
       },
       "IamPolicy": {
           "Type": "AWS::IAM::Policy",
@@ -149,7 +148,7 @@ module.exports = function createTemplate(formName, formFields, requiredFields, e
                     "dynamodb:PutItem",
                     "dynamodb:UpdateItem"
                   ],
-                  "Resource": {"Fn::GetAtt": ["FormTable", "Arn"]}
+                  "Resource": {"Fn::GetAtt": ["DynamoDbTable", "Arn"]}
                 },
                 {
                   "Effect": "Allow",
@@ -162,7 +161,7 @@ module.exports = function createTemplate(formName, formFields, requiredFields, e
               ]
             },
             "PolicyName" : `${formName}Policy`,
-            "Roles" : [ {"Ref":"IamRole"} ]
+            "Roles": [{"Ref": "IamRole"}]
           }
       },
       "IamRole": {
@@ -181,22 +180,21 @@ module.exports = function createTemplate(formName, formFields, requiredFields, e
               ]
             },
             "Description" : "Role that allows the Lambda function to interact with the IAM policy",
-            "Policies" : {"Ref":"IamPolicy"},
             "RoleName" : `${formName}FormRole`
           },
-          "DependsOn": [
-            "FormPolicy"
-          ]
-        }
       },
       "ApiDeployment": {
         "Type" : "AWS::ApiGateway::Deployment",
         "Properties" : {
-            "Description" : `deployment of the REST API for the ${formName} form`,
-            "RestApiId" : {"Ref":"RestApi"},
-            "StageName" : "DeploymentStage"
-          }
+          "Description" : `deployment of the REST API for the ${formName} form`,
+          "RestApiId" : {"Ref":"RestApi"},
+          "StageName" : "DeploymentStage"
+        },
+        "DependsOn": [
+          "ApiPostMethod"
+        ]
       }
+    }  
   }
   tempString = JSON.stringify(template);
   fs.writeFileSync(`forms/${formName}/template.json`, tempString);

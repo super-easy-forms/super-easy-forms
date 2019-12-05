@@ -30,7 +30,10 @@ module.exports = function deployStack(formName) {
 	var params = {
     StackName: `${formName}Form`, /* required */
     TemplateBody: createTemplate(formName, myFormModel, myRequiredFields, emailArn),
-    TimeoutInMinutes: 5
+    TimeoutInMinutes: 5,
+    Capabilities: [
+      "CAPABILITY_NAMED_IAM"
+    ]
   };
   cloudformation.createStack(params, function(err, data) {
     if (err) {
