@@ -107,9 +107,9 @@ module.exports = function createTemplate(formName, formFields, requiredFields, e
       },
       "LambdaFunction": {
         "Type": "AWS::Lambda::Function",
-        "Properties" : {
-          "Code" : {
-            "ZipFile": fs.readFileSync(`forms/${formName}/lambda.zip`) 
+        "Properties": {
+          "Code": {
+            ZipFile: fs.readFileSync(`forms/${formName}/lambda.zip`) 
           },
           "Description" : "This Lambda Function Adds your contact info. to a Dynamo DB table and then sends you an email.",
           "Environment" : "nodejs12.x",
@@ -183,11 +183,11 @@ module.exports = function createTemplate(formName, formFields, requiredFields, e
             "Description" : "Role that allows the Lambda function to interact with the IAM policy",
             "Policies" : {"Ref":"IamPolicy"},
             "RoleName" : `${formName}FormRole`
-          }
           },
           "DependsOn": [
             "FormPolicy"
           ]
+        }
       },
       "ApiDeployment": {
         "Type" : "AWS::ApiGateway::Deployment",
