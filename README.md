@@ -4,6 +4,8 @@
 
 Super Easy Forms is a CLI tool that lets you create html forms in seconds (literally). It deploys all the necessary backend resources for you in AWS, and it outputs a Bootstrap HTML form ready to copy paste into your static site.
 
+**This is now the repo for Super Easy Forms 2.0. The First Version has been moved to [this other repo](https://github.com/gkpty/super-easy-forms-classic)**
+
 ## Pre-requisites
 
 *  Make sure you have node.js and npm installed. You can checkout this [tutorial](https://medium.com/@lucaskay/install-node-and-npm-using-nvm-in-mac-or-linux-ubuntu-f0c85153e173) to install npm and node in mac, linux (debian/ubuntu).
