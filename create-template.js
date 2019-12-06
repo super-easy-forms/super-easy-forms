@@ -106,17 +106,16 @@ module.exports = function createTemplate(formName, formModel, requiredFields, em
           "Integration": {
             "IntegrationHttpMethod": "OPTIONS",
             "Type": "MOCK",
-            "RequestTemplates": { "application/json": {"statusCode": 200}},
+            "RequestTemplates": { "application/json": "{\n \"statusCode\": 200\n}"},
             "PassthroughBehavior": "WHEN_NO_MATCH",
             "TimeoutInMillis": 29000,
             "CacheNamespace": { "Fn::GetAtt": ["RestApi", "RootResourceId"] },
             "Uri": {"Fn::Join" : ["", ["arn:aws:apigateway:", {"Ref": "AWS::Region"}, ":lambda:path/2015-03-31/functions/", {"Fn::GetAtt": ["LambdaFunction", "Arn"]}, "/invocations"]]},
             "IntegrationResponses": [{
               "ResponseTemplates": {
-                "application/json": null
+                "application/json": ""
               },
               "ResponseParameters": {
-                "method.response.header.Link": "integration.response.body.headers.next",
                 "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
 								"method.response.header.Access-Control-Allow-Methods": "'POST,OPTIONS'",
 								"method.response.header.Access-Control-Allow-Origin": "'*'" 
