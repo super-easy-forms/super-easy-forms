@@ -8,13 +8,13 @@ var cloudformation = new AWS.CloudFormation({apiVersion: '2010-05-15'});
 
 var addVar = require('./addVars.js');
 
-function getEndPoint(formName) {
+module.exports = function getEndPoint(formName, stackId) {
   let rawdata = fs.readFileSync(`forms/${formName}/config.json`);  
   let obj = JSON.parse(rawdata);
   console.log(obj)
   var params = {
     LogicalResourceId: "RestApi",
-    StackName: obj.stackId
+    StackName: stackId
   };
   cloudformation.describeStackResource(params, function(err, data) {
     if (err) {
@@ -27,16 +27,4 @@ function getEndPoint(formName) {
       addVar(formName, "endPointUrl", endpointUrl);
     }
   });
-  /*
-  var params = {
-    StackName: obj.stackId
-  };
-  cloudformation.describeStacks(params, function(err, data) {
-    if (err) console.log(err, err.stack); // an error occurred
-    else     console.log(data.Stacks[0].Outputs);           // successful response
-  });
-  */
-
 }
-
-getEndPoint("testwenty")

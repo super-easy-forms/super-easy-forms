@@ -9,6 +9,8 @@ var cloudformation = new AWS.CloudFormation({apiVersion: '2010-05-15'});
 
 var createTemplate = require('./create-template.js');
 
+var getEndpoint = require('./get-endpoint.js')
+
 var addVar = require('./addVars.js');
 
 module.exports = function deployStack(formName, formFields) {
@@ -43,7 +45,8 @@ module.exports = function deployStack(formName, formFields) {
     } 
     else {
       console.log(`Succesfully deployed the stack with ARN ${data.StackId}`); // successful response
-      addVar(formName, "stackId",data.StackId);
+      addVar(formName, "stackId", data.StackId);
+      getEndpoint(formName, data.StackId);
     }    
   });
 }
