@@ -73,7 +73,8 @@ module.exports = function createTemplate(formName, formModel, requiredFields, em
                 "application/json": "$input.json('$.body')"
               },
               "ResponseParameters": {
-                "method.response.header.Link": "integration.response.body.headers.next" 
+                "method.response.header.Link": "integration.response.body.headers.next",
+                "method.response.header.Access-Control-Allow-Origin": "'*'" 
               },
               "StatusCode": 200
             }]
@@ -84,7 +85,53 @@ module.exports = function createTemplate(formName, formModel, requiredFields, em
               "application/json": {"Ref": "ApiModel"}
             },
             "ResponseParameters": {
-              "method.response.header.Link": true
+              "method.response.header.Link": true,
+              "method.response.header.Access-Control-Allow-Origin": false 
+            },
+            "StatusCode": 200
+          }]
+        },
+        "DependsOn": [
+          "LambdaFunction"
+        ]
+      },
+      "ApiOptionsMethod": {
+        "Type": "AWS::ApiGateway::Method",
+        "Properties": {
+          "AuthorizationType": "NONE",
+          "HttpMethod": "OPTIONS",
+          "ResourceId": { "Fn::GetAtt": ["RestApi", "RootResourceId"] },
+          "RestApiId": {"Ref": "RestApi"},
+          "ApiKeyRequired": false,
+          "Integration": {
+            "IntegrationHttpMethod": "OPTIONS",
+            "Type": "MOCK",
+            "RequestTemplates": { "application/json": {"statusCode": 200}},
+            "PassthroughBehavior": "WHEN_NO_MATCH",
+            "TimeoutInMillis": 29000,
+            "CacheNamespace": { "Fn::GetAtt": ["RestApi", "RootResourceId"] },
+            "Uri": {"Fn::Join" : ["", ["arn:aws:apigateway:", {"Ref": "AWS::Region"}, ":lambda:path/2015-03-31/functions/", {"Fn::GetAtt": ["LambdaFunction", "Arn"]}, "/invocations"]]},
+            "IntegrationResponses": [{
+              "ResponseTemplates": {
+                "application/json": null
+              },
+              "ResponseParameters": {
+                "method.response.header.Link": "integration.response.body.headers.next",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
+								"method.response.header.Access-Control-Allow-Methods": "'POST,OPTIONS'",
+								"method.response.header.Access-Control-Allow-Origin": "'*'" 
+              },
+              "StatusCode": 200
+            }]
+          },
+          "MethodResponses": [{
+            "ResponseModels": {
+              "application/json": "Empty"
+            },
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Headers": false,
+							"method.response.header.Access-Control-Allow-Methods": false,
+							"method.response.header.Access-Control-Allow-Origin": false
             },
             "StatusCode": 200
           }]
