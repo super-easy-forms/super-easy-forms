@@ -6,6 +6,7 @@ var AWS = require('aws-sdk');
 //cloudformation
 var cloudformation = new AWS.CloudFormation({apiVersion: '2010-05-15'});
 
+var formGenerator = require('./form-generator.js')
 var addVar = require('./addVars.js');
 
 module.exports = function getEndPoint(formName, stackId) {
@@ -25,6 +26,7 @@ module.exports = function getEndPoint(formName, stackId) {
       addVar(formName, "restApiId", data.StackResourceDetail.PhysicalResourceId);
       var endpointUrl = `https://${data.StackResourceDetail.PhysicalResourceId}.execute-api.${process.env.AWS_REGION}.amazonaws.com/DeploymentStage/`
       addVar(formName, "endPointUrl", endpointUrl);
+      formGenerator(formName, endpointUrl);
     }
   });
 }
