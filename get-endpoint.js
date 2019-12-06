@@ -10,12 +10,12 @@ var formGenerator = require('./form-generator.js')
 var addVar = require('./addVars.js');
 
 module.exports = function getEndPoint(formName, stackId) {
-  let rawdata = fs.readFileSync(`forms/${formName}/config.json`);  
-  let obj = JSON.parse(rawdata);
-  console.log(obj)
+  //let rawdata = fs.readFileSync(`forms/${formName}/config.json`);  
+  //let obj = JSON.parse(rawdata);
+  console.log(stackId)
   var params = {
+    StackName: stackId,
     LogicalResourceId: "RestApi",
-    StackName: stackId
   };
   cloudformation.describeStackResource(params, function(err, data) {
     if (err) {

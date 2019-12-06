@@ -45,19 +45,20 @@ module.exports = function deployStack(formName, formFields) {
     } 
     else {
       console.log(`Succesfully deployed the stack with ARN ${data.StackId}`); // successful response
-      addVar(formName, "stackId", data.StackId);
+      var stackArn = data.StackId;
+      addVar(formName, "stackId", stackArn);
       var params = {
-        StackName: data.StackId
+        StackName: stackArn
       };
+      console.log("cloudformation template is being created . . .")
       cloudformation.waitFor('stackCreateComplete', params, function(err, data) {
-        console.log("cloudformation template is being created . . .")
         if (err) {
           console.log(err, err.stack);
         }
         else {
           console.log(data);
           console.log("The stack has been created succesfully")
-          getEndpoint(formName, data.StackId);
+          getEndpoint(formName, stackArn);
         }
       });
     }    
