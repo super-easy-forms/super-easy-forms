@@ -1,6 +1,6 @@
 {
   "defaults":{
-      "email_provider":"gmail",
+      "email_provider":"SES",
       "sender_email":"default",
       "recipients":["gabriel@torus-digital.com", "default", "office"],
       "recaptcha":true,

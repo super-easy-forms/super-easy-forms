@@ -4,8 +4,6 @@ require('dotenv').config();
 var AWS = require('aws-sdk');
 //SES
 var ses = new AWS.SES({apiVersion: '2010-12-01'});
-//Dynamo DB
-var dynamodb = new AWS.DynamoDB({apiVersion: '2012-08-10'});
 //package to use the file system
 var fs = require("fs");
 // Package to open browser window
@@ -16,7 +14,7 @@ const readline = require('readline').createInterface({
   output: process.stdout
 });
 //Import the createLambda function
-const createLambda = require('./create-lambda');
+const deployStack = require('./deploy-stack.js');
 
 //converts console input to y and n
 function convertInput(input) {
@@ -122,7 +120,8 @@ function validate(email){
 }
 
 //function that verifies an email with AWS SES
-async function verifyMail(senderEmail) {
+async function verifyMail(formName, senderEmail) {
+  console.log(senderEmail, formName)
   var params = {
       EmailAddress: senderEmail,
      };
@@ -132,29 +131,29 @@ async function verifyMail(senderEmail) {
           return false;
         }
        else  {
-          addVars(formName, 'source', senderEmail);
-          stmt2(senderEmail);
+          addVars(formName, "senderEmail", senderEmail);
+          stmt2(formName);
        }             
   });
 }
 
 //create the IAM user
-function init(){
+function init(formName){
   readline.question(`Have you already created the IAM user for Super Easy Forms? [Y/n] `, (res) => {
     switch(convertInput(res)) {
         case 'y':
-            afterIam();
+            afterIam(formName);
             break;
         case 'n':
-            createIam();
+            createIam(formName);
         default:
             console.log('please enter a valid yes/no response');
-            init();
+            init(formName);
       }
   });
 }
 
-function createIam() {
+function createIam(formName) {
   readline.question(`Please enter the name of your IAM user `, (userName) => {
     if(/^[a-zA-Z0-9]*$/.test(userName)){
       console.log('please click on', "\x1b[44m", 'create user', "\x1b[0m");
@@ -164,69 +163,113 @@ function createIam() {
       (async () => {
         await open(`https://console.aws.amazon.com/iam/home?region=us-east-1#/users$new?step=review&accessKey&userNames=${userName}&permissionType=policies&policies=arn:aws:iam::aws:policy%2FAdministratorAccess`);
       })();
-      afterIam();
+      afterIam(formName);
     }
     else {
       console.log('\x1b[31m', 'Name invalid. Only alphanumeric characters. No spaces.', '\x1b[0m')
-      createIam();
+      createIam(formName);
     }
   });
 }
 
-function afterIam(){
+function afterIam(formName){
   readline.question(`Have you finished configuring the env variables? [Y/n] `, (res5) => {
     switch(convertInput(res5)) {
       case 'y':
-        stmt1();
+        stmt1(formName);
         break;
       default:
         console.log('please enter a valid yes/no response');
-        afterIam();
+        afterIam(formName);
     }
   });
 }
 
 //CLI statement 1
-function stmt1(){
+function stmt1(formName){
   readline.question(`Please enter the email address youd like to register with SES `, (res) => {
     if(validate(res)){
       console.log('You will shortly recieve an email from AWS. Please click on the verification link.');
-      verifyMail(res)
+      verifyMail(formName, res)
     }    
     else {
       console.log('\x1b[31m', 'Enter a valid email address.', '\x1b[0m');
-      stmt1(); 
+      stmt1(formName); 
     }  
   });
 }
 
 //CLI statement 2
-function stmt2(){
+function stmt2(formName){
   let rawdata = fs.readFileSync(`forms/${formName}/config.json`);  
   obj = JSON.parse(rawdata);
-  var email = obj.source;
+  var email = obj.senderEmail;
   if(!email) {
-    init();
+    init(formName);
   }
   else {
     console.log('\x1b[33m', email, '\x1b[0m');
     readline.question(`Have you already verified your email with SES? [Y/n] `, (res2) => {
         switch(convertInput(res2)) {
             case 'y':
-                checkVerifiedEmail(email)
+                checkVerifiedEmail(formName, email)
                 break;
             case 'n':
-                init();
+                init(formName);
                 break;
             default:
-                stmt1()
+                stmt1(formName)
         }
     });
   }
 }
 
+function stmt0(){
+  readline.question(`Please enter the name of your form`, (formName) => {
+    if(/^[a-zA-Z0-9]*$/.test(formName)) {
+      var dir = `forms/${formName}`;
+      if (!fs.existsSync(dir)){
+        fs.mkdir(dir, (err) => {
+          if (err) {
+            throw err;
+          }
+          else {
+            fs.writeFile(`forms/${formName}/config.json`, '{}', (err) => {
+              if (err) {
+                throw err;
+              }
+              else {
+                stmt2(formName)
+              }
+            })  
+          }
+        });
+      }
+      else {
+        if(!fs.existsSync(`forms/${formName}/config.json`)){
+          fs.writeFile(`forms/${formName}/config.json`, `{"formName":"${formName}}`, (err) => {
+            if (err) {
+              throw err;
+            }
+            else {
+              stmt2(formName)
+            }
+          })
+        }
+        else {
+          stmt2(formName)
+        }
+      }
+    }
+    else {
+      console.log('\x1b[31m', 'Table name invalid. Only alphanumeric characters. No spaces.', '\x1b[0m');
+      stmt0();
+  }
+});
+}
+
 //function that checks to see if the provided email has been verified by SES
-function checkVerifiedEmail(email) {
+function checkVerifiedEmail(formName, email) {
   var params = {
     Identities: [
        email,
@@ -244,17 +287,19 @@ function checkVerifiedEmail(email) {
             console.log('\x1b[32m', 'The following email was succesfully verified with SES: ', email, '\x1b[0m');
             const sesArn = `arn:aws:ses:${process.env.AWS_REGION}:${process.env.AWS_ACCOUNT_NUMBER}:identity/${email}`;
             addVars(formName, 'emailArn', sesArn);
-            createDB();
+            //createDB();
+            formFields(formName, true)
             break; 
           default:
             console.log('\x1b[31m', 'It appears your address still hasnt been verified... Lets try again.', '\x1b[0m');
-            stmt2();
+            stmt2(formName);
         }      
       } 
    });
 }
 
 //function that creates a Dynamo DB table
+/*
 function createDB() {
   readline.question(`please enter the desired name for your contact form. It must be unique. `, (formName) => {
       if(/^[a-zA-Z0-9]*$/.test(formName)){
@@ -294,18 +339,48 @@ function createDB() {
   });
     
 }
+*/
+
+function createLabel(value){
+  let str = value.replace(/-/g, ' ').replace(/_/g, ' ')
+  // insert a space before all caps
+  .replace(/([A-Z])/g, ' $1')
+  // uppercase the first character
+  .replace(/^./, function(str){ return str.toUpperCase(); });
+  console.log(str);
+  return str;
+}
 
 //creates a JSON structure with the form fields provided by the user
-function formFields(table){
-  var x = readline.question(`Please enter your desired form fields sepparated by spaces `, (res) => {
-    var response = res.split(" ");
-    addVars(formName, 'formFields', response);
-    var jstring = `"id":"id",`;
-    for(let r of response){
-        jstring += `"${r}":"${r}",`;
+function formFields(formName, labels){
+  var x = readline.question(`Please enter your desired form fields sepparated by spaces.`, (fields) => {
+    var fieldArray = fields.split(" ");
+    //addVars(formName, 'formFields', response);
+    let myFields = {}
+    //var jstring = `"id":"id",`;
+    for(let f of fieldArray){
+      let type = "text"
+      let label = "";
+      let required = false;
+      let part = f.split("=")
+      if(part[1]){
+        type = part[1] 
+      }
+      if(part[2] && part[2] === "required") {
+        required = true;
+      }
+      if(labels === true){
+        label = createLabel(part[0]);
+      }
+      myFields[part[0]]={
+        "type": type,
+        "label": label,
+        "required": required
+      }
     }
-    var jsonstring = jstring.substring(0, (jstring.length -1))
-    createLambda.script(jsonstring, table)
+    addVars(formName, "fields", myFields)
+    //deployStack(formName)
+    //createLambda.script(jsonstring, table)
     readline.close();
   });
 }
@@ -313,7 +388,6 @@ function formFields(table){
 //welcome user
 console.log('\x1b[33m', super_easy_form, '\x1b[0m');
 //Execute the script.
-stmt2();
-
+stmt0();
 
 
