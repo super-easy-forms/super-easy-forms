@@ -11,27 +11,27 @@ var createTemplate = require('./create-template.js');
 
 var addVar = require('./addVars.js');
 
-const myFormModel = {
-  "id": {
-    "type": "string"
-  },
-  "name": {
-    "type": "string"
-  },
-  "message": {
-    "type": "string"
-  }
-}
+module.exports = function deployStack(formName, formFields) {
+  let rawdata = fs.readFileSync(`forms/${formName}/config.json`);  
+  let obj = JSON.parse(rawdata);
 
-const myRequiredFields = ["id", "name", "message"]
-
-const emailArn = "arn:aws:ses:us-east-1:519275522978:identity/mailer@torus-digital.com";
-
-
-module.exports = function deployStack(formName) {
+  //let formFields = obj.fields
+  var myFormModel = {"id": {"type": "string"}};
+  Object.keys(formFields).map(function(key, index) {
+    myFormModel[key] = {"type": "string"};
+  });
+  var myRequiredFields = ["id"];
+  let i = 1;
+  Object.keys(formFields).map(function(key, index) {
+    let val = formFields[key]
+    if(val["required"]){
+      myRequiredFields[i] = key
+      i += 1;
+    }
+  });
 	var params = {
     StackName: `${formName}Form`, /* required */
-    TemplateBody: createTemplate(formName, myFormModel, myRequiredFields, emailArn),
+    TemplateBody: createTemplate(formName, myFormModel, myRequiredFields, obj.emailArn),
     TimeoutInMinutes: 5,
     Capabilities: [
       "CAPABILITY_NAMED_IAM"

@@ -379,7 +379,7 @@ function formFields(formName, labels){
       }
     }
     addVars(formName, "fields", myFields)
-    //deployStack(formName)
+    deployStack(formName, myFields)
     //createLambda.script(jsonstring, table)
     readline.close();
   });

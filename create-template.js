@@ -5,17 +5,15 @@ var fs = require("fs");
 
 var createLambda = require('./create-lambda.js');
 
-const formFields = {
-  "id":"id",
-  "name":"name",
-  "message":"message"
-};
-
-const myFields = JSON.stringify(formFields);
-
 const sourceEmail = "mailer@torus-digital.com";
 
 module.exports = function createTemplate(formName, formModel, requiredFields, emailArn) {
+  let formFields = {}
+  Object.keys(formModel).map(function(key, index) {
+    formFields[key] = key;
+  });
+  let myFields = JSON.stringify(formFields);
+  console.log(myFields)
   var template = {
     "AWSTemplateFormatVersion": "2010-09-09",
     "Resources": {
