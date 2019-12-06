@@ -108,16 +108,8 @@ MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM
 MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM
 `;
 
-//function that adds values to the variables.json file
-function addVars(jsonVar, jsonVal){
-  let rawdata = fs.readFileSync('variables.json');  
-  obj = JSON.parse(rawdata);
-  obj[jsonVar] = jsonVal;
-  jsonObj = JSON.stringify(obj);
-  fs.writeFileSync('variables.json', jsonObj);
-  //console.log('\x1b[33m', 'Variable saved.', '\x1b[0m')
-  return 'Success';
-}
+//function that adds values to the`forms/${formName}/config.json`file
+addVars = require('./addVars.js')
 
 //function that validates an email using regex
 function validate(email){
@@ -140,7 +132,7 @@ async function verifyMail(senderEmail) {
           return false;
         }
        else  {
-          addVars('source', senderEmail);
+          addVars(formName, 'source', senderEmail);
           stmt2(senderEmail);
        }             
   });
@@ -210,7 +202,7 @@ function stmt1(){
 
 //CLI statement 2
 function stmt2(){
-  let rawdata = fs.readFileSync('variables.json');  
+  let rawdata = fs.readFileSync(`forms/${formName}/config.json`);  
   obj = JSON.parse(rawdata);
   var email = obj.source;
   if(!email) {
@@ -251,7 +243,7 @@ function checkVerifiedEmail(email) {
             //stmt4()
             console.log('\x1b[32m', 'The following email was succesfully verified with SES: ', email, '\x1b[0m');
             const sesArn = `arn:aws:ses:${process.env.AWS_REGION}:${process.env.AWS_ACCOUNT_NUMBER}:identity/${email}`;
-            addVars('emailArn', sesArn);
+            addVars(formName, 'emailArn', sesArn);
             createDB();
             break; 
           default:
@@ -266,7 +258,7 @@ function checkVerifiedEmail(email) {
 function createDB() {
   readline.question(`please enter the desired name for your contact form. It must be unique. `, (formName) => {
       if(/^[a-zA-Z0-9]*$/.test(formName)){
-          addVars('form', formName)
+          addVars(formName, 'form', formName)
           var params = {
             AttributeDefinitions: [
               {
@@ -289,7 +281,7 @@ function createDB() {
             }
             else  {
               const tableArn = data.TableDescription.TableArn;
-              addVars('tableArn', tableArn);
+              addVars(formName, 'tableArn', tableArn);
               console.log('\x1b[32m', 'Succesfully created a Dynamo DB table w/ the name: ', formName, '\x1b[0m')
               formFields(formName, tableArn);
             }       
@@ -307,7 +299,7 @@ function createDB() {
 function formFields(table){
   var x = readline.question(`Please enter your desired form fields sepparated by spaces `, (res) => {
     var response = res.split(" ");
-    addVars('formFields', response);
+    addVars(formName, 'formFields', response);
     var jstring = `"id":"id",`;
     for(let r of response){
         jstring += `"${r}":"${r}",`;
