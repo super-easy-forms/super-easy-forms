@@ -1,42 +1,43 @@
 var fs = require("fs");
 const open = require('open');
 
-function fieldType(field) {
-	var x = `<input type="text" class="form-control" id="${field}" name="${field}" placeholder="${fieldLabel(field)}" required>`;
-	if(field.includes("message")){
-		x = `<textarea type="text" class="form-control" id="${field}" name="${field}" placeholder="${fieldLabel(field)}" required></textarea>`; 
-	}
-	else if(field.includes("email")){
-		x = `<input type="email" class="form-control" id="${field}" name="${field}" placeholder="${fieldLabel(field)}" required>`;
-	}
-	else if(field.includes("number")){
-		x = `<input type="number" class="form-control" id="${field}" name="${field}" placeholder="${fieldLabel(field)}" required>`;
-	}
-	return x;
-}
-
-function fieldLabel(field) {
-	var str = field.replace(/-/g, ' ').replace(/_/g, ' ');
-	return str;
-}
+const htmlInputTypes = ["textarea", "select", "button", "checkbox", "color", "date", "datetime-local", "email", "file", "hidden", "image", "month", "number", "password", "radio", "range", "reset", "search", "submit", "tel", "text", "time", "url", "week"];
  
-exports.script = function formGenerator(url) {
-	let rawdata = fs.readFileSync('variables.json');  
-  obj = JSON.parse(rawdata);
-  const fields = obj.formFields;
-	
+module.exports = function formGenerator(formName, url) {
+	let rawdata = fs.readFileSync(`forms/${formName}/config.json`);  
+	obj = JSON.parse(rawdata);
+	const formFields = obj.fields;
+	console.log(obj)
 	var formBody = ''
-	for(let f of fields) {
-		formBody += `
-			<label for="${f}" class="small mb-0">${fieldLabel(f)}</label>
-			${fieldType(f)}
-		`; 
-	};
+	Object.keys(formFields).map(function(key, index) {
+		let field = formFields[key];
+		let fieldHtml = "";
+		if(!htmlInputTypes.includes(field["type"])){
+			console.log(`Error. invalid html type: ${field["type"]}`);
+			return false;
+		}
+		else if(field["type"] === "textbox"){
+			fieldHtml = `<textarea type="text" class="form-control" id="${key}" name="${key}" placeholder="${field["label"]}" required></textarea>`; 
+		}
+		else if(field["type"] === "select"){
+			fieldHtml = "";
+		}
+		else{
+			fieldHtml = `<input type="${field["type"]}" class="form-control" id="${key}" name="${key}" placeholder="${field["label"]}" required>`;
+		}
+    formBody += `
+			<label for="${key}" class="small mb-0">${field["label"]}</label>
+			${fieldHtml}
+		`;
+	});
+	console.log(formBody);
+
 	var fieldVars = '"id": "",';
-	for(let fv of fields) {
-		fieldVars += `"${fv}": $('#${fv}').val(),`;  
-	};
+	Object.keys(formFields).map(function(key, index) {
+    fieldVars += `"${key}": $('#${key}').val(),`;
+  });
 	var jqVars= fieldVars.substring(0, (fieldVars.length -1));
+	console.log(jqVars);
 
 	var htmlForm = `
 		<!DOCTYPE html>
@@ -114,10 +115,8 @@ exports.script = function formGenerator(url) {
 						var elements = form.querySelectorAll("input, select, textarea");
 						for(var i = 0; i < elements.length; ++i) {
 							var element = elements[i];
-							var name = element.name;
-							var value = element.value;
 							if(name) {
-								obj[name] = value;
+								obj[element.name] = element.value;
 							}
 								}
 								return JSON.stringify(obj);
@@ -129,14 +128,14 @@ exports.script = function formGenerator(url) {
 
 		</html>
 		`;
-	fs.writeFile("super-easy-form.html", htmlForm, function(err) {
+	fs.writeFile(`forms/${formName}/${formName}.html`, htmlForm, function(err) {
 		if(err) {
 			console.log(err);
 		}
 		else {
-			console.log('\x1b[32m', 'Your form was succesfully saved as super-easy-form.html', '\x1b[0m');
+			console.log('\x1b[32m', `Your form was succesfully saved in forms/${formName}`, '\x1b[0m');
 			console.log('\x1b[32m', "Wasn't that Super Easy?", '\x1b[0m');
-			open('super-easy-form.html');
+			open(`forms/${formName}/${formName}.html`);
 		}
 	});
 }
