@@ -4,6 +4,11 @@ const open = require('open');
 const htmlInputTypes = ["textarea", "select", "button", "checkbox", "color", "date", "datetime-local", "email", "file", "hidden", "image", "month", "number", "password", "radio", "range", "reset", "search", "submit", "tel", "text", "time", "url", "week"];
  
 module.exports = function formGenerator(formName, url) {
+	if(!url){
+    let rawdata = fs.readFileSync(`forms/${formName}/config.json`);  
+    let obj = JSON.parse(rawdata);
+    var url = obj.stackId
+  }
 	let rawdata = fs.readFileSync(`forms/${formName}/config.json`);  
 	obj = JSON.parse(rawdata);
 	const formFields = obj.fields;
@@ -30,8 +35,6 @@ module.exports = function formGenerator(formName, url) {
 			${fieldHtml}
 		`;
 	});
-	console.log(formBody);
-
 	var fieldVars = '"id": "",';
 	Object.keys(formFields).map(function(key, index) {
     fieldVars += `"${key}": $('#${key}').val(),`;
@@ -123,18 +126,16 @@ module.exports = function formGenerator(formName, url) {
 						}
 					});
 				</script>
-
 			</body>
-
 		</html>
 		`;
-	fs.writeFile(`forms/${formName}/${formName}.html`, htmlForm, function(err) {
+		fs.writeFile(`forms/${formName}/${formName}.html`, htmlForm, function(err) {
 		if(err) {
 			console.log(err);
 		}
 		else {
 			console.log('\x1b[32m', `Your form was succesfully saved in forms/${formName}`, '\x1b[0m');
-			console.log('\x1b[32m', "Wasn't that Super Easy?", '\x1b[0m');
+			//OPEN FORM SHOULD BE REMOVED AND ADDED TO THE CLI INSTEAD
 			open(`forms/${formName}/${formName}.html`);
 		}
 	});
