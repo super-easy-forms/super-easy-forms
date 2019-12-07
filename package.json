@@ -4,7 +4,7 @@
   "description": "a script that generates serverless backends for contact forms using AWS",
   "main": "index.js",
   "scripts": {
-    "test": "npm test",
+    "test": "mocha",
     "start": "node super-easy-forms.js",
     "build": "npm install"
   },
@@ -29,5 +29,8 @@
     "jszip": "^3.2.1",
     "open": "^6.3.0",
     "uuid": "^3.3.2"
+  },
+  "devDependencies": {
+    "mocha": "^6.2.2"
   }
 }
