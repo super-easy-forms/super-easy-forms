@@ -1,6 +1,7 @@
 ![Super Easy Forms](img/super-easy-forms-logo.png)
 
 [![License](http://img.shields.io/:license-mit-blue.svg?style=flat-square)](http://gkpty.mit-license.org)
+[![Build Status](https://travis-ci.com/gkpty/super_easy_forms.svg?branch=master)](https://travis-ci.com/gkpty/super_easy_forms)
 
 Super Easy Forms is a CLI tool that lets you create html forms in seconds (literally). It deploys all the necessary backend resources for you in AWS, and it outputs a Bootstrap HTML form ready to copy paste into your static site.
 
