@@ -2,9 +2,7 @@
 require('dotenv').config();
 //package to use the file system
 var fs = require("fs");
-
 var createLambda = require('./create-lambda.js');
-
 const sourceEmail = "mailer@torus-digital.com";
 
 module.exports = function createTemplate(formName, formModel, requiredFields, emailArn) {
