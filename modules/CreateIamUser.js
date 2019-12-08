@@ -27,73 +27,111 @@ let regionSet = [
   "us-gov-west-1"
 ];
 
-/* function AddSetting(formName, variable, value){
-  let rawdata = fs.readFileSync(`./settings.json`);  
-  obj = JSON.parse(rawdata);
-  obj[variable] = value;
-  jsonString = JSON.stringify(obj);
-  fs.writeFileSync(`./settings.json`, jsonString);
-  console.log('\x1b[33m', `Variable: ${variable} saved.`, '\x1b[0m')
-  return 'Success';
-} */
-
-//adds aws region to config and 
-function CreateIamUser(iamUserName, awsRegion) {
-  //check that iam user name is alphanumeric
-  if(/^[a-zA-Z0-9]*$/.test(iamUserName)){
-    let url = `https://console.aws.amazon.com/iam/home?region=${awsRegion}#/users$new?step=review&accessKey&userNames=${iamUserName}&permissionType=policies&policies=arn:aws:iam::aws:policy%2FAdministratorAccess`;
-    if(awsRegion){
-      if(!regionSet.includes(awsRegion)){
-        let err = "Invalid AWS region code";
-        console.error(err)
-        throw new Error(err)
+function addAwsRegion(awsRegion, callback){
+    if(!regionSet.includes(awsRegion)){
+      let err = "Invalid AWS region code";
+      console.error(err)
+      throw new Error(err)
+    }
+    else{
+      if(process.env.AWS_REGION){
+        fs.readFile('./.env', 'utf8', (err, data) => {
+          if (err) throw err;
+          else{
+            console.log
+            let newEnv = data.replace(process.env.AWS_REGION, awsRegion);
+            fs.writeFile('./.env', newEnv, (err, data) => {
+              if (err) throw err;
+              else{
+                console.log(`AWS_REGION value has been updated to ${awsRegion}`)
+                if(callback && typeof callback === 'function'){
+                  callback();
+                }
+                return 'Success';;
+              }
+            });
+          }
+        });
       }
       else{
-        if(process.env.AWS_REGION){
-          fs.readFile('./.env', 'utf8', (err, data) => {
-            if (err) throw err;
-            else{
-              console.log
-              let newEnv = data.replace(process.env.AWS_REGION, awsRegion);
-              fs.writeFile('./.env', newEnv, (err, data) => {
-                if (err) throw err;
-                else{
-                  console.log(`AWS_REGION value has been updated to ${awsRegion}`)
-                  return url;
-                }
-              });
+        fs.appendFile('.env', `\nAWS_REGION=${awsRegion}`, function (err) {
+          if (err) throw err;
+          else {
+            console.log(`your AWS_REGION has been saved as ${awsRegion}`);
+            if(callback && typeof callback === 'function'){
+              callback();
             }
-          });
-        }
-        else{
-          fs.appendFile('.env', `\nAWS_REGION=${awsRegion}`, function (err) {
-            if (err) throw err;
-            else {
-              console.log(`your AWS_REGION has been saved as ${awsRegion}`);
-              return url;
-            }
-          });
-        }
+            return 'Success';;
+          }
+        });
       }
     }
-    else {
-      let rawdata = fs.readFileSync(`./settings.json`);  
-      obj = JSON.parse(rawdata);
-      if(!process.env.AWS_REGION){
-        let err = "no AWS_REGION variable found in the .env file";
-        console.error(err)
-        throw new Error(err)
-      }
-      else{
-        return url;
-      }
+}
+
+function addAwsProfile(awsProfile, callback){
+  if(/^[a-zA-Z0-9]*$/.test(awsProfile)){
+    if(process.env.AWS_PROFILE){
+      fs.readFile('./.env', 'utf8', (err, data) => {
+        if (err) throw err;
+        else{
+          console.log
+          let newEnv = data.replace(process.env.PROFILE, awsProfile);
+          fs.writeFile('./.env', newEnv, (err, data) => {
+            if (err) throw err;
+            else{
+              console.log(`AWS_PROFILE value has been updated to ${awsProfile}`)
+              if(callback && typeof callback === 'function'){
+                callback();
+              }
+              return 'Success';
+            }
+          });
+        }
+      });
+    }
+    else{
+      fs.appendFile('.env', `\nAWS_PROFILE=${awsProfile}`, function (err) {
+        if (err) throw err;
+        else {
+          console.log(`your AWS_PROFILE has been saved as ${awsProfile}`);
+          if(callback && typeof callback === 'function'){
+            callback();
+          }
+          return 'Success';
+        }
+      });
     }
   }
   else{
-    let err = "Name invalid. Only alphanumeric characters. No spaces.";
+    let err = "AWS Profile invalid. Only alphanumeric characters accepted. No spaces.";
     console.error(err);
     throw new Error(err);
   }
 }
 
-CreateIamUser("jason", "us-west-1")
+//adds aws region to config and 
+module.exports = function CreateIamUser(iamUserName, awsRegion) {
+  //check that iam user name is alphanumeric
+  var url = `https://console.aws.amazon.com/iam/home?region=${awsRegion}#/users$new?step=review&accessKey&userNames=${iamUserName}&permissionType=policies&policies=arn:aws:iam::aws:policy%2FAdministratorAccess`;
+  if(awsRegion){
+    try {
+      addAwsRegion(awsRegion, addAwsProfile(iamUserName))
+    }
+    catch(err){
+      console.error(err)
+    }
+  }
+  else {
+    let rawdata = fs.readFileSync(`./settings.json`);  
+    obj = JSON.parse(rawdata);
+    if(!process.env.AWS_REGION){
+      let err = "no AWS_REGION variable found in the .env file";
+      console.error(err)
+      throw new Error(err)
+    }
+    else{
+      addAwsProfile(iamUserName);
+      return url;
+    }
+  }
+}

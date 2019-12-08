@@ -16,6 +16,17 @@ function AddVar(formName, variable, value){
   return 'Success';
 }
 
+//adds a variable to the settings file
+function AddSetting(variable, value){
+  let rawdata = fs.readFileSync(`./settings.json`);  
+  obj = JSON.parse(rawdata);
+  obj[variable] = value;
+  jsonString = JSON.stringify(obj);
+  fs.writeFileSync(`./settings.json`, jsonString);
+  console.log('\x1b[33m', `Variable: ${variable} saved.`, '\x1b[0m')
+  return 'Success';
+}
+
 //creates a JSON object called fields containing the form fields and attributes provided by the user
 function AddFormFields(formName, labels){
   var x = readline.question(`Please enter your desired form fields sepparated by spaces.`, (fields) => {
@@ -52,5 +63,6 @@ function AddFormFields(formName, labels){
 
 module.exports = {
   AddVar,
+  AddSetting,
   AddFormFields
 };
