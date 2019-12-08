@@ -7,17 +7,15 @@ var AWS = require('aws-sdk');
 //cloudformation
 var cloudformation = new AWS.CloudFormation({apiVersion: '2010-05-15'});
 
-var createTemplate = require('./create-template.js');
+var createTemplate = require('./create-template');
 
-var getEndpoint = require('./get-endpoint.js')
+var getEndpoint = require('./GetApiUrl')
 
-var addVar = require('./addVars.js');
+var FormConfig = require('./FormConfig');
 
-module.exports = function deployStack(formName, formFields) {
+module.exports = function CreateStack(formName, formFields, callback) {
   let rawdata = fs.readFileSync(`forms/${formName}/config.json`);  
   let obj = JSON.parse(rawdata);
-
-  //let formFields = obj.fields
   var myFormModel = {"id": {"type": "string"}};
   Object.keys(formFields).map(function(key, index) {
     myFormModel[key] = {"type": "string"};
@@ -46,7 +44,7 @@ module.exports = function deployStack(formName, formFields) {
     else {
       console.log(`Succesfully deployed the stack with ARN ${data.StackId}`); // successful response
       var stackArn = data.StackId;
-      addVar(formName, "stackId", stackArn);
+      FormConfig.AddVar(formName, "stackId", stackArn);
       var params = {
         StackName: stackArn
       };

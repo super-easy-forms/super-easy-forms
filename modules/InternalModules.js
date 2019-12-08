@@ -1,6 +1,9 @@
 
 //import necessary stuff
 require('dotenv').config();
+var AWS = require('aws-sdk');
+var fs = require("fs");
+var cloudformation = new AWS.CloudFormation({apiVersion: '2010-05-15'});
 
 //return a friendly label for the desired value
 function CreateLabel(value){
@@ -23,14 +26,76 @@ function CheckEmail(email){
   }
 }
 
+function ValidateProfile(profile){
+  var creds = new AWS.SharedIniFileCredentials({profile: profile});
+  if(creds.accessKeyId){
+    return true
+  }
+  else return false;
+}
+
 //validate that the necessary env variables have been supplied
-function ValidateEnv()
-
-//validate folder existence
-function checkFolder()
-
-//validate file existence
-function checkFile()
+function ValidateConfig(profile, options){
+  let region = process.env.AWS_REGION
+  let access_key = process.env.AWS_ACCESS_KEY_ID
+  let secret_key = process.env.AWS_SECRET_ACCESS_KEY
+  if(!region){
+    let err = "missing AWS_REGION in the .env file"
+    console.error(err)
+    throw new Error(err)
+  }
+  else {
+    if(access_key && secret_key){
+      return true
+    }
+    else if(access_key || secret_key){
+      let err = "missing credential pair in .env"
+      console.error(err)
+      throw new Error(err)
+    }
+    else {
+      if(!profile){
+        var profile = "default"
+      }
+      if(ValidateProfile(profile)){
+        return true
+      }
+      else {
+        let err = `profile ${profile} does not exist in the shared credentials file`
+        console.error(err)
+        throw new Error(err)
+      }
+    }
+  }
+  //if(options){}
+}
 
 //check that the created template is good
-function checkTemplate()
+function CheckTemplate(formName, templateString){
+  if(!templateString){
+    let rawdata = fs.readFileSync(`forms/${formName}/template.json`);  
+    let obj = JSON.parse(rawdata);
+    var templateString = JSON.stringify(obj);
+  }
+  var params = {
+    TemplateBody: templateString,
+  };
+  cloudformation.validateTemplate(params, function(err, data) {
+    if(err) {
+      console.error(err, err.stack);
+      return false;
+    }
+    else {
+      console.log(data);
+      return true;
+    }
+  });
+}
+
+module.exports = {
+  CreateLabel,
+  CheckEmail,
+  ValidateProfile,
+  ValidateConfig,
+  CheckTemplate
+}
