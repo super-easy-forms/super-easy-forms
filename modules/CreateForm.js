@@ -3,16 +3,15 @@ const open = require('open');
 
 const htmlInputTypes = ["textarea", "select", "button", "checkbox", "color", "date", "datetime-local", "email", "file", "hidden", "image", "month", "number", "password", "radio", "range", "reset", "search", "submit", "tel", "text", "time", "url", "week"];
  
-module.exports = function formGenerator(formName, url) {
-	if(!url){
-    let rawdata = fs.readFileSync(`forms/${formName}/config.json`);  
-    let obj = JSON.parse(rawdata);
-    var url = obj.stackId
-  }
+module.exports = function formGenerator(formName, options, callback) {
+	let url = "";
+	let formFields = {};
 	let rawdata = fs.readFileSync(`forms/${formName}/config.json`);  
-	obj = JSON.parse(rawdata);
-	const formFields = obj.fields;
-	console.log(obj)
+  let obj = JSON.parse(rawdata);
+	if(options["url"]) url = options["url"]
+	else url = obj.endPointUrl
+	if(options["fields"]) formFields = options["fields"];
+	else formFields = obj.fields
 	var formBody = ''
 	Object.keys(formFields).map(function(key, index) {
 		let field = formFields[key];
@@ -25,7 +24,12 @@ module.exports = function formGenerator(formName, url) {
 			fieldHtml = `<textarea type="text" class="form-control" id="${key}" name="${key}" placeholder="${field["label"]}" required></textarea>`; 
 		}
 		else if(field["type"] === "select"){
-			fieldHtml = "";
+			let options = field["options"]
+			let htmlOptions = `<option selected="selected" disabled="disabled">Select a ${field["label"]}</option>`;
+			Object.keys(options).map(function(key, index) {
+				htmlOptions += `<option value=${key}>${options[key]}</option>`
+			})
+			fieldHtml = `<select class="form-control" id="${key}" name="${key}">${htmlOptions}</select>`
 		}
 		else{
 			fieldHtml = `<input type="${field["type"]}" class="form-control" id="${key}" name="${key}" placeholder="${field["label"]}" required>`;
@@ -135,8 +139,10 @@ module.exports = function formGenerator(formName, url) {
 		}
 		else {
 			console.log('\x1b[32m', `Your form was succesfully saved in forms/${formName}`, '\x1b[0m');
-			//OPEN FORM SHOULD BE REMOVED AND ADDED TO THE CLI INSTEAD
-			open(`forms/${formName}/${formName}.html`);
+			if(callback && typeof callback === 'function'){
+				callback();
+			}
+			return htmlForm;
 		}
 	});
 }
