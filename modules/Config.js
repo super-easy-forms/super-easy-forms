@@ -61,6 +61,52 @@ function AddFormFields(formName, labels){
   });
 }
 
+function newFormConfig(formName, callback) {
+  fs.writeFile(`forms/${formName}/config.json`, '{}', (err) => {
+    if (err) {
+      if(callback && typeof callback === 'function') callback(new Error(err))
+      else throw new Error(err);
+    }
+    else {
+      console.log(`created the config file for the form ${formName}`)
+      if(callback && typeof callback === 'function') callback(null, 'Success')
+      else return 'Success';
+    }
+  })  
+}
+
+//checks if the directory for a form alreadsy exists; if not it creates one
+function checkForm(formName, callback){
+  if(/^[a-zA-Z0-9]*$/.test(formName)) {
+    var dir = `./forms/${formName}`;
+    if (!fs.existsSync(dir)){
+      fs.mkdir(dir, (err) => {
+        if (err) {
+          if(callback && typeof callback === 'function') callback(new Error(err))
+          else throw new Error(err);
+        }
+        else {
+          newFormConfig(formName)
+        }
+      });
+    }
+    else {
+      if(!fs.existsSync(`forms/${formName}/config.json`)){
+        newFormConfig(formName)
+      }
+      else {
+        if(callback && typeof callback === 'function') callback(null, 'Success')
+        else return 'Success';
+      }
+    }
+  }
+  else {
+    let err = 'Table name invalid. Only alphanumeric characters. No spaces.'
+    if(callback && typeof callback === 'function') callback(new Error(err))
+    else throw new Error(err);
+  }
+}
+
 module.exports = {
   AddVar,
   AddSetting,
