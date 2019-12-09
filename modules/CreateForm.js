@@ -6,8 +6,8 @@ const htmlInputTypes = ["textarea", "select", "button", "checkbox", "color", "da
 module.exports = function CreateForm(formName, options, callback) {
 	let rawdata = fs.readFileSync(`forms/${formName}/config.json`);  
 	let obj = JSON.parse(rawdata);
-	let url = obj.endPointUrl;
-	let formFields = obj.fields;
+	let url = "";
+	let formFields = {};
 	
 	if(!options || typeof options !== "object"){
     if(typeof options === "function"){
@@ -18,14 +18,20 @@ module.exports = function CreateForm(formName, options, callback) {
 			throw new Error(err)
 		}
 	}
-	else {
-		if(options["endPointUrl"]) url = options["endPointUrl"];
-		//should check that its a valid endpoint url
+	if(options["endPointUrl"]) {
+		url = options["endPointUrl"];
 		FormConfig.AddVar(formName, "endPointUrl", url);
-		if(options["formFields"]) formFields = options["formFields"];
-		//should check for the format of formfields
-		FormConfig.AddVar(formName, "fields", formFields);
+		//should check that its a valid API gateway endpoint URL
 	}
+	else url = obj.endPointUrl;
+	
+	if(options["formFields"]){
+		formFields = options["formFields"];
+		FormConfig.AddVar(formName, "fields", formFields);
+		//should check for the correct format of the formfields
+	}
+	else formFields = obj.fields; 
+	
 
 	var formBody = ''
 	Object.keys(formFields).map(function(key, index) {
