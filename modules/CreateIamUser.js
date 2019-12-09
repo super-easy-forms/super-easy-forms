@@ -110,7 +110,7 @@ function addAwsProfile(awsProfile, callback){
 }
 
 //adds aws region to config and 
-module.exports = function CreateIamUser(iamUserName, awsRegion) {
+module.exports = function CreateIamUser(iamUserName, awsRegion, callback) {
   //check that iam user name is alphanumeric
   var url = `https://console.aws.amazon.com/iam/home?region=${awsRegion}#/users$new?step=review&accessKey&userNames=${iamUserName}&permissionType=policies&policies=arn:aws:iam::aws:policy%2FAdministratorAccess`;
   if(awsRegion){
@@ -131,7 +131,12 @@ module.exports = function CreateIamUser(iamUserName, awsRegion) {
     }
     else{
       addAwsProfile(iamUserName);
-      return url;
+      if(callback && typeof callback === 'function'){
+        callback(null, url);
+      }
+      else{
+        return url;
+      }
     }
   }
 }
