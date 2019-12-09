@@ -1,37 +1,65 @@
 var fs = require("fs");
-const open = require('open');
+var FormConfig = require('./Config')
 
 const htmlInputTypes = ["textarea", "select", "button", "checkbox", "color", "date", "datetime-local", "email", "file", "hidden", "image", "month", "number", "password", "radio", "range", "reset", "search", "submit", "tel", "text", "time", "url", "week"];
  
-module.exports = function formGenerator(formName, url) {
+module.exports = function CreateForm(formName, options, callback) {
 	let rawdata = fs.readFileSync(`forms/${formName}/config.json`);  
-	obj = JSON.parse(rawdata);
-	const formFields = obj.fields;
-	console.log(obj)
+	let obj = JSON.parse(rawdata);
+	let url = "";
+	let formFields = {};
+	
+	if(!options || typeof options !== "object"){
+    if(typeof options === "function"){
+			callback = options
+		}
+		else {
+			let err = "options must be an object with the appropriate keys"
+			throw new Error(err)
+		}
+	}
+	if(options["endPointUrl"]) {
+		url = options["endPointUrl"];
+		FormConfig.AddVar(formName, "endPointUrl", url);
+		//should check that its a valid API gateway endpoint URL
+	}
+	else url = obj.endPointUrl;
+	
+	if(options["formFields"]){
+		formFields = options["formFields"];
+		FormConfig.AddVar(formName, "fields", formFields);
+		//should check for the correct format of the formfields
+	}
+	else formFields = obj.fields; 
+	
+
 	var formBody = ''
 	Object.keys(formFields).map(function(key, index) {
 		let field = formFields[key];
 		let fieldHtml = "";
 		if(!htmlInputTypes.includes(field["type"])){
-			console.log(`Error. invalid html type: ${field["type"]}`);
-			return false;
+			let err = `Error. invalid html type: ${field["type"]}`;
+			throw new Error(err)
 		}
 		else if(field["type"] === "textbox"){
-			fieldHtml = `<textarea type="text" class="form-control" id="${key}" name="${key}" placeholder="${field["label"]}" required></textarea>`; 
+			fieldHtml = `<textarea type="text" class="form-control" id="${key}" name="${key}" placeholder="${field["label"]}" ${field["required"]? "required":null}></textarea>`; 
 		}
 		else if(field["type"] === "select"){
-			fieldHtml = "";
+			let options = field["options"]
+			let htmlOptions = `<option value="" selected="selected" disabled="disabled">Select a ${field["label"]}</option>`;
+			Object.keys(options).map(function(key, index) {
+				htmlOptions += `<option value=${key}>${options[key]}</option>`
+			})
+			fieldHtml = `<select class="form-control" id="${key}" name="${key}" ${field["required"]? "required":null}>${htmlOptions}</select>`
 		}
 		else{
-			fieldHtml = `<input type="${field["type"]}" class="form-control" id="${key}" name="${key}" placeholder="${field["label"]}" required>`;
+			fieldHtml = `<input type="${field["type"]}" class="form-control" id="${key}" name="${key}" placeholder="${field["label"]}" ${field["required"]? "required":null}>`;
 		}
     formBody += `
 			<label for="${key}" class="small mb-0">${field["label"]}</label>
 			${fieldHtml}
 		`;
 	});
-	console.log(formBody);
-
 	var fieldVars = '"id": "",';
 	Object.keys(formFields).map(function(key, index) {
     fieldVars += `"${key}": $('#${key}').val(),`;
@@ -123,19 +151,21 @@ module.exports = function formGenerator(formName, url) {
 						}
 					});
 				</script>
-
 			</body>
-
 		</html>
 		`;
-	fs.writeFile(`forms/${formName}/${formName}.html`, htmlForm, function(err) {
+		fs.writeFile(`forms/${formName}/${formName}.html`, htmlForm, function(err) {
 		if(err) {
-			console.log(err);
+			callback(new Error(err))
 		}
 		else {
 			console.log('\x1b[32m', `Your form was succesfully saved in forms/${formName}`, '\x1b[0m');
-			console.log('\x1b[32m', "Wasn't that Super Easy?", '\x1b[0m');
-			open(`forms/${formName}/${formName}.html`);
+			if(callback && typeof callback === 'function'){
+				callback(null, htmlForm);
+			}
+			else {
+				return htmlForm;
+			}
 		}
 	});
 }

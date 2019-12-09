@@ -1,12 +1,61 @@
-//package to use the file system
 var fs = require("fs");
-//pazkage to zip files
+
+//CODE TO ZIP LAMBDA FUNCTION
 //var JSZip = require("jszip");
+/*
+  var zip = new JSZip();
+  zip.file("lambdaFunc.js", lambdaFunc);
+  zip
+  .generateNodeStream({type:'nodebuffer',streamFiles:true})
+  .pipe(fs.createWriteStream(`forms/${formName}/lambda.zip`))
+  .on('finish', function () {
+      // JSZip generates a readable stream with a "end" event,
+      // but is piped here in a writable stream which emits a "finish" event.
+			console.log('\x1b[32m', 'Succesfully created and zipped your lambda function.', '\x1b[0m');
+			if(callback && callback === "deploy"){
+				deployStack(formName)
+			}
+	});
+*/
 
-//var deployStack = require('./deploy-stack.js');
+module.exports = function createLambda(formName, options, callback) {
+	let rawdata = fs.readFileSync(`forms/${formName}/config.json`);  
+	let obj = JSON.parse(rawdata);
+	let formFields = {};
+	let fieldsObject = {"id":"id"};
+	let sourceEmail = ""
 
-module.exports = function createLambda(formFields, tableName, sourceEmail, callback) {
-  const lambdaFunc = 
+	if(!options || typeof options !== "object"){
+    if(typeof options === "function"){
+			callback = options
+		}
+		else {
+			let err = "options must be an object with the appropriate keys"
+			throw new Error(err)
+		}
+	}
+
+	if(options["sourceEmail"]){
+		sourceEmail = options["sourceEmail"]
+		FormConfig.AddVar(formName, "sourceEmail", sourceEmail);
+		//should validate the email with ses
+	} 
+	else sourceEmail = obj.sourceEmail;
+	
+	if(options["formFields"]){
+		formFields = options["formFields"];
+		FormConfig.AddVar(formName, "fields", formFields);
+		//should check for the correct format of the formfields
+	}
+	else formFields = obj.fields
+
+	//convert fields object into suitable input for the lambda function
+  Object.keys(formFields).map(function(key, index) {
+    fieldsObject[key] = key;
+  });
+  let lambdaFields = JSON.stringify(fieldsObject);
+
+  var lambdaFunc = 
   `//Import AWS SDK
   var AWS = require('aws-sdk');
   //Declare SES
@@ -17,7 +66,7 @@ module.exports = function createLambda(formFields, tableName, sourceEmail, callb
   //Main function
   exports.handler = (event, context, callback) => {     
 		//goes inside lambda function
-		var jsonBase = ${formFields};
+		var jsonBase = ${lambdaFields};
 		let uniqNow = Math.floor(Math.random() * 900000000000000000).toString(28) + new Date().toISOString().replace(":","-").replace(":","-").replace(".","-") + Math.floor(Math.random() * 90000000).toString(28);
 		Object.keys(event).map(function(key, index) {
 			jsonBase[key] = {S:event[key]};
@@ -25,7 +74,7 @@ module.exports = function createLambda(formFields, tableName, sourceEmail, callb
 		jsonBase['id'] = {S:uniqNow};
 		var params = {
 			Item: jsonBase, 
-			TableName: "${tableName}",
+			TableName: "${formName}",
 		};
 		var contactInfo = '';
 		for(let item in event){	
@@ -80,22 +129,19 @@ module.exports = function createLambda(formFields, tableName, sourceEmail, callb
       });
      callback(null, 'All Done!');
   };`;
-	/*
-  var zip = new JSZip();
-  zip.file("lambdaFunc.js", lambdaFunc);
-
-  zip
-  .generateNodeStream({type:'nodebuffer',streamFiles:true})
-  .pipe(fs.createWriteStream(`forms/${tableName}/lambda.zip`))
-  .on('finish', function () {
-      // JSZip generates a readable stream with a "end" event,
-      // but is piped here in a writable stream which emits a "finish" event.
-			console.log('\x1b[32m', 'Succesfully created and zipped your lambda function.', '\x1b[0m');
-			if(callback && callback === "deploy"){
-				deployStack(tableName)
+	
+	fs.writeFile(`forms/${formName}/lambdaFunction.js`, lambdaFunc, (err, data) => {
+		if (err) {
+			callback(new Error(err));
+		}
+		else{
+			console.log(`lambda function saved`)
+			if(callback && typeof callback === 'function'){
+				callback(null, lambdaFunc);
 			}
+			else{
+				return lambdaFunc;
+			}
+		}
 	});
-	*/
-	fs.writeFileSync(`forms/${tableName}/lambdaFunction.js`, lambdaFunc);
-	return lambdaFunc;
 }
