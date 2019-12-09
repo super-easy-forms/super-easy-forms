@@ -21,20 +21,39 @@ var fs = require("fs");
 module.exports = function createLambda(formName, options, callback) {
 	let rawdata = fs.readFileSync(`forms/${formName}/config.json`);  
 	let obj = JSON.parse(rawdata);
-	let fields = {};
+	let formFields = {};
 	let fieldsObject = {"id":"id"};
 	let sourceEmail = ""
 
-	if(options["sourceEmail"]) sourceEmail = options["sourceEmail"]
-	else sourceEmail = obj.email;
-	if(options["formFields"]) fields = options["formFields"]
-	else fields = obj.fields
+	if(!options || typeof options !== "object"){
+    if(typeof options === "function"){
+			callback = options
+		}
+		else {
+			let err = "options must be an object with the appropriate keys"
+			throw new Error(err)
+		}
+	}
+
+	if(options["sourceEmail"]){
+		sourceEmail = options["sourceEmail"]
+		FormConfig.AddVar(formName, "sourceEmail", sourceEmail);
+		//should validate the email with ses
+	} 
+	else sourceEmail = obj.sourceEmail;
+	
+	if(options["formFields"]){
+		formFields = options["formFields"];
+		FormConfig.AddVar(formName, "fields", formFields);
+		//should check for the correct format of the formfields
+	}
+	else formFields = obj.fields
 
 	//convert fields object into suitable input for the lambda function
-  Object.keys(fields).map(function(key, index) {
+  Object.keys(formFields).map(function(key, index) {
     fieldsObject[key] = key;
   });
-  let formFields = JSON.stringify(fieldsObject);
+  let lambdaFields = JSON.stringify(fieldsObject);
 
   var lambdaFunc = 
   `//Import AWS SDK
@@ -47,7 +66,7 @@ module.exports = function createLambda(formName, options, callback) {
   //Main function
   exports.handler = (event, context, callback) => {     
 		//goes inside lambda function
-		var jsonBase = ${formFields};
+		var jsonBase = ${lambdaFields};
 		let uniqNow = Math.floor(Math.random() * 900000000000000000).toString(28) + new Date().toISOString().replace(":","-").replace(":","-").replace(".","-") + Math.floor(Math.random() * 90000000).toString(28);
 		Object.keys(event).map(function(key, index) {
 			jsonBase[key] = {S:event[key]};
@@ -113,14 +132,16 @@ module.exports = function createLambda(formName, options, callback) {
 	
 	fs.writeFile(`forms/${formName}/lambdaFunction.js`, lambdaFunc, (err, data) => {
 		if (err) {
-			throw new Error(err);
+			callback(new Error(err));
 		}
 		else{
 			console.log(`lambda function saved`)
 			if(callback && typeof callback === 'function'){
-				callback();
+				callback(null, lambdaFunc);
 			}
-			return lambdaFunc;
+			else{
+				return lambdaFunc;
+			}
 		}
 	});
 }
