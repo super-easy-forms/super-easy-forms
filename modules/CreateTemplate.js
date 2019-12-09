@@ -3,7 +3,7 @@ require('dotenv').config();
 //package to use the file system
 var fs = require("fs");
 
-function createTemplate(formName, options, callback) {
+module.exports = function createTemplate(formName, options, callback) {
   let rawdata = fs.readFileSync(`forms/${formName}/config.json`);  
 	let obj = JSON.parse(rawdata);
 	let formFields = {};
@@ -319,12 +319,3 @@ function createTemplate(formName, options, callback) {
 		}
 	});
 }
-
-createTemplate("corsfinal", function(err, data){
-  if(err){
-    console.log(error)
-  }
-  else{
-    console.log(data)
-  }
-})

@@ -2,7 +2,7 @@ require('dotenv').config();
 var fs = require("fs");
 var AWS = require('aws-sdk');
 var cloudformation = new AWS.CloudFormation({apiVersion: '2010-05-15'});
-var FormConfig = require('./FormConfig');
+var FormConfig = require('./Config');
 
 module.exports = function GetApiUrl(formName, stackId, callback) {
   if(!stackId || typeof stackId !== "string"){
@@ -19,7 +19,7 @@ module.exports = function GetApiUrl(formName, stackId, callback) {
   };
   cloudformation.describeStackResource(params, function(err, data) {
     if (err) {
-      console.log(err, err.stack);
+      callback(new Error(err));
     }
     else {
       console.log(data.StackResourceDetail.PhysicalResourceId);
@@ -27,7 +27,7 @@ module.exports = function GetApiUrl(formName, stackId, callback) {
       var endpointUrl = `https://${data.StackResourceDetail.PhysicalResourceId}.execute-api.${process.env.AWS_REGION}.amazonaws.com/DeploymentStage/`
       FormConfig.AddVar(formName, "endPointUrl", endpointUrl);
       if(callback && typeof callback === 'function'){
-				callback();
+				callback(null, endpointUrl);
 			}
     }
   });

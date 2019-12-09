@@ -17,7 +17,7 @@ function ValidEmail(email){
 function VerifydefaultEmail(senderEmail, callback) {
   if(!ValidEmail(senderEmail)){
     let err = "Invalid email address."
-    throw new Error(err)
+    callback(new Error(err))
   }
   else {
     var params = {
@@ -25,12 +25,12 @@ function VerifydefaultEmail(senderEmail, callback) {
      };
     ses.verifyEmailIdentity(params, function(err, data) {
       if (err) {
-        throw new Error(err);
+        callback(new Error(err));
       }
       else  {
         FormConfig.AddSetting("senderEmail", senderEmail);
         if(callback && typeof callback === 'function'){
-          callback();
+          callback(null, senderEmail);
         }
         else {
           return 'Success';
@@ -44,7 +44,7 @@ function VerifydefaultEmail(senderEmail, callback) {
 function VerifySesEmail(senderEmail, callback) {
   if(!ValidEmail(senderEmail)){
     let err = "Invalid email address."
-    throw new Error(err)
+    callback(new Error(err))
   }
   else {
     var params = {
@@ -52,12 +52,11 @@ function VerifySesEmail(senderEmail, callback) {
     };
     ses.verifyEmailIdentity(params, function(err, data) {
       if (err) {
-        console.log(err, err.stack);
-        return false;
+        callback(new Error(err))
       }
       else  {
         if(callback && typeof callback === 'function'){
-          callback();
+          callback(null, senderEmail);
         }
         else{
           return true
@@ -68,7 +67,7 @@ function VerifySesEmail(senderEmail, callback) {
 }
 
 //checks that the supplied email vas been verified with AWS
-function ValidateSesEmail(formName, email) {
+function ValidateSesEmail(formName, email, callback) {
   var params = {
     Identities: [email]
    };
@@ -83,10 +82,13 @@ function ValidateSesEmail(formName, email) {
             console.log('\x1b[32m', 'The following email was succesfully verified with SES: ', email, '\x1b[0m');
             const sesArn = `arn:aws:ses:${process.env.AWS_REGION}:${process.env.AWS_ACCOUNT_NUMBER}:identity/${email}`;
             addVars(formName, 'emailArn', sesArn);
-            return true;
+            if(callback && typeof callback === 'function') callback(null, sesArn);
+            else return sesArn;
           default:
-            console.log('\x1b[31m', 'It appears your address still hasnt been verified... Lets try again.', '\x1b[0m');
-            return false;
+            let err = 'It appears your address still hasnt been verified... Lets try again.'
+            console.error(err);
+            if(callback && typeof callback === 'function') callback(null, false);
+            else return false;
         }      
       } 
    });

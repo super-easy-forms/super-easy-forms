@@ -1,20 +1,27 @@
+var CreateForm = require('./modules/CreateForm');
+var CreateLambdaFunction = require('./modules/CreateLambda');
 var CreateTemplate = require('./modules/CreateTemplate');
-var FormConfig = require('./modules/Config')
-var GetApiUrl = require('./modules/GetApiUrl')
+var ValidateTemplate = require('./modules/ValidateTemplate');
+var CreateStack = require('./modules/CreateStack');
+var GetApiUrl = require('./modules/GetApiUrl');
+var Email = require('./modules/SesEmail');
 var CreateIamUser = require('./modules/CreateIamUser')
-var Email = require('./modules/Email')
+var FormConfig = require('./modules/Config')
 
-module.exports.AddConfigVariable = FormConfig.AddVar;
-module.exports.GetApiUrl = GetApiUrl;
-module.exports.CreateIamUser = CreateIamUser;
-module.exports.VerifyDefaultEmail = Email.VerifydefaultEmail;
-module.exports.VerifyNewSesEmail = Email
-module.exports.ValidateSesEmail = Email
-AddFormFields
-CreateLambdaFunction
-UpdateLambdaFunction
+//GetContacts
+//ExportContacts
+//CreateStackWithForm
+module.exports.CreateForm = CreateForm;
+module.exports.CreateLambdaFunction = CreateLambdaFunction;
+//UpdateLambdaFunction
 module.exports.CreateTemplate = CreateTemplate;
-CreateStack
-CreateStackWithForm
-GetContacts
-ExportContacts
+module.exports.ValidateTemplate = ValidateTemplate;
+module.exports.CreateStack = CreateStack;
+module.exports.GetApiUrl = GetApiUrl;
+module.exports.VerifyDefaultEmail = Email.VerifyDefaultEmail;
+module.exports.VerifySesEmail = Email.VerifySesEmail;
+module.exports.ValidateSesEmail = Email.ValidateSesEmail;
+module.exports.CreateIamUser = CreateIamUser;
+module.exports.AddFormFields = FormConfig.AddFormFields;
+module.exports.AddConfigVariable = FormConfig.AddVar;
+
