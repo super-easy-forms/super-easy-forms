@@ -6,32 +6,28 @@ var fs = require("fs");
 var AWS = require('aws-sdk');
 //cloudformation
 var cloudformation = new AWS.CloudFormation({apiVersion: '2010-05-15'});
+var FormConfig = require('./Config');
 
-var createTemplate = require('./create-template');
+module.exports = function CreateStack(formName, templateBody, callback) {
 
-var getEndpoint = require('./GetApiUrl')
-
-var FormConfig = require('./FormConfig');
-
-module.exports = function CreateStack(formName, formFields, callback) {
-  let rawdata = fs.readFileSync(`forms/${formName}/config.json`);  
-  let obj = JSON.parse(rawdata);
-  var myFormModel = {"id": {"type": "string"}};
-  Object.keys(formFields).map(function(key, index) {
-    myFormModel[key] = {"type": "string"};
-  });
-  var myRequiredFields = ["id"];
-  let i = 1;
-  Object.keys(formFields).map(function(key, index) {
-    let val = formFields[key]
-    if(val["required"]){
-      myRequiredFields[i] = key
-      i += 1;
+  if(!templateBody || typeof templateBody !== "string"){
+    if(typeof templateBody === "function"){
+      callback = templateBody;
     }
-  });
+    else if (templateBody) {
+      let err = "template body must be a string"
+      throw new Error(err)
+    }
+    else {
+      let rawdata = fs.readFileSync(`forms/${formName}/template.json`);  
+      let templateObject = JSON.parse(rawdata);
+      var templateBody = JSON.stringify(templateObject);
+    }
+  }
+
 	var params = {
     StackName: `${formName}Form`, /* required */
-    TemplateBody: createTemplate(formName, myFormModel, myRequiredFields, obj.emailArn),
+    TemplateBody: templateBody,
     TimeoutInMinutes: 5,
     Capabilities: [
       "CAPABILITY_NAMED_IAM"
@@ -48,15 +44,17 @@ module.exports = function CreateStack(formName, formFields, callback) {
       var params = {
         StackName: stackArn
       };
-      console.log("cloudformation template is being created . . .")
+      console.log("The Cloudformation Stack is being created . . .")
       cloudformation.waitFor('stackCreateComplete', params, function(err, data) {
         if (err) {
           console.log(err, err.stack);
         }
         else {
           console.log(data);
-          console.log("The stack has been created succesfully")
-          getEndpoint(formName, stackArn);
+          console.log("the Cloudformation Stack has been created succesfully!")
+          if(callback && typeof callback === 'function'){
+            callback();
+          }
         }
       });
     }    

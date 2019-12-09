@@ -2,15 +2,30 @@
 require('dotenv').config();
 //package to use the file system
 var fs = require("fs");
-var createLambda = require('./create-lambda.js');
+var createLambda = require('./CreateLambda.js/index.js.js.js');
 const sourceEmail = "mailer@torus-digital.com";
 
-module.exports = function createTemplate(formName, formModel, requiredFields, emailArn) {
-  let formFields = {}
-  Object.keys(formModel).map(function(key, index) {
-    formFields[key] = key;
+module.exports = function createTemplate(formName, options, callback) {
+  if(options["formFields"]) formFields = options["formFields"]
+	else formFields = obj.fields;
+	if(options["emailArn"]) fields = options["emailArn"]
+  else fields = obj.emailArn
+  
+  var formModel = {"id": {"type": "string"}};
+  Object.keys(formFields).map(function(key, index) {
+    formModel[key] = {"type": "string"};
   });
-  let myFields = JSON.stringify(formFields);
+
+  var requiredFields = ["id"];
+  let i = 1;
+  Object.keys(formFields).map(function(key, index) {
+    let val = formFields[key]
+    if(val["required"]){
+      requiredFields[i] = key
+      i += 1;
+    }
+  });
+
   console.log(myFields)
   var template = {
     "AWSTemplateFormatVersion": "2010-09-09",
@@ -250,7 +265,17 @@ module.exports = function createTemplate(formName, formModel, requiredFields, em
       }
     }  
   }
-  tempString = JSON.stringify(template);
-  fs.writeFileSync(`forms/${formName}/template.json`, tempString);
-  return tempString;
+  let tempString = JSON.stringify(template);
+  fs.writeFile(`forms/${formName}/template.json`, tempString, (err, data) => {
+		if (err) {
+			throw new Error(err);
+		}
+		else{
+			console.log(`lambda function saved`)
+			if(callback && typeof callback === 'function'){
+				callback();
+			}
+			return tempString;
+		}
+	});
 }

@@ -6,12 +6,15 @@ const htmlInputTypes = ["textarea", "select", "button", "checkbox", "color", "da
 module.exports = function formGenerator(formName, options, callback) {
 	let url = "";
 	let formFields = {};
+
 	let rawdata = fs.readFileSync(`forms/${formName}/config.json`);  
-  let obj = JSON.parse(rawdata);
+	let obj = JSON.parse(rawdata);
+	
 	if(options["url"]) url = options["url"]
 	else url = obj.endPointUrl
 	if(options["fields"]) formFields = options["fields"];
 	else formFields = obj.fields
+	
 	var formBody = ''
 	Object.keys(formFields).map(function(key, index) {
 		let field = formFields[key];
