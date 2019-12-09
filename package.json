@@ -6,7 +6,7 @@
   "scripts": {
     "test": "mocha",
     "start": "node super-easy-forms.js",
-    "build": "npm install"
+    "build": "node build.js"
   },
   "repository": {
     "type": "git",
