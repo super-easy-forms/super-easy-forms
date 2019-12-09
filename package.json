@@ -21,7 +21,7 @@
   "bugs": {
     "url": "https://github.com/gkpty/serverless-form-generator/issues"
   },
-  "homepage": "https://github.com/gkpty/serverless-form-generator#readme",
+  "homepage": "https://supereasyforms.com/",
   "dependencies": {
     "aws-sdk": "^2.452.0",
     "dotenv": "^8.0.0",
