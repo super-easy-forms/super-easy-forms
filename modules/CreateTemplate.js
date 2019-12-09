@@ -2,14 +2,53 @@
 require('dotenv').config();
 //package to use the file system
 var fs = require("fs");
-var createLambda = require('./CreateLambda.js/index.js.js.js');
-const sourceEmail = "mailer@torus-digital.com";
 
-module.exports = function createTemplate(formName, options, callback) {
-  if(options["formFields"]) formFields = options["formFields"]
-	else formFields = obj.fields;
-	if(options["emailArn"]) fields = options["emailArn"]
-  else fields = obj.emailArn
+function createTemplate(formName, options, callback) {
+  let rawdata = fs.readFileSync(`forms/${formName}/config.json`);  
+	let obj = JSON.parse(rawdata);
+	let formFields = {};
+  let emailArn = "";
+  lambdaFunction = "";
+  
+  if(!options || typeof options !== "object"){
+    if(typeof options === "function"){
+			callback = options
+		}
+		else {
+			let err = "options must be an object with the appropriate keys"
+			throw new Error(err)
+		}
+	}
+  
+  if(options["emailArn"]){
+		emailArn = options["emailArn"]
+		FormConfig.AddVar(formName, "emailArn", emailArn);
+		//should validate the email with ses
+	} 
+	else emailArn = obj.emailArn;
+
+  if(options["formFields"]){
+		formFields = options["formFields"];
+		FormConfig.AddVar(formName, "fields", formFields);
+		//should check for the correct format of the formfields
+	}
+  else formFields = obj.fields
+  
+  if(options["lambdaFunction"]){
+		lambdaFunction = options["lambdaFunction"];
+		fs.writeFile(`./forms/${formName}/lambdaFunction.js`, lambdaFunction, function(err, data){
+      if(err){
+        throw new Error(err)
+      }
+      else{
+        console.log("updated the lambda function for your template")
+      }
+    })
+		//should check for the correct format of the formfields
+	}
+	else {
+    lambdaFunction = fs.readFileSync(`./forms/${formName}/lambdaFunction.js`, 'utf8')
+  }
   
   var formModel = {"id": {"type": "string"}};
   Object.keys(formFields).map(function(key, index) {
@@ -26,7 +65,6 @@ module.exports = function createTemplate(formName, options, callback) {
     }
   });
 
-  console.log(myFields)
   var template = {
     "AWSTemplateFormatVersion": "2010-09-09",
     "Resources": {
@@ -175,7 +213,7 @@ module.exports = function createTemplate(formName, options, callback) {
         "Type": "AWS::Lambda::Function",
         "Properties": {
           "Code": {
-            ZipFile: createLambda(myFields, formName, sourceEmail) 
+            ZipFile: `${lambdaFunction}` 
           },
           "Description" : "This Lambda Function Adds your contact info. to a Dynamo DB table and then sends you an email.",
           "FunctionName" : `${formName}Function`,
@@ -268,14 +306,25 @@ module.exports = function createTemplate(formName, options, callback) {
   let tempString = JSON.stringify(template);
   fs.writeFile(`forms/${formName}/template.json`, tempString, (err, data) => {
 		if (err) {
-			throw new Error(err);
+			callback(new Error(err));
 		}
 		else{
-			console.log(`lambda function saved`)
+			console.log(`Cloudformation template for form ${formName} has been saved`)
 			if(callback && typeof callback === 'function'){
-				callback();
-			}
-			return tempString;
+				callback(null, tempString);
+      }
+      else{
+        return tempString;
+      }
 		}
 	});
 }
+
+createTemplate("corsfinal", function(err, data){
+  if(err){
+    console.log(error)
+  }
+  else{
+    console.log(data)
+  }
+})
