@@ -1,12 +1,12 @@
-var CreateForm = require('./modules/CreateForm');
-var CreateLambdaFunction = require('./modules/CreateLambda');
-var CreateTemplate = require('./modules/CreateTemplate');
-var ValidateTemplate = require('./modules/ValidateTemplate');
-var CreateStack = require('./modules/CreateStack');
-var GetApiUrl = require('./modules/GetApiUrl');
-var Email = require('./modules/SesEmail');
-var CreateIamUser = require('./modules/CreateIamUser')
-var FormConfig = require('./modules/Config')
+var CreateForm = require('./lib/CreateForm');
+var CreateLambdaFunction = require('./lib/CreateLambda');
+var CreateTemplate = require('./lib/CreateTemplate');
+var ValidateTemplate = require('./lib/ValidateTemplate');
+var CreateStack = require('./lib/CreateStack');
+var GetApiUrl = require('./lib/GetApiUrl');
+var Email = require('./lib/SesEmail');
+var CreateIamUser = require('./lib/CreateIamUser')
+var FormConfig = require('./lib/Config')
 
 //GetContacts
 //ExportContacts
