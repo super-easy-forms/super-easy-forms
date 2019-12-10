@@ -53,7 +53,7 @@ module.exports = function initBuild(){
       })
     }
   });
-  createFile('./settings.json', {}, function(err, data){
+  createFile('./settings.json', '{}', function(err, data){
     if(err) console.log(err)
     else console.log(data)
   })
