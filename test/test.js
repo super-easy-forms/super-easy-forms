@@ -1,11 +1,10 @@
 var assert = require('assert');
 var fs = require("fs")
-//var {optionArgs} = require('./../lib/InternalModules')
-//var {CheckForm} = require('./../lib/Config')
-//var {createDir} = require('./../build')
-//var AWS = require('aws-sdk-mock');
+var {optionArgs} = require('./../lib/InternalModules')
+var {CheckForm} = require('./../lib/Config')
+var {createDir} = require('./../build')
+var AWS = require('aws-sdk-mock');
 
-/*
 describe('Check Form existence', function() {
   beforeEach(function() {
     createDir("./forms")
@@ -17,7 +16,7 @@ describe('Check Form existence', function() {
     it('Should create a form and a config file for that form', function() {
       CheckForm(formName, function(err, data){
         if(err){
-          console.error(err)
+          throw new Error(err)
         }
         else{
           assert.equal(fs.readFileSync(`./forms/${formName}/config.json`, 'utf8'), '{}');
@@ -29,17 +28,16 @@ describe('Check Form existence', function() {
 
 describe('Optional Arguments', function() {
   let formName = "testform"
-  let args = {"endpointUrl":"", "formFields":{}}
-  
+  let args = {"endpointUrl":"", "formFields":{}} 
   describe('Invalid options type', function() {
     it('should return an error when an invalid options argument is used', function() {
       optionArgs(formName, args, "invalid param", function(err, data){
         assert.equal(err.message,"options must be an object with the appropriate keys");
-      })
+      });
     });
   });
 });
-*/
+
 describe('Super Easy Forms', function() {
   describe('validate email', function() {
     it('should return false when its not an email', function() {
