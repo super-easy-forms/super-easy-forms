@@ -42,7 +42,7 @@ function createDir(dir, callback){
   }
 }
 
-module.exports = function initBuild(){
+function initBuild(){
   createFile('./.env', '', function(err, data){
     if(err) console.log(err)
     else {
@@ -61,4 +61,9 @@ module.exports = function initBuild(){
     if(err) console.log(err)
     else console.log(data)
   })
+}
+
+module.exports = {
+  initBuild,
+  createDir
 }
