@@ -5,6 +5,7 @@ var {CheckForm} = require('./../lib/Config')
 var {createDir} = require('./../build')
 //var AWS = require('aws-sdk-mock');
 
+/*
 describe('Check Form existence', function() {
   beforeEach(function() {
     createDir("./forms")
@@ -25,6 +26,7 @@ describe('Check Form existence', function() {
     });
   });
 });
+*/
 
 describe('Optional Arguments', function() {
   let formName = "testform"
