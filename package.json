@@ -4,7 +4,7 @@
   "description": "a script that generates serverless backends for contact forms using AWS",
   "main": "index.js",
   "scripts": {
-    "test": "mocha",
+    "test": "mocha --exit",
     "start": "node super-easy-forms.js",
     "build": "node build.js"
   },
