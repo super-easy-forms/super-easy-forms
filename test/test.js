@@ -3,7 +3,7 @@ var fs = require("fs")
 var {optionArgs} = require('./../lib/InternalModules')
 var {CheckForm} = require('./../lib/Config')
 var {createDir} = require('./../build')
-var AWS = require('aws-sdk-mock');
+//var AWS = require('aws-sdk-mock');
 
 describe('Check Form existence', function() {
   beforeEach(function() {
@@ -21,7 +21,7 @@ describe('Check Form existence', function() {
         else{
           assert.equal(fs.readFileSync(`./forms/${formName}/config.json`, 'utf8'), '{}');
         }
-      })
+      });
     });
   });
 });
