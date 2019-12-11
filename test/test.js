@@ -16,7 +16,7 @@ createDir("forms", function(err, data){
         it('Should create a form and a config file for that form', function() {
           CheckForm(formName, function(err, data){
             if(err){
-              console.lerror(err)
+              console.error(err)
             }
             else{
               assert.equal(fs.readFileSync(`./forms/${formName}/config.json`, 'utf8'), '{}');
