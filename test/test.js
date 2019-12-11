@@ -1,5 +1,4 @@
 var assert = require('assert');
-//var AWS = require('aws-sdk-mock');
 
 describe('Super Easy Forms', function() {
   describe('validate email', function() {

@@ -1,61 +1,12 @@
+//package to use the file system
 var fs = require("fs");
-
-//CODE TO ZIP LAMBDA FUNCTION
+//pazkage to zip files
 //var JSZip = require("jszip");
-/*
-  var zip = new JSZip();
-  zip.file("lambdaFunc.js", lambdaFunc);
-  zip
-  .generateNodeStream({type:'nodebuffer',streamFiles:true})
-  .pipe(fs.createWriteStream(`forms/${formName}/lambda.zip`))
-  .on('finish', function () {
-      // JSZip generates a readable stream with a "end" event,
-      // but is piped here in a writable stream which emits a "finish" event.
-			console.log('\x1b[32m', 'Succesfully created and zipped your lambda function.', '\x1b[0m');
-			if(callback && callback === "deploy"){
-				deployStack(formName)
-			}
-	});
-*/
 
-module.exports = function createLambda(formName, options, callback) {
-	let rawdata = fs.readFileSync(`forms/${formName}/config.json`);  
-	let obj = JSON.parse(rawdata);
-	let formFields = {};
-	let fieldsObject = {"id":"id"};
-	let sourceEmail = ""
+//var deployStack = require('./deploy-stack.js');
 
-	if(!options || typeof options !== "object"){
-    if(typeof options === "function"){
-			callback = options
-		}
-		else {
-			let err = "options must be an object with the appropriate keys"
-			throw new Error(err)
-		}
-	}
-
-	if(options["sourceEmail"]){
-		sourceEmail = options["sourceEmail"]
-		FormConfig.AddVar(formName, "sourceEmail", sourceEmail);
-		//should validate the email with ses
-	} 
-	else sourceEmail = obj.sourceEmail;
-	
-	if(options["formFields"]){
-		formFields = options["formFields"];
-		FormConfig.AddVar(formName, "fields", formFields);
-		//should check for the correct format of the formfields
-	}
-	else formFields = obj.fields
-
-	//convert fields object into suitable input for the lambda function
-  Object.keys(formFields).map(function(key, index) {
-    fieldsObject[key] = key;
-  });
-  let lambdaFields = JSON.stringify(fieldsObject);
-
-  var lambdaFunc = 
+module.exports = function createLambda(formFields, tableName, sourceEmail, callback) {
+  const lambdaFunc = 
   `//Import AWS SDK
   var AWS = require('aws-sdk');
   //Declare SES
@@ -66,7 +17,7 @@ module.exports = function createLambda(formName, options, callback) {
   //Main function
   exports.handler = (event, context, callback) => {     
 		//goes inside lambda function
-		var jsonBase = ${lambdaFields};
+		var jsonBase = ${formFields};
 		let uniqNow = Math.floor(Math.random() * 900000000000000000).toString(28) + new Date().toISOString().replace(":","-").replace(":","-").replace(".","-") + Math.floor(Math.random() * 90000000).toString(28);
 		Object.keys(event).map(function(key, index) {
 			jsonBase[key] = {S:event[key]};
@@ -74,7 +25,7 @@ module.exports = function createLambda(formName, options, callback) {
 		jsonBase['id'] = {S:uniqNow};
 		var params = {
 			Item: jsonBase, 
-			TableName: "${formName}",
+			TableName: "${tableName}",
 		};
 		var contactInfo = '';
 		for(let item in event){	
@@ -129,19 +80,22 @@ module.exports = function createLambda(formName, options, callback) {
       });
      callback(null, 'All Done!');
   };`;
-	
-	fs.writeFile(`forms/${formName}/lambdaFunction.js`, lambdaFunc, (err, data) => {
-		if (err) {
-			callback(new Error(err));
-		}
-		else{
-			console.log(`lambda function saved`)
-			if(callback && typeof callback === 'function'){
-				callback(null, lambdaFunc);
+	/*
+  var zip = new JSZip();
+  zip.file("lambdaFunc.js", lambdaFunc);
+
+  zip
+  .generateNodeStream({type:'nodebuffer',streamFiles:true})
+  .pipe(fs.createWriteStream(`forms/${tableName}/lambda.zip`))
+  .on('finish', function () {
+      // JSZip generates a readable stream with a "end" event,
+      // but is piped here in a writable stream which emits a "finish" event.
+			console.log('\x1b[32m', 'Succesfully created and zipped your lambda function.', '\x1b[0m');
+			if(callback && callback === "deploy"){
+				deployStack(tableName)
 			}
-			else{
-				return lambdaFunc;
-			}
-		}
 	});
+	*/
+	fs.writeFileSync(`forms/${tableName}/lambdaFunction.js`, lambdaFunc);
+	return lambdaFunc;
 }
