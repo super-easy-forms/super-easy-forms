@@ -29,10 +29,11 @@ USAGE
 # Commands
 <!-- commands -->
 * [`sef build`](#sef-build)
-* [`sef form`](#sef-form)
-* [`sef forme FORMNAME`](#sef-forme-formname)
+* [`sef form NAME`](#sef-form-name)
+* [`sef formstack`](#sef-formstack)
 * [`sef hello`](#sef-hello)
 * [`sef help [COMMAND]`](#sef-help-command)
+* [`sef lambda`](#sef-lambda)
 
 ## `sef build`
 
@@ -45,13 +46,32 @@ USAGE
 
 _See code: [src/commands/build.js](https://github.com/gkpty/super-easy-forms-cli/blob/v0.0.0/src/commands/build.js)_
 
-## `sef form`
+## `sef form NAME`
+
+Builds an html form
+
+```
+USAGE
+  $ sef form NAME
+
+ARGUMENTS
+  NAME  name of the form - must be unique
+
+OPTIONS
+  -f, --fields=fields  Desired form formFields
+  -l, --labels         Automatically add labels to your form
+  -u, --url=url        The API endpoint endpointUrl for your form
+```
+
+_See code: [src/commands/form.js](https://github.com/gkpty/super-easy-forms-cli/blob/v0.0.0/src/commands/form.js)_
+
+## `sef formstack`
 
 Describe the command here
 
 ```
 USAGE
-  $ sef form
+  $ sef formstack
 
 OPTIONS
   -n, --name=name  name to print
@@ -61,26 +81,7 @@ DESCRIPTION
   Extra documentation goes here
 ```
 
-_See code: [src/commands/form.js](https://github.com/gkpty/super-easy-forms-cli/blob/v0.0.0/src/commands/form.js)_
-
-## `sef forme FORMNAME`
-
-Builds an html form
-
-```
-USAGE
-  $ sef forme FORMNAME
-
-ARGUMENTS
-  FORMNAME  name of the form - must be unique
-
-OPTIONS
-  -f, --fields=fields  Desired form fields
-  -l, --labels         Automatically add labels to your form
-  -u, --url=url        The API endpoint url for your form
-```
-
-_See code: [src/commands/forme.js](https://github.com/gkpty/super-easy-forms-cli/blob/v0.0.0/src/commands/forme.js)_
+_See code: [src/commands/formstack.js](https://github.com/gkpty/super-easy-forms-cli/blob/v0.0.0/src/commands/formstack.js)_
 
 ## `sef hello`
 
@@ -116,4 +117,22 @@ OPTIONS
 ```
 
 _See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v2.2.2/src/commands/help.ts)_
+
+## `sef lambda`
+
+Describe the command here
+
+```
+USAGE
+  $ sef lambda
+
+OPTIONS
+  -n, --name=name  name to print
+
+DESCRIPTION
+  ...
+  Extra documentation goes here
+```
+
+_See code: [src/commands/lambda.js](https://github.com/gkpty/super-easy-forms-cli/blob/v0.0.0/src/commands/lambda.js)_
 <!-- commandsstop -->
