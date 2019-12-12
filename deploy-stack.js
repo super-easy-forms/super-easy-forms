@@ -33,7 +33,7 @@ module.exports = function deployStack(formName, formFields) {
   });
 	var params = {
     StackName: `${formName}Form`, /* required */
-    TemplateBody: createTemplate(formName, myFormModel, myRequiredFields, obj.emailArn),
+    TemplateBody: createTemplate(formName, myFormModel, myRequiredFields, obj.senderEmail, obj.emailArn),
     TimeoutInMinutes: 5,
     Capabilities: [
       "CAPABILITY_NAMED_IAM"

@@ -16,7 +16,7 @@ module.exports = function formGenerator(formName, url) {
 			console.log(`Error. invalid html type: ${field["type"]}`);
 			return false;
 		}
-		else if(field["type"] === "textbox"){
+		else if(field["type"] === "textarea"){
 			fieldHtml = `<textarea type="text" class="form-control" id="${key}" name="${key}" placeholder="${field["label"]}" required></textarea>`; 
 		}
 		else if(field["type"] === "select"){

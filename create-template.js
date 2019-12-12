@@ -5,9 +5,7 @@ var fs = require("fs");
 
 var createLambda = require('./create-lambda.js');
 
-const sourceEmail = "mailer@torus-digital.com";
-
-module.exports = function createTemplate(formName, formModel, requiredFields, emailArn) {
+module.exports = function createTemplate(formName, formModel, requiredFields, sourceEmail, emailArn) {
   let formFields = {}
   Object.keys(formModel).map(function(key, index) {
     formFields[key] = key;
