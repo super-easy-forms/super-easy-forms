@@ -7,6 +7,6 @@ class BuildCommand extends Command {
   }
 }
 
-BuildCommand.description = `Builds the forms dir, the .env and gitignore files, and the settings.json file.`
+BuildCommand.description = `Builds the required base files and directories.`
 
 module.exports = BuildCommand

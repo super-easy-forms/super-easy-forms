@@ -19,7 +19,7 @@ $ npm install -g super-easy-forms-cli
 $ sef COMMAND
 running command...
 $ sef (-v|--version|version)
-super-easy-forms-cli/0.0.0 linux-x64 node-v11.14.0
+super-easy-forms-cli/0.0.0 linux-x64 node-v12.13.1
 $ sef --help [COMMAND]
 USAGE
   $ sef COMMAND
@@ -29,16 +29,29 @@ USAGE
 # Commands
 <!-- commands -->
 * [`sef build`](#sef-build)
+* [`sef form`](#sef-form)
+* [`sef forme FORMNAME`](#sef-forme-formname)
 * [`sef hello`](#sef-hello)
 * [`sef help [COMMAND]`](#sef-help-command)
 
 ## `sef build`
 
-Describe the command here
+Builds the required base files and directories.
 
 ```
 USAGE
   $ sef build
+```
+
+_See code: [src/commands/build.js](https://github.com/gkpty/super-easy-forms-cli/blob/v0.0.0/src/commands/build.js)_
+
+## `sef form`
+
+Describe the command here
+
+```
+USAGE
+  $ sef form
 
 OPTIONS
   -n, --name=name  name to print
@@ -48,7 +61,26 @@ DESCRIPTION
   Extra documentation goes here
 ```
 
-_See code: [src/commands/build.js](https://github.com/gkpty/super-easy-forms-cli/blob/v0.0.0/src/commands/build.js)_
+_See code: [src/commands/form.js](https://github.com/gkpty/super-easy-forms-cli/blob/v0.0.0/src/commands/form.js)_
+
+## `sef forme FORMNAME`
+
+Builds an html form
+
+```
+USAGE
+  $ sef forme FORMNAME
+
+ARGUMENTS
+  FORMNAME  name of the form - must be unique
+
+OPTIONS
+  -f, --fields=fields  Desired form fields
+  -l, --labels         Automatically add labels to your form
+  -u, --url=url        The API endpoint url for your form
+```
+
+_See code: [src/commands/forme.js](https://github.com/gkpty/super-easy-forms-cli/blob/v0.0.0/src/commands/forme.js)_
 
 ## `sef hello`
 
