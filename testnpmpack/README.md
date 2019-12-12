@@ -29,10 +29,13 @@ USAGE
 # Commands
 <!-- commands -->
 * [`sef build`](#sef-build)
-* [`sef form`](#sef-form)
-* [`sef forme FORMNAME`](#sef-forme-formname)
+* [`sef email`](#sef-email)
+* [`sef form NAME`](#sef-form-name)
+* [`sef fullform`](#sef-fullform)
 * [`sef hello`](#sef-hello)
 * [`sef help [COMMAND]`](#sef-help-command)
+* [`sef lambda`](#sef-lambda)
+* [`sef template`](#sef-template)
 
 ## `sef build`
 
@@ -45,13 +48,13 @@ USAGE
 
 _See code: [src/commands/build.js](https://github.com/gkpty/super-easy-forms-cli/blob/v0.0.0/src/commands/build.js)_
 
-## `sef form`
+## `sef email`
 
 Describe the command here
 
 ```
 USAGE
-  $ sef form
+  $ sef email
 
 OPTIONS
   -n, --name=name  name to print
@@ -61,26 +64,44 @@ DESCRIPTION
   Extra documentation goes here
 ```
 
-_See code: [src/commands/form.js](https://github.com/gkpty/super-easy-forms-cli/blob/v0.0.0/src/commands/form.js)_
+_See code: [src/commands/email.js](https://github.com/gkpty/super-easy-forms-cli/blob/v0.0.0/src/commands/email.js)_
 
-## `sef forme FORMNAME`
+## `sef form NAME`
 
 Builds an html form
 
 ```
 USAGE
-  $ sef forme FORMNAME
+  $ sef form NAME
 
 ARGUMENTS
-  FORMNAME  name of the form - must be unique
+  NAME  name of the form - must be unique
 
 OPTIONS
-  -f, --fields=fields  Desired form fields
+  -f, --fields=fields  Desired form formFields
   -l, --labels         Automatically add labels to your form
-  -u, --url=url        The API endpoint url for your form
+  -u, --url=url        The API endpoint endpointUrl for your form
 ```
 
-_See code: [src/commands/forme.js](https://github.com/gkpty/super-easy-forms-cli/blob/v0.0.0/src/commands/forme.js)_
+_See code: [src/commands/form.js](https://github.com/gkpty/super-easy-forms-cli/blob/v0.0.0/src/commands/form.js)_
+
+## `sef fullform`
+
+Describe the command here
+
+```
+USAGE
+  $ sef fullform
+
+OPTIONS
+  -n, --name=name  name to print
+
+DESCRIPTION
+  ...
+  Extra documentation goes here
+```
+
+_See code: [src/commands/fullform.js](https://github.com/gkpty/super-easy-forms-cli/blob/v0.0.0/src/commands/fullform.js)_
 
 ## `sef hello`
 
@@ -116,4 +137,40 @@ OPTIONS
 ```
 
 _See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v2.2.2/src/commands/help.ts)_
+
+## `sef lambda`
+
+Describe the command here
+
+```
+USAGE
+  $ sef lambda
+
+OPTIONS
+  -n, --name=name  name to print
+
+DESCRIPTION
+  ...
+  Extra documentation goes here
+```
+
+_See code: [src/commands/lambda.js](https://github.com/gkpty/super-easy-forms-cli/blob/v0.0.0/src/commands/lambda.js)_
+
+## `sef template`
+
+Describe the command here
+
+```
+USAGE
+  $ sef template
+
+OPTIONS
+  -n, --name=name  name to print
+
+DESCRIPTION
+  ...
+  Extra documentation goes here
+```
+
+_See code: [src/commands/template.js](https://github.com/gkpty/super-easy-forms-cli/blob/v0.0.0/src/commands/template.js)_
 <!-- commandsstop -->
