@@ -7,7 +7,7 @@ var GetApiUrl = require('./lib/GetApiUrl');
 var Email = require('./lib/SesEmail');
 var CreateIamUser = require('./lib/CreateIamUser')
 var FormConfig = require('./lib/Config')
-var Build = require('./build')
+var {initBuild} = require('./build')
 
 //GetContacts
 //ExportContacts
@@ -25,4 +25,4 @@ module.exports.ValidateSesEmail = Email.ValidateSesEmail;
 module.exports.CreateIamUser = CreateIamUser;
 module.exports.AddFormFields = FormConfig.AddFormFields;
 module.exports.AddConfigVariable = FormConfig.AddVar;
-module.exports.Build = Build;
+module.exports.Build = initBuild;
