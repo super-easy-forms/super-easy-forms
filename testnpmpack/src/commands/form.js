@@ -1,6 +1,7 @@
 const {Command,flags} = require('@oclif/command')
 const SEF = require('super-easy-forms')
 const open = require('open');
+const {cli} = require('cli-ux');
 
 function isEmpty(obj) {
   return !Object.keys(obj).length;
@@ -23,7 +24,7 @@ class FormCommand extends Command {
     }), 
     labels: flags.boolean({
       char: 'l',
-      default: false,
+      default: true,
       description: 'Automatically add labels to your form',
       dependsOn: ['fields']
     }),
@@ -56,21 +57,16 @@ class FormCommand extends Command {
       }
     })
     if(isEmpty(params)){
-      SEF.CreateForm(args.name, function(err, data){
-        if(err) console.error(err)
-        else{
-          open(`forms/${args.name}/${args.name}.html`);
-        }
-      })
+      options = null;
     }
-    else{
-      SEF.CreateForm(args.name, params, function(err, data){
-        if(err) console.error(err)
-        else{
-          open(`forms/${args.name}/${args.name}.html`);
-        }
-      })
-    }
+    cli.action.start('Generating your form')
+    SEF.CreateForm(args.name, options, function(err, data){
+      if(err) console.error(err)
+      else{
+        open(`forms/${args.name}/${args.name}.html`);
+        cli.action.stop()
+      }
+    })
   } 
 }
 

@@ -26,6 +26,10 @@ function promptemail(email, callback){
   })
 }
 
+function isEmpty(obj) {
+  return !Object.keys(obj).length;
+}
+
 class FullformCommand extends Command {
   static args = [
     {
@@ -56,7 +60,7 @@ class FullformCommand extends Command {
     }), 
     labels: flags.boolean({
       char: 'l',
-      default: false,
+      default: true,
       description: 'Automatically add labels to your form',
     })
   }
@@ -84,6 +88,9 @@ class FullformCommand extends Command {
         params[key] = options[key]
       }
     })
+    if(isEmpty(params)){
+      options = null;
+    }
     cli.action.start('Setting up')
     SEF.FormSetup(args.name, function(err, data){
       if(err){
