@@ -28,3 +28,4 @@ module.exports.ParseFields = FormConfig.ParseFields;
 module.exports.AddConfigVariable = FormConfig.AddVar;
 module.exports.Build = initBuild;
 module.exports.CreateLabel = FormConfig.CreateLabel;
+module.exports.FormSetup = FormConfig.CheckForm;

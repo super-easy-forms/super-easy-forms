@@ -7,40 +7,6 @@ const readline = require('readline').createInterface({
 const open = require('open');
 const {cli} = require('cli-ux');
 
-//check arguments
-//ses email
-//create lambda
-//create template
-//create form
-//deploy stack
-//open the form
-
-/*
-function isEmpty(obj) {
-  return !Object.keys(obj).length;
-}
-
-function createForm(params, formName) {
-  if(isEmpty(params)){
-    SEF.CreateForm(args.name, function(err, data){
-      if(err) console.error(err)
-      else{
-        open(`forms/${args.name}/${args.name}.html`);
-      }
-    })
-  }
-  else{
-    SEF.CreateForm(args.name, params, function(err, data){
-      if(err) console.error(err)
-      else{
-        open(`forms/${args.name}/${args.name}.html`);
-      }
-    })
-  }
-}
-*/
-
-
 function promptemail(email, callback){
   readline.question(`have you finished confirming the email?`, (res) => {
     if(res === 'y' || res === 'y' || res === 'y'){
@@ -59,7 +25,6 @@ function promptemail(email, callback){
     }
   })
 }
-
 
 class FullformCommand extends Command {
   static args = [
@@ -119,38 +84,60 @@ class FullformCommand extends Command {
         params[key] = options[key]
       }
     })
-    /*
-    cli.action.start('verifying email')
-    await SEF.SesEmail(args.name, options, function(err, data){
-      if(err) throw new Error(Err)
-      else if(data){
-        console.log("email confirmed")
-        cli.action.stop()
+    cli.action.start('Setting up')
+    SEF.FormSetup(args.name, function(err, data){
+      if(err){
+        console.error(err)
       }
-      else {
-        console.log(`email confirmation has been sent to ${options.email}`)
-        promptemail(options.email, console.log("SUCCESS"))
-      }
-    })
-    */
-    cli.action.start('Generating your lambda function')
-    SEF.CreateLambdaFunction(args.name, options, function(err, data){
-      if(err) console.error(err)
-      else {
+      else{
         cli.action.stop()
-        cli.action.start('Generating your cloudformation template')
-        params["lambdaFunction"] = data;
-        SEF.CreateTemplate(args.name, params, function(err, data){
-          if(err) console.error(err)
-          else {
+        cli.action.start('Verifying email')
+        SEF.SesEmail(args.name, options, function(err, data){
+          if(err) throw new Error(Err)
+          else if(data){
             cli.action.stop()
-            /* cli.action.start('Creating your stack in the AWS cloud')
-            SEF.CreateStack(args.name, data, function(err, data){
-              if(err) console.error(err)
+            cli.action.start('Generating your lambda function')
+            SEF.CreateLambdaFunction(args.name, options, function(err, data){
+              if(err) console.error(err.message)
               else {
+                params["lambdaFunction"] = data;
                 cli.action.stop()
+                cli.action.start('Generating your cloudformation template')
+                SEF.CreateTemplate(args.name, params, function(err, data){
+                  if(err) console.error(err.message)
+                  else {
+                    cli.action.stop()
+                    cli.action.start('Creating your stack in the AWS cloud')
+                    SEF.CreateStack(args.name, data, function(err, data){
+                      if(err) console.error(err)
+                      else {
+                        cli.action.stop()
+                        cli.action.start('Fetching your API enpoint URL')
+                        SEF.GetApiUrl(args.name, data, function(err, data){
+                          if(err) console.error(err.message)
+                          else {
+                            cli.action.stop()
+                            cli.action.start('Generating your form')
+                            options["endpointUrl"] = data; 
+                            SEF.CreateForm(args.name, options, function(err, data){
+                              if(err) console.error(err.message)
+                              else {
+                                cli.action.stop()
+                                open(`forms/${args.name}/${args.name}.html`);
+                              }
+                            })
+                          }
+                        })
+                      }
+                    })
+                  }
+                }) 
               }
-            }) */
+            })
+          }
+          else {
+            console.log(`email confirmation has been sent to ${options.email}`)
+            promptemail(options.email, console.log("SUCCESS"))
           }
         })
       }
