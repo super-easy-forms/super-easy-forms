@@ -119,12 +119,12 @@ class FullformCommand extends Command {
         params[key] = options[key]
       }
     })
-    SEF.SesEmail(args.name, options, function(err, data){
-      //cli.action.start('verifying email')
+    cli.action.start('verifying email')
+    await SEF.SesEmail(args.name, options, function(err, data){
       if(err) throw new Error(Err)
-      //cli.action.stop()
       else if(data){
         console.log("email confirmed")
+        cli.action.stop()
       }
       else {
         console.log(`email confirmation has been sent to ${options.email}`)
