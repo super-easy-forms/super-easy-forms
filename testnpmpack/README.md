@@ -31,11 +31,12 @@ USAGE
 * [`sef build`](#sef-build)
 * [`sef email`](#sef-email)
 * [`sef form NAME`](#sef-form-name)
-* [`sef fullform`](#sef-fullform)
+* [`sef fullform NAME`](#sef-fullform-name)
 * [`sef hello`](#sef-hello)
 * [`sef help [COMMAND]`](#sef-help-command)
 * [`sef lambda`](#sef-lambda)
 * [`sef template`](#sef-template)
+* [`sef validateTemplate`](#sef-validatetemplate)
 
 ## `sef build`
 
@@ -85,20 +86,22 @@ OPTIONS
 
 _See code: [src/commands/form.js](https://github.com/gkpty/super-easy-forms-cli/blob/v0.0.0/src/commands/form.js)_
 
-## `sef fullform`
+## `sef fullform NAME`
 
-Describe the command here
+Builds an html form
 
 ```
 USAGE
-  $ sef fullform
+  $ sef fullform NAME
+
+ARGUMENTS
+  NAME  name of the form - must be unique
 
 OPTIONS
-  -n, --name=name  name to print
-
-DESCRIPTION
-  ...
-  Extra documentation goes here
+  -e, --email=email            Desired form formFields
+  -f, --fields=fields          Desired form formFields
+  -l, --labels                 Automatically add labels to your form
+  -r, --recipients=recipients  recipients that will recieve emails on your behalf.
 ```
 
 _See code: [src/commands/fullform.js](https://github.com/gkpty/super-easy-forms-cli/blob/v0.0.0/src/commands/fullform.js)_
@@ -173,4 +176,22 @@ DESCRIPTION
 ```
 
 _See code: [src/commands/template.js](https://github.com/gkpty/super-easy-forms-cli/blob/v0.0.0/src/commands/template.js)_
+
+## `sef validateTemplate`
+
+Describe the command here
+
+```
+USAGE
+  $ sef validateTemplate
+
+OPTIONS
+  -n, --name=name  name to print
+
+DESCRIPTION
+  ...
+  Extra documentation goes here
+```
+
+_See code: [src/commands/validateTemplate.js](https://github.com/gkpty/super-easy-forms-cli/blob/v0.0.0/src/commands/validateTemplate.js)_
 <!-- commandsstop -->

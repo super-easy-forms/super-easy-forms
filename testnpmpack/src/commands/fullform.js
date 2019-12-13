@@ -71,7 +71,7 @@ class FullformCommand extends Command {
   ]
   static flags = {
     email: flags.string({
-      char: 'f',                    
+      char: 'e',                    
       description: 'Desired form formFields',
       multiple: false,
       required: false         
@@ -119,6 +119,7 @@ class FullformCommand extends Command {
         params[key] = options[key]
       }
     })
+    /*
     cli.action.start('verifying email')
     await SEF.SesEmail(args.name, options, function(err, data){
       if(err) throw new Error(Err)
@@ -129,6 +130,29 @@ class FullformCommand extends Command {
       else {
         console.log(`email confirmation has been sent to ${options.email}`)
         promptemail(options.email, console.log("SUCCESS"))
+      }
+    })
+    */
+    cli.action.start('Generating your lambda function')
+    SEF.CreateLambdaFunction(args.name, options, function(err, data){
+      if(err) console.error(err)
+      else {
+        cli.action.stop()
+        cli.action.start('Generating your cloudformation template')
+        params["lambdaFunction"] = data;
+        SEF.CreateTemplate(args.name, params, function(err, data){
+          if(err) console.error(err)
+          else {
+            cli.action.stop()
+            /* cli.action.start('Creating your stack in the AWS cloud')
+            SEF.CreateStack(args.name, data, function(err, data){
+              if(err) console.error(err)
+              else {
+                cli.action.stop()
+              }
+            }) */
+          }
+        })
       }
     })
   } 
