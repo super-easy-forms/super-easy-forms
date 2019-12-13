@@ -1,3 +1,29 @@
+const {Command, flags} = require('@oclif/command')
+const {cli} = require('cli-ux')
+const SEF = require('super-easy-forms')
+
+const wait = (ms = 1000) => new Promise(resolve => setTimeout(resolve, ms))
+
+
+class EmailCommand extends Command {
+  async run() {
+    console.log("HELLO")
+  }
+}
+
+EmailCommand.description = `Describe the command here
+...
+Extra documentation goes here
+`
+
+EmailCommand.flags = {
+  name: flags.string({char: 'n', description: 'name to print'}),
+}
+
+module.exports = EmailCommand
+
+
+/*
 const {Command,flags} = require('@oclif/command')
 const SEF = require('super-easy-forms')
 const open = require('open');
@@ -40,10 +66,7 @@ class EmailCommand extends Command {
     const {args, flags} = this.parse(EmailCommand)
     let options = {endpointUrl:null, formFields:null};
     let params = {};
-    //validate email
-    //validateSESemail
-    //if valid -> addVar
-    //else -> prompt user -> email verification sent. please confirm your email and press done.
+    
     if(flags.url){
       options.endpointUrl = flags.url
     }
@@ -83,3 +106,4 @@ EmailCommand.description = `Builds an html form`
 
 module.exports = EmailCommand
 
+*/

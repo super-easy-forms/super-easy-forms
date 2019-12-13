@@ -20,6 +20,7 @@ module.exports.ValidateTemplate = ValidateTemplate;
 module.exports.CreateStack = CreateStack;
 module.exports.GetApiUrl = GetApiUrl;
 module.exports.VerifyDefaultEmail = Email.VerifyDefaultEmail;
+module.exports.SesEmail = Email.SesEmail;
 module.exports.VerifySesEmail = Email.VerifySesEmail;
 module.exports.ValidateSesEmail = Email.ValidateSesEmail;
 module.exports.CreateIamUser = CreateIamUser;

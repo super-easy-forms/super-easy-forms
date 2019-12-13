@@ -1,10 +1,13 @@
 const {Command, flags} = require('@oclif/command')
+const {cli} = require('cli-ux')
+const SEF = require('super-easy-forms')
+
+const wait = (ms = 1000) => new Promise(resolve => setTimeout(resolve, ms))
+
 
 class HelloCommand extends Command {
   async run() {
-    const {flags} = this.parse(HelloCommand)
-    const name = flags.name || 'world'
-    this.log(`hello ${name} from ./src/commands/hello.js`)
+    console.log("HELLO")
   }
 }
 
