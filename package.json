@@ -1,6 +1,6 @@
 {
   "name": "super-easy-forms",
-  "version": "1.8.4",
+  "version": "1.9.0",
   "description": "a script that generates serverless backends for contact forms using AWS",
   "main": "index.js",
   "scripts": {
