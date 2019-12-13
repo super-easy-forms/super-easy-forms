@@ -1,11 +1,15 @@
 ![Super Easy Forms](img/super-easy-forms-logo.png)
 
 [![License](http://img.shields.io/:license-mit-blue.svg?style=flat-square)](http://gkpty.mit-license.org)
-[![Build Status](https://travis-ci.com/gkpty/super_easy_forms.svg?branch=master)](https://travis-ci.com/gkpty/super_easy_forms)
+[![Build Status](https://travis-ci.com/gkpty/super-easy-forms.svg?branch=master)](https://travis-ci.com/gkpty/super-easy-forms)
 
 Super Easy Forms is a tool that lets you create html forms in seconds (literally). It takes care of provisioning all the necessary backend resources for you in AWS, and it outputs a Bootstrap HTML form ready to copy paste into your static site.
 
 **This is now the repo for Super Easy Forms 2.0. The First Version has been moved to [this other repo](https://github.com/gkpty/super-easy-forms-classic)**
+
+<div style="padding-top:70px; padding-bottom:70px">
+<a href="https://aws.amazon.com/what-is-cloud-computing"><img style="margin-left:70px" align="right" height="70px" width="190px" src="https://d0.awsstatic.com/logos/powered-by-aws.png" alt="Powered by AWS Cloud Computing"></a>
+</div>
 
 ## Pre-requisites
 
