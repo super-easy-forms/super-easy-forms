@@ -24,7 +24,6 @@ class SubmissionsCommand extends Command {
     format: flags.string({
       char: 'f',                    
       description: 'Desired format csv|json',
-      default: 'csv',
       options: ['csv', 'json'], 
       required: false,
       dependsOn: ['export']         
