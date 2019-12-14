@@ -13,22 +13,19 @@ class SubmissionsCommand extends Command {
   static flags = {
     list: flags.boolean({
       char: 'l',
-      default: true,
       description: 'print all submissions for the form to stdout',
       exclusive: ['export'],
     }),
     export: flags.boolean({
       char: 'e',
-      default: true,
       description: 'Exports all submissions for the form to its folder',
-      exclusive: ['export'],         
+      exclusive: ['list'],         
     }),
     format: flags.string({
       char: 'f',                    
       description: 'Desired format csv|json',
       default: 'csv',
       options: ['csv', 'json'], 
-      multiple: false,
       required: false,
       dependsOn: ['export']         
     }), 
