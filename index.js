@@ -9,11 +9,12 @@ var GetApiUrl = require('./lib/GetApiUrl');
 var Email = require('./lib/SesEmail');
 var CreateIamUser = require('./lib/CreateIamUser')
 var GetSubmissions = require('./lib/GetSubmissions')
+var ExportSubmissions = require('./lib/ExportSubmissions')
 var FormConfig = require('./lib/Config')
 var {initBuild} = require('./build')
 
 module.exports.GetSubmissions = GetSubmissions;
-//ExportContacts
+module.exports.ExportSubmissions = ExportSubmissions;
 module.exports.CreateForm = CreateForm;
 module.exports.CreateLambdaFunction = CreateLambdaFunction;
 module.exports.CreateTemplate = CreateTemplate;

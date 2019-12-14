@@ -10,47 +10,57 @@ class SubmissionsCommand extends Command {
       description: 'name of the form - must be unique',
     }
   ]
-  /*
   static flags = {
     list: flags.boolean({
       char: 'l',
       default: true,
-      description: 'Automatically add labels to your form',
-      dependsOn: ['fields']
+      description: 'print all submissions for the form to stdout',
+      exclusive: ['export'],
     }),
     export: flags.boolean({
-      char: 'l',
+      char: 'e',
       default: true,
-      description: 'Automatically add labels to your form',
-      dependsOn: ['fields']         
+      description: 'Exports all submissions for the form to its folder',
+      exclusive: ['export'],         
     }),
     format: flags.string({
       char: 'f',                    
       description: 'Desired format csv|json',
       default: 'csv',
+      options: ['csv', 'json'], 
       multiple: false,
       required: false,
-      dependsOn: ['fields']         
+      dependsOn: ['export']         
     }), 
   }
-  */
   async run() {
-    const {args} = this.parse(SubmissionsCommand)
-    cli.action.start('Fetching your form submissions')
-    SEF.GetSubmissions(args.name, function(err, data){
-      if(err) console.error(err)
-      else{
-        for(let i = 0; i < data.length; i++){
-          console.log(`${i}.`)
-          let item = data[i];
-          Object.keys(item).map(function(key) {
-            let val = item[key]
-            console.log(`${key}: ${val["S"]}`)
-          }) 
+    const {flags, args} = this.parse(SubmissionsCommand)
+    if(flags.list){
+      cli.action.start('Fetching your form submissions')
+      SEF.GetSubmissions(args.name, function(err, data){
+        if(err) console.error(err)
+        else{
+          for(let i = 0; i < data.length; i++){
+            console.log(`${i}.`)
+            let item = data[i];
+            Object.keys(item).map(function(key) {
+              let val = item[key]
+              console.log(`${key}: ${val["S"]}`)
+            }) 
+          }
+          cli.action.stop()
         }
-        cli.action.stop()
-      }
-    })
+      })
+    }
+    else if(flags.export){
+      cli.action.start('Exporting your form submissions')
+      SEF.ExportSubmissions(args.name, flags.format, function(err, data){
+        if(err) console.error(err)
+        else{
+          cli.action.stop()
+        }
+      })
+    }
   }
 }
 
