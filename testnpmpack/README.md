@@ -34,9 +34,10 @@ USAGE
 * [`sef fullform NAME`](#sef-fullform-name)
 * [`sef hello`](#sef-hello)
 * [`sef help [COMMAND]`](#sef-help-command)
-* [`sef lambda`](#sef-lambda)
+* [`sef lambda NAME`](#sef-lambda-name)
+* [`sef submissions`](#sef-submissions)
 * [`sef template`](#sef-template)
-* [`sef validateTemplate`](#sef-validatetemplate)
+* [`sef validateTemplate NAME`](#sef-validatetemplate-name)
 
 ## `sef build`
 
@@ -141,13 +142,32 @@ OPTIONS
 
 _See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v2.2.2/src/commands/help.ts)_
 
-## `sef lambda`
+## `sef lambda NAME`
+
+Builds an html form
+
+```
+USAGE
+  $ sef lambda NAME
+
+ARGUMENTS
+  NAME  name of the form - must be unique
+
+OPTIONS
+  -e, --email=email            Email address that will be used to send emails
+  -f, --fields=fields          Desired form formFields
+  -r, --recipients=recipients  Recipients that will recieve emails on your behalf.
+```
+
+_See code: [src/commands/lambda.js](https://github.com/gkpty/super-easy-forms-cli/blob/v0.0.0/src/commands/lambda.js)_
+
+## `sef submissions`
 
 Describe the command here
 
 ```
 USAGE
-  $ sef lambda
+  $ sef submissions
 
 OPTIONS
   -n, --name=name  name to print
@@ -157,7 +177,7 @@ DESCRIPTION
   Extra documentation goes here
 ```
 
-_See code: [src/commands/lambda.js](https://github.com/gkpty/super-easy-forms-cli/blob/v0.0.0/src/commands/lambda.js)_
+_See code: [src/commands/submissions.js](https://github.com/gkpty/super-easy-forms-cli/blob/v0.0.0/src/commands/submissions.js)_
 
 ## `sef template`
 
@@ -177,20 +197,16 @@ DESCRIPTION
 
 _See code: [src/commands/template.js](https://github.com/gkpty/super-easy-forms-cli/blob/v0.0.0/src/commands/template.js)_
 
-## `sef validateTemplate`
+## `sef validateTemplate NAME`
 
-Describe the command here
+validates a cloudformation template saved in your formName's dir with AWS
 
 ```
 USAGE
-  $ sef validateTemplate
+  $ sef validateTemplate NAME
 
-OPTIONS
-  -n, --name=name  name to print
-
-DESCRIPTION
-  ...
-  Extra documentation goes here
+ARGUMENTS
+  NAME  name of the form - must be unique
 ```
 
 _See code: [src/commands/validateTemplate.js](https://github.com/gkpty/super-easy-forms-cli/blob/v0.0.0/src/commands/validateTemplate.js)_
