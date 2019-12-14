@@ -70,6 +70,7 @@ describe('Check the createTemplate method', function() {
       })
     });
   });
+  /*
   describe('Validates a saved cloudformation template', function() {
     it('Should return true for a valid cloudformation template', function(done) {
       ValidateTemplate(formName, function(err, data){
@@ -83,6 +84,7 @@ describe('Check the createTemplate method', function() {
       })
     });
   });
+  */
   after(function(){
     fs.writeFileSync(`./forms/${formName}/config.json`, '{}')
     //fs.unlinkSync(`./forms/${formName}/template.json`)
