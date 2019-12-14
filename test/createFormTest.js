@@ -1,7 +1,5 @@
 var assert = require('assert');
 var fs = require("fs")
-var {optionArgs} = require('./../lib/InternalModules')
-var {CheckForm} = require('./../lib/Config')
 var {createDir} = require('./../build')
 var CreateForm = require('./../lib/CreateForm')
 //var AWS = require('aws-sdk-mock');
@@ -26,33 +24,47 @@ describe('Check the createForm method', function() {
       })
     });
   });
-  /*
-  let formFields = {"firstName":{"type":"text","label":"","required":true},"lastName":{"type":"text","label":"","required":false},"email":{"type":"email","label":"","required":false},"message":{"type":"textarea","label":"","required":false}}
+  args["formFields"] = {"firstName":{"type":"text","label":"","required":true},"lastName":{"type":"text","label":"","required":false},"email":{"type":"email","label":"","required":false},"message":{"type":"textarea","label":"","required":false}}
+  args["endpointUrl"] = "https://testapi.execute-api.us-east-1.amazonaws.com/TestStage/"
   describe('Create form from params', function() {
     it('should create a form in ./forms/formName/formName.html', function(done) {
-      optionArgs(formName, args, "invalid param", function(err, data){
-        if(err) {
-          assert.equal(err.message,"options must be an object with the appropriate keys");
-          done();
+      CreateForm(formName, args, function(err, data){
+        if(err){
+          throw new Error(err)
         }
         else {
-          throw new Error('no error detected');
-        };
-      });
+          //check that the object returned is a string with more than 1000 chars
+          assert.equal(data.length>1000? true:false, true)
+          //check that there is a form saved in ./forms/formName/formName.html and that it has content
+          let form = fs.readFileSync(`./forms/${formName}/${formName}.html`, 'utf8')
+          assert.equal(form, data);
+          done()
+        }
+      })
     });
+    after(function(){
+      fs.unlinkSync(`./forms/${formName}/${formName}.html`)
+    })
   });
-  describe('create form from config', function() {
-    it('should return an error when an invalid options argument is used', function(done) {
-      optionArgs(formName, args, "invalid param", function(err, data){
-        if(err) {
-          assert.equal(err.message,"options must be an object with the appropriate keys");
-          done();
+  describe('create form from its config file', function() {
+    it('should create a form in ./forms/formName/formName.html', function(done) {
+      CreateForm(formName, function(err, data){
+        if(err){
+          throw new Error(err)
         }
         else {
-          throw new Error('no error detected');
-        };
-      });
+          //check that the object returned is a string with more than 1000 chars
+          assert.equal(data.length>1000? true:false, true)
+          //check that there is a form saved in ./forms/formName/formName.html and that it has content
+          let form = fs.readFileSync(`./forms/${formName}/${formName}.html`, 'utf8')
+          assert.equal(form, data);
+          done()
+        }
+      })
     });
   });
-  */
+  after(function(){
+    fs.writeFileSync(`./forms/${formName}/config.json`, '{}')
+    fs.unlinkSync(`./forms/${formName}/${formName}.html`)
+  })
 });
