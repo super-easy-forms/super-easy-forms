@@ -2,6 +2,7 @@ var assert = require('assert');
 var fs = require("fs")
 var {createDir} = require('./../build')
 var CreateTemplate = require('./../lib/CreateTemplate')
+var ValidateTemplate = require('./../lib/ValidateTemplate')
 //var AWS = require('aws-sdk-mock');
 
 function isEmpty(obj) {
@@ -51,7 +52,7 @@ describe('Check the createTemplate method', function() {
       fs.unlinkSync(`./forms/${formName}/template.json`)
     })
   });
-  describe('create form from its config file', function() {
+  describe('create a template from its config file', function() {
     it('should create a cloud formation template in ./forms/formName/template.json', function(done) {
       CreateTemplate(formName, function(err, data){
         if(err){
@@ -64,6 +65,19 @@ describe('Check the createTemplate method', function() {
           //check that there is a form saved in ./forms/formName/formName.html and that it has content
           let template = fs.readFileSync(`./forms/${formName}/template.json`, 'utf8')
           assert.equal(template, data);
+          done()
+        }
+      })
+    });
+  });
+  describe('Validates a saved cloudformation template', function() {
+    it('Should return true for a valid cloudformation template', function(done) {
+      ValidateTemplate(formName, function(err, data){
+        if(err){
+          console.err(err.message)
+        }
+        else {
+          assert.equal(data, true)
           done()
         }
       })
