@@ -9,7 +9,7 @@ describe('Check the createLambda method', function() {
     createDir("./forms")
   })
   let formName = "testform"
-  let args = {"endpointUrl":"", "formFields":{}}
+  let args = {"email":"", "formFields":{}, "recipients":[]}
   //let emptyDir = fs.mkdirSync(`./forms/${formName}`)
   describe('No params supplied', function() {
     it('Should produce an error', function(done) {
@@ -35,6 +35,7 @@ describe('Check the createLambda method', function() {
         }
         else {
           //check that the object returned is a string with more than 1000 chars
+          assert.equal(typeof data, "string")
           assert.equal(data.length>1000? true:false, true)
           //check that there is a form saved in ./forms/formName/formName.html and that it has content
           let lambdaFunction = fs.readFileSync(`./forms/${formName}/lambdaFunction.js`, 'utf8')
@@ -55,6 +56,7 @@ describe('Check the createLambda method', function() {
         }
         else {
           //check that the object returned is a string with more than 1000 chars
+          assert.equal(typeof data, "string")
           assert.equal(data.length>1000? true:false, true)
           //check that there is a form saved in ./forms/formName/formName.html and that it has content
           let form = fs.readFileSync(`./forms/${formName}/lambdaFunction.js`, 'utf8')
@@ -66,6 +68,6 @@ describe('Check the createLambda method', function() {
   });
   after(function(){
     fs.writeFileSync(`./forms/${formName}/config.json`, '{}')
-    fs.unlinkSync(`./forms/${formName}/lambdaFunction.js`)
+    //fs.unlinkSync(`./forms/${formName}/lambdaFunction.js`)
   })
 });
