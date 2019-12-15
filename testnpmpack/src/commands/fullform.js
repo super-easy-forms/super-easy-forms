@@ -9,7 +9,7 @@ const {cli} = require('cli-ux');
 
 function promptemail(email, callback){
   readline.question(`have you finished confirming the email?`, (res) => {
-    if(res === 'y' || res === 'y' || res === 'y'){
+    if(res === 'y' || res === 'Y' || res === 'yes'){
       SEF.ValidateSesEmail(email, function(err, data){
         if(data){
           callback()
@@ -20,7 +20,7 @@ function promptemail(email, callback){
         }
       })
     }
-    else if(prompt === "n"){
+    else if(res === "n" || res === "N" || res === "no"){
       SEF.VerifySesEmail(email, promptemail(email, callback))
     }
   })
@@ -41,13 +41,13 @@ class FullformCommand extends Command {
   static flags = {
     email: flags.string({
       char: 'e',                    
-      description: 'Desired form formFields',
+      description: 'Email address that will be used to send emails',
       multiple: false,
       required: false         
     }), 
     recipients: flags.string({
       char: 'r',                    
-      description: 'recipients that will recieve emails on your behalf.',
+      description: 'Recipients that will recieve emails on your behalf.',
       parse: input => input.split(","),
       multiple: false,
       required: false         
