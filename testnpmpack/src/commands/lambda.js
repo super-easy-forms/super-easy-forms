@@ -1,6 +1,5 @@
 const {Command,flags} = require('@oclif/command')
 const SEF = require('super-easy-forms')
-const open = require('open');
 const {cli} = require('cli-ux');
 
 function isEmpty(obj) {
