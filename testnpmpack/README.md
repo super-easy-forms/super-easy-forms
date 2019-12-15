@@ -29,6 +29,178 @@ USAGE
 # Commands
 <!-- commands -->
 * [`sef build`](#sef-build)
+* [`sef email EMAIL [NAME]`](#sef-email-email-name)
+* [`sef form NAME`](#sef-form-name)
+* [`sef fullform NAME`](#sef-fullform-name)
+* [`sef help [COMMAND]`](#sef-help-command)
+* [`sef iam`](#sef-iam)
+* [`sef lambda NAME`](#sef-lambda-name)
+* [`sef submissions NAME`](#sef-submissions-name)
+* [`sef template NAME`](#sef-template-name)
+
+## `sef build`
+
+Builds the required base files and directories.
+
+```
+USAGE
+  $ sef build
+```
+
+_See code: [src/commands/build.js](https://github.com/gkpty/super-easy-forms-cli/blob/v0.0.0/src/commands/build.js)_
+
+## `sef email EMAIL [NAME]`
+
+Builds an html form
+
+```
+USAGE
+  $ sef email EMAIL [NAME]
+
+ARGUMENTS
+  EMAIL  the email address that will send the form submission emails
+  NAME   name of the form - must be unique
+
+OPTIONS
+  -n, --new       verifies a new email address to be used by AWS SES to send email
+  -v, --validate  validates that the provided email address was verified with AWS SES
+```
+
+_See code: [src/commands/email.js](https://github.com/gkpty/super-easy-forms-cli/blob/v0.0.0/src/commands/email.js)_
+
+## `sef form NAME`
+
+Builds an html form
+
+```
+USAGE
+  $ sef form NAME
+
+ARGUMENTS
+  NAME  name of the form - must be unique
+
+OPTIONS
+  -f, --fields=fields  Desired form formFields
+  -l, --labels         Automatically add labels to your form
+  -u, --url=url        The API endpoint endpointUrl for your form
+```
+
+_See code: [src/commands/form.js](https://github.com/gkpty/super-easy-forms-cli/blob/v0.0.0/src/commands/form.js)_
+
+## `sef fullform NAME`
+
+Builds an html form
+
+```
+USAGE
+  $ sef fullform NAME
+
+ARGUMENTS
+  NAME  name of the form - must be unique
+
+OPTIONS
+  -e, --email=email            Email address that will be used to send emails
+  -f, --fields=fields          Desired form formFields
+  -l, --labels                 Automatically add labels to your form
+  -r, --recipients=recipients  Recipients that will recieve emails on your behalf.
+```
+
+_See code: [src/commands/fullform.js](https://github.com/gkpty/super-easy-forms-cli/blob/v0.0.0/src/commands/fullform.js)_
+
+## `sef help [COMMAND]`
+
+display help for sef
+
+```
+USAGE
+  $ sef help [COMMAND]
+
+ARGUMENTS
+  COMMAND  command to show help for
+
+OPTIONS
+  --all  see all commands in CLI
+```
+
+_See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v2.2.2/src/commands/help.ts)_
+
+## `sef iam`
+
+Describe the command here
+
+```
+USAGE
+  $ sef iam
+
+OPTIONS
+  -n, --name=name  name to print
+
+DESCRIPTION
+  ...
+  Extra documentation goes here
+```
+
+_See code: [src/commands/iam.js](https://github.com/gkpty/super-easy-forms-cli/blob/v0.0.0/src/commands/iam.js)_
+
+## `sef lambda NAME`
+
+Builds an html form
+
+```
+USAGE
+  $ sef lambda NAME
+
+ARGUMENTS
+  NAME  name of the form - must be unique
+
+OPTIONS
+  -e, --email=email            Email address that will be used to send emails
+  -f, --fields=fields          Desired form formFields
+  -r, --recipients=recipients  Recipients that will recieve emails on your behalf.
+```
+
+_See code: [src/commands/lambda.js](https://github.com/gkpty/super-easy-forms-cli/blob/v0.0.0/src/commands/lambda.js)_
+
+## `sef submissions NAME`
+
+validates a cloudformation template saved in your formName's dir with AWS
+
+```
+USAGE
+  $ sef submissions NAME
+
+ARGUMENTS
+  NAME  name of the form - must be unique
+
+OPTIONS
+  -e, --export           Exports all submissions for the form to its folder
+  -f, --format=csv|json  Desired format csv|json
+  -l, --list             print all submissions for the form to stdout
+```
+
+_See code: [src/commands/submissions.js](https://github.com/gkpty/super-easy-forms-cli/blob/v0.0.0/src/commands/submissions.js)_
+
+## `sef template NAME`
+
+validate/create/update your cloudformation template saved locally
+
+```
+USAGE
+  $ sef template NAME
+
+ARGUMENTS
+  NAME  name of the form - must be unique
+
+OPTIONS
+  -c, --create         Create a new cloudformation temmplate and saves it locally
+  -e, --email=email    Email address that will be used to send emails
+  -f, --fields=fields  Desired form formFields
+  -v, --validate       Validate your cloudformation template with AWS
+```
+
+_See code: [src/commands/template.js](https://github.com/gkpty/super-easy-forms-cli/blob/v0.0.0/src/commands/template.js)_
+<!-- commandsstop -->
+* [`sef build`](#sef-build)
 * [`sef email`](#sef-email)
 * [`sef form NAME`](#sef-form-name)
 * [`sef fullform NAME`](#sef-fullform-name)
