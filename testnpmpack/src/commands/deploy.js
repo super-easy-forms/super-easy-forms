@@ -62,7 +62,7 @@ class Deploy extends Command {
       cli.action.start('Updating your stack in the AWS cloud')
       SEF.UpdateStack(args.name, function(err, data){
         if(err) {
-          console.error(err)
+          console.error(err.message)
           cli.action.stop('Error')
         }
         else {
