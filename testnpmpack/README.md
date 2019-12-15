@@ -29,11 +29,13 @@ USAGE
 # Commands
 <!-- commands -->
 * [`sef build`](#sef-build)
+* [`sef delete`](#sef-delete)
+* [`sef deploy`](#sef-deploy)
 * [`sef email EMAIL [NAME]`](#sef-email-email-name)
 * [`sef form NAME`](#sef-form-name)
 * [`sef fullform NAME`](#sef-fullform-name)
 * [`sef help [COMMAND]`](#sef-help-command)
-* [`sef iam`](#sef-iam)
+* [`sef iam USER [REGION]`](#sef-iam-user-region)
 * [`sef lambda NAME`](#sef-lambda-name)
 * [`sef submissions NAME`](#sef-submissions-name)
 * [`sef template NAME`](#sef-template-name)
@@ -48,6 +50,42 @@ USAGE
 ```
 
 _See code: [src/commands/build.js](https://github.com/gkpty/super-easy-forms-cli/blob/v0.0.0/src/commands/build.js)_
+
+## `sef delete`
+
+Describe the command here
+
+```
+USAGE
+  $ sef delete
+
+OPTIONS
+  -n, --name=name  name to print
+
+DESCRIPTION
+  ...
+  Extra documentation goes here
+```
+
+_See code: [src/commands/delete.js](https://github.com/gkpty/super-easy-forms-cli/blob/v0.0.0/src/commands/delete.js)_
+
+## `sef deploy`
+
+Describe the command here
+
+```
+USAGE
+  $ sef deploy
+
+OPTIONS
+  -n, --name=name  name to print
+
+DESCRIPTION
+  ...
+  Extra documentation goes here
+```
+
+_See code: [src/commands/deploy.js](https://github.com/gkpty/super-easy-forms-cli/blob/v0.0.0/src/commands/deploy.js)_
 
 ## `sef email EMAIL [NAME]`
 
@@ -124,20 +162,20 @@ OPTIONS
 
 _See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v2.2.2/src/commands/help.ts)_
 
-## `sef iam`
+## `sef iam USER [REGION]`
 
-Describe the command here
+the --create flag will open up a window with the AWS console so that you confirm the creation of a user with the entered name.
 
 ```
 USAGE
-  $ sef iam
+  $ sef iam USER [REGION]
+
+ARGUMENTS
+  USER    name of the IAM user
+  REGION  your desired AWS region.
 
 OPTIONS
-  -n, --name=name  name to print
-
-DESCRIPTION
-  ...
-  Extra documentation goes here
+  -c, --create  Helps you create an IAM user and adds its profile to the .env file
 ```
 
 _See code: [src/commands/iam.js](https://github.com/gkpty/super-easy-forms-cli/blob/v0.0.0/src/commands/iam.js)_
