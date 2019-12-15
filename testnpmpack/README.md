@@ -32,12 +32,10 @@ USAGE
 * [`sef email`](#sef-email)
 * [`sef form NAME`](#sef-form-name)
 * [`sef fullform NAME`](#sef-fullform-name)
-* [`sef hello`](#sef-hello)
 * [`sef help [COMMAND]`](#sef-help-command)
 * [`sef lambda NAME`](#sef-lambda-name)
 * [`sef submissions`](#sef-submissions)
 * [`sef template`](#sef-template)
-* [`sef validateTemplate NAME`](#sef-validatetemplate-name)
 
 ## `sef build`
 
@@ -106,24 +104,6 @@ OPTIONS
 ```
 
 _See code: [src/commands/fullform.js](https://github.com/gkpty/super-easy-forms-cli/blob/v0.0.0/src/commands/fullform.js)_
-
-## `sef hello`
-
-Describe the command here
-
-```
-USAGE
-  $ sef hello
-
-OPTIONS
-  -n, --name=name  name to print
-
-DESCRIPTION
-  ...
-  Extra documentation goes here
-```
-
-_See code: [src/commands/hello.js](https://github.com/gkpty/super-easy-forms-cli/blob/v0.0.0/src/commands/hello.js)_
 
 ## `sef help [COMMAND]`
 
@@ -196,18 +176,3 @@ DESCRIPTION
 ```
 
 _See code: [src/commands/template.js](https://github.com/gkpty/super-easy-forms-cli/blob/v0.0.0/src/commands/template.js)_
-
-## `sef validateTemplate NAME`
-
-validates a cloudformation template saved in your formName's dir with AWS
-
-```
-USAGE
-  $ sef validateTemplate NAME
-
-ARGUMENTS
-  NAME  name of the form - must be unique
-```
-
-_See code: [src/commands/validateTemplate.js](https://github.com/gkpty/super-easy-forms-cli/blob/v0.0.0/src/commands/validateTemplate.js)_
-<!-- commandsstop -->
