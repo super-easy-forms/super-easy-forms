@@ -21,7 +21,6 @@ class IamCommand extends Command {
       char: 'c',
       default: true,
       description: 'Helps you create an IAM user and adds its profile to the .env file',
-      exclusive: ['update']
     }),
   }
 
