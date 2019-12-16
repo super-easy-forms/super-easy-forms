@@ -1,10 +1,10 @@
 {
   "name": "super-easy-forms",
-  "version": "1.8.1",
+  "version": "2.0.0",
   "description": "a script that generates serverless backends for contact forms using AWS",
   "main": "index.js",
   "scripts": {
-    "test": "mocha",
+    "test": "mocha --exit",
     "start": "node super-easy-forms.js",
     "build": "node build.js"
   },
@@ -21,7 +21,7 @@
   "bugs": {
     "url": "https://github.com/gkpty/serverless-form-generator/issues"
   },
-  "homepage": "https://github.com/gkpty/serverless-form-generator#readme",
+  "homepage": "https://supereasyforms.com/",
   "dependencies": {
     "aws-sdk": "^2.452.0",
     "dotenv": "^8.0.0",

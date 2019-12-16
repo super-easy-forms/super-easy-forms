@@ -2,7 +2,9 @@ var fs = require("fs");
 
 function createFile(file, contents, callback) {
   if(fs.existsSync(file)){
-    console.log(`file ${file} already exists`)
+    let err = `file ${file} already exists`
+    if(callback && typeof callback === 'function') callback(null, err)
+    else return data;
   }
   else {
     fs.writeFile(file, contents, (err) => {
@@ -11,9 +13,9 @@ function createFile(file, contents, callback) {
         else throw new Error(err);
       }
       else {
-        console.log(`created the file ${file}`)
-        if(callback && typeof callback === 'function') callback(null, 'Success')
-        else return 'Success';
+        let data = `Created the ${file} file`
+        if(callback && typeof callback === 'function') callback(null, data)
+        else return data;
       }
     })
   }
@@ -21,7 +23,9 @@ function createFile(file, contents, callback) {
 
 function createDir(dir, callback){
   if (fs.existsSync(dir)){
-    console.log(`directory ${dir} already exists`)
+    let err = (`directory ${dir} already exists`)
+    if(callback && typeof callback === 'function') callback(null, err)
+    else return err
   }
   else {
     fs.mkdir(dir, (err) => {
@@ -30,8 +34,9 @@ function createDir(dir, callback){
         else throw new Error(err);
       }
       else {
-        if(callback && typeof callback === 'function') callback(null, 'Success')
-        else return 'Success';
+        let data = `Created the ${dir} directory`
+        if(callback && typeof callback === 'function') callback(null, data)
+        else return data;
       }
     });
   }
@@ -39,21 +44,26 @@ function createDir(dir, callback){
 
 function initBuild(){
   createFile('./.env', '', function(err, data){
-    if(err) console.error(err)
-    else console.log('created the .env file')
+    if(err) console.log(err)
+    else {
+      console.log(data)
+      createFile('./.gitignore', '.env', function(err, data){
+        if(err) console.log(err)
+        else console.log(data)
+      })
+    }
   });
-  createFile('./.gitignore', '.env', function(err, data){
-    if(err) console.error(err)
-    else console.log('create the .gitignore file')
-  })
-  createFile('./settings.json', {}, function(err, data){
-    if(err) console.error(err)
-    else console.log('create the settings.json file')
+  createFile('./settings.json', '{}', function(err, data){
+    if(err) console.log(err)
+    else console.log(data)
   })
   createDir('./forms', function(err, data){
-    if(err) console.error(err)
-    else console.log('create the forms folder')
+    if(err) console.log(err)
+    else console.log(data)
   })
 }
 
-initBuild();
+module.exports = {
+  initBuild,
+  createDir
+}
