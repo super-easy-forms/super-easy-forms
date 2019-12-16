@@ -16,7 +16,7 @@ class FormCommand extends Command {
     },
   ]
   static flags = {
-      fields: flags.string({
+    fields: flags.string({
       char: 'f',                    
       description: 'Desired form formFields',
       multiple: false,
