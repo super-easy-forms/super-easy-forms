@@ -11,6 +11,22 @@ Super Easy Forms is a tool that generates serverless web forms (front-end and ba
 <a href="https://aws.amazon.com/what-is-cloud-computing"><img style="margin-left:70px" align="right" height="70px" width="190px" src="https://d0.awsstatic.com/logos/powered-by-aws.png" alt="Powered by AWS Cloud Computing"></a>
 </div>
 
+## New in version 2.0
+- Updated to node 10.X
+- Easier installation Built in commands have been added to further facilitate installation/configuration/setup
+- Documentation: Detailed documentation includes an API method glossary, CLI commands and everything else you need to use/integrate/collaborate with super-easy-forms.
+- Support for multiple Forms: Create and monitor as many forms as you want.
+- Export your form submissions: Command that lets you export the database table of your form as either JSON or CSV.
+- Reusable methods: Easily integrate super-easy-forms into your own project or build your own workflows using components from super-easy-forms.
+- Local config files: Allow you to easily monitor and update each of your forms
+- [Independent multi CLI](https://github.com/gkpty/super-easy-forms-cli): A separate package (super-easy-forms-cli) with multiple commands that have several options and flags allowing you to customize and create/update/delete any of the components in a form individually or together.
+- [CloudFormation template](https://aws.amazon.com/cloudformation/): Easily keep track of the multiple AWS resources for each one of your forms. You can also modify the templates directly to customize the resources in your form.
+- Input sanitation: Uses an AWS API Gateway Model and API validator to insure that the parameters supplied are the correct ones before the call even reaches the lambda function.
+- Support for all html types: Check [W3schools](https://www.w3schools.com/html/html_form_input_types.asp) for a list of all the valid html types
+- Support for html select with options: Add Select lists to your form and supply the options
+- Support for required attributes: Choose which fields in your form you want to make required
+- Smart labels: The parser will read your input fields and create labels for you by separating camel cased values and sepparating dashes/underscores and capitalizing first letters. E.g. first_name → First Name or  firstName → First Name
+
 ## Pre-requisites
 
 *  Make sure you have node.js (10.x +) and npm installed. You can checkout this [tutorial](https://medium.com/@lucaskay/install-node-and-npm-using-nvm-in-mac-or-linux-ubuntu-f0c85153e173) to install npm and node in mac, linux (debian/ubuntu).
@@ -37,4 +53,4 @@ You must have an IAM user with administrator access to be able to use super-easy
 
         AWS_ACCESS_KEY_ID=your-access-key
         AWS_SECRET_ACCESS_KEY=your-secert-access-key
-3. **Create the necesary local files** Run `sef setup -c` from the root of the project. `npm run build` works too.
+3. **Create the necesary local files** Run `sef build` from the root of the project.
