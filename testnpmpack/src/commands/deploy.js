@@ -11,13 +11,6 @@ class Deploy extends Command {
     },
   ]
   static flags = {
-    resources: flags.boolean({
-      char: 'r',                    
-      description: 'Delete all of the back-end resources for your form in the cloud',
-      default: true,
-      multiple: false,
-      required: false         
-    }), 
     create: flags.boolean({
       char: 'c',                    
       description: 'Deploy a new cloudformation stack in the AWS cloud',
@@ -73,7 +66,7 @@ class Deploy extends Command {
   } 
 }
 
-Deploy.description = `Builds an html form`
+Deploy.description = `Deploys your stack in the AWS Cloud`
 
 module.exports = Deploy
 

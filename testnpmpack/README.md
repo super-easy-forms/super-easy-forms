@@ -29,8 +29,8 @@ USAGE
 # Commands
 <!-- commands -->
 * [`sef build`](#sef-build)
-* [`sef delete`](#sef-delete)
-* [`sef deploy`](#sef-deploy)
+* [`sef delete NAME`](#sef-delete-name)
+* [`sef deploy NAME`](#sef-deploy-name)
 * [`sef email EMAIL [NAME]`](#sef-email-email-name)
 * [`sef form NAME`](#sef-form-name)
 * [`sef fullform NAME`](#sef-fullform-name)
@@ -39,6 +39,7 @@ USAGE
 * [`sef lambda NAME`](#sef-lambda-name)
 * [`sef submissions NAME`](#sef-submissions-name)
 * [`sef template NAME`](#sef-template-name)
+* [`sef variable`](#sef-variable)
 
 ## `sef build`
 
@@ -51,38 +52,38 @@ USAGE
 
 _See code: [src/commands/build.js](https://github.com/gkpty/super-easy-forms-cli/blob/v0.0.0/src/commands/build.js)_
 
-## `sef delete`
+## `sef delete NAME`
 
-Describe the command here
+Builds an html form
 
 ```
 USAGE
-  $ sef delete
+  $ sef delete NAME
+
+ARGUMENTS
+  NAME  name of the form you want to delete
 
 OPTIONS
-  -n, --name=name  name to print
-
-DESCRIPTION
-  ...
-  Extra documentation goes here
+  -r, --resources  Delete all of the back-end resources for your form in the cloud
 ```
 
 _See code: [src/commands/delete.js](https://github.com/gkpty/super-easy-forms-cli/blob/v0.0.0/src/commands/delete.js)_
 
-## `sef deploy`
+## `sef deploy NAME`
 
-Describe the command here
+Builds an html form
 
 ```
 USAGE
-  $ sef deploy
+  $ sef deploy NAME
+
+ARGUMENTS
+  NAME  name of the form you want to delete
 
 OPTIONS
-  -n, --name=name  name to print
-
-DESCRIPTION
-  ...
-  Extra documentation goes here
+  -c, --create     Deploy a new cloudformation stack in the AWS cloud
+  -r, --resources  Delete all of the back-end resources for your form in the cloud
+  -u, --update     Update your stack in the AWS cloud
 ```
 
 _See code: [src/commands/deploy.js](https://github.com/gkpty/super-easy-forms-cli/blob/v0.0.0/src/commands/deploy.js)_
@@ -237,6 +238,24 @@ OPTIONS
 ```
 
 _See code: [src/commands/template.js](https://github.com/gkpty/super-easy-forms-cli/blob/v0.0.0/src/commands/template.js)_
+
+## `sef variable`
+
+Describe the command here
+
+```
+USAGE
+  $ sef variable
+
+OPTIONS
+  -n, --name=name  name to print
+
+DESCRIPTION
+  ...
+  Extra documentation goes here
+```
+
+_See code: [src/commands/variable.js](https://github.com/gkpty/super-easy-forms-cli/blob/v0.0.0/src/commands/variable.js)_
 <!-- commandsstop -->
 * [`sef build`](#sef-build)
 * [`sef email`](#sef-email)
