@@ -39,7 +39,7 @@ USAGE
 * [`sef lambda NAME`](#sef-lambda-name)
 * [`sef submissions NAME`](#sef-submissions-name)
 * [`sef template NAME`](#sef-template-name)
-* [`sef variable`](#sef-variable)
+* [`sef variable NAME VARIABLE VALUE`](#sef-variable-name-variable-value)
 
 ## `sef build`
 
@@ -71,7 +71,7 @@ _See code: [src/commands/delete.js](https://github.com/gkpty/super-easy-forms-cl
 
 ## `sef deploy NAME`
 
-Builds an html form
+Deploys your stack in the AWS Cloud
 
 ```
 USAGE
@@ -81,9 +81,8 @@ ARGUMENTS
   NAME  name of the form you want to delete
 
 OPTIONS
-  -c, --create     Deploy a new cloudformation stack in the AWS cloud
-  -r, --resources  Delete all of the back-end resources for your form in the cloud
-  -u, --update     Update your stack in the AWS cloud
+  -c, --create  Deploy a new cloudformation stack in the AWS cloud
+  -u, --update  Update your stack in the AWS cloud
 ```
 
 _See code: [src/commands/deploy.js](https://github.com/gkpty/super-easy-forms-cli/blob/v0.0.0/src/commands/deploy.js)_
@@ -239,20 +238,18 @@ OPTIONS
 
 _See code: [src/commands/template.js](https://github.com/gkpty/super-easy-forms-cli/blob/v0.0.0/src/commands/template.js)_
 
-## `sef variable`
+## `sef variable NAME VARIABLE VALUE`
 
-Describe the command here
+Builds an html form
 
 ```
 USAGE
-  $ sef variable
+  $ sef variable NAME VARIABLE VALUE
 
-OPTIONS
-  -n, --name=name  name to print
-
-DESCRIPTION
-  ...
-  Extra documentation goes here
+ARGUMENTS
+  NAME      name of the form
+  VARIABLE  name of the variable
+  VALUE     value of the variable
 ```
 
 _See code: [src/commands/variable.js](https://github.com/gkpty/super-easy-forms-cli/blob/v0.0.0/src/commands/variable.js)_
