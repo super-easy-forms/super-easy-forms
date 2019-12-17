@@ -2,6 +2,9 @@
 
 [![License](http://img.shields.io/:license-mit-blue.svg?style=flat-square)](http://gkpty.mit-license.org)
 [![Build Status](https://travis-ci.com/gkpty/super-easy-forms.svg?branch=master)](https://travis-ci.com/gkpty/super-easy-forms)
+<a href="https://supereasyforms.com/docs">
+<button style="border-radius:2px">Read the Docs</button>
+</a>
 
 **This is the repo for Super Easy Forms 2.0. The First Version has been moved to [this other repo](https://github.com/gkpty/super-easy-forms-classic)**
 
@@ -11,10 +14,10 @@ Super Easy Forms is a tool that generates serverless web forms (front-end and ba
 <a href="https://aws.amazon.com/what-is-cloud-computing"><img style="margin-left:70px" align="right" height="70px" width="190px" src="https://d0.awsstatic.com/logos/powered-by-aws.png" alt="Powered by AWS Cloud Computing"></a>
 </div>
 
-## New in version 2.0
+## New Features
 - Updated to node 10.X
 - Easier installation Built in commands have been added to further facilitate installation/configuration/setup
-- Documentation: Detailed documentation includes an API method glossary, CLI commands and everything else you need to use/integrate/collaborate with super-easy-forms.
+- [Documentation](https://supereasyforms.com/docs): Detailed documentation includes an API method glossary, CLI commands and everything else you need to use/integrate/collaborate with super-easy-forms.
 - Support for multiple Forms: Create and monitor as many forms as you want.
 - Export your form submissions: Command that lets you export the database table of your form as either JSON or CSV.
 - Reusable methods: Easily integrate super-easy-forms into your own project or build your own workflows using components from super-easy-forms.
@@ -34,7 +37,7 @@ Super Easy Forms is a tool that generates serverless web forms (front-end and ba
 
 ## Installation
 
-1. Create a a new directory for yournew super easy forms project. 
+1. Create a a new directory for your super easy forms project. 
 2. Install super easy forms with npm. `npm install super-easy-forms`
 3. Install the super easy forms CLI with npm. `npm install -g super-easy-forms-cli`
 
@@ -42,15 +45,18 @@ Super Easy Forms is a tool that generates serverless web forms (front-end and ba
 
 You must have an IAM user with administrator access to be able to use super-easy-forms.
 
-1. **Create an IAM user with administrator acces.** you can use the `sef iam profilename -c` command replacing profilename for the desired name of your IAM user. hold on to the access Id and secret key displayed.
-2. **Update the local profile in your machine.** The local profiles are stored in `~/.aws/credentials` in mac/linux or in `C:\Users\USER_NAME\.aws\credentials` in windows. you can create/edit this file by runing `sudo nano ~/.aws/credentials` or something similar. add the profile keys in the format shown bellow.
+1. **Create the necesary local files** Run `$ sef build` from the root of the project.
+2. **Create an IAM user with administrator acces.** you can use the `sef iam profilename -c` command replacing profilename for the desired name of your IAM user. hold on to the access Id and secret key displayed.
+3. **Update the local profile in your machine.** The local profiles are stored in `~/.aws/credentials` in mac/linux or in `C:\Users\USER_NAME\.aws\credentials` in windows. you can create/edit this file by runing `sudo nano ~/.aws/credentials` or something similar. add the profile keys in the format shown bellow.
 
         [profilename]
         aws_access_key_id = <YOUR_ACCESS_KEY_ID>
         aws_secret_access_key = <YOUR_SECRET_ACCESS_KEY>
+4. Add your AWS profile in the .env file of your project `AWS_PROFILE=default` replace default with the name of your IAM user
 
       *Optionally you can add the IAM user’s credentials directly in the .env w/o creating the local profile.
 
         AWS_ACCESS_KEY_ID=your-access-key
         AWS_SECRET_ACCESS_KEY=your-secert-access-key
-3. **Create the necesary local files** Run `sef build` from the root of the project.
+5. Add your AWS region to .env and save the file. `AWS_REGION=us-east-1` replace us-east-1 if your using a different region.
+
