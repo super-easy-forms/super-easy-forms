@@ -10,7 +10,7 @@
 <a href="https://aws.amazon.com/what-is-cloud-computing"><img style="margin-left:70px" align="right" height="70px" width="190px" src="https://d0.awsstatic.com/logos/powered-by-aws.png" alt="Powered by AWS Cloud Computing"></a>
 </div>
 
-  Super Easy Forms is a tool that generates serverless web forms (front-end and back-end) in seconds. it leverages CloudFormation templates to create all of your necessary resources in the AWS cloud including a A Dynamo DB table, an API Gateway endpoint, and a Lambda function. It also automatically generates a ready-to-go html contact form that you can copy-paste into your site. the tool is very easy to use and completely free as all the AWS resources created have a free tier.
+    Super Easy Forms is a tool that generates serverless web forms (front-end and back-end) in seconds. it leverages CloudFormation templates to create all of your necessary resources in the AWS cloud including a A Dynamo DB table, an API Gateway endpoint, and a Lambda function. It also automatically generates a ready-to-go html contact form that you can copy-paste into your site. the tool is very easy to use and completely free as all the AWS resources created have a free tier.
 
 ## New Features
 - Updated to node 10.X
