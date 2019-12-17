@@ -1,3 +1,5 @@
+**This is the repo for Super Easy Forms 2.0. The First Version has been moved to [this other repo](https://github.com/gkpty/super-easy-forms-classic)
+
 ![Super Easy Forms](img/super-easy-forms-logo.png)
 
 [![License](http://img.shields.io/:license-mit-blue.svg?style=flat-square)](http://gkpty.mit-license.org)
@@ -7,8 +9,6 @@
 <div style="padding-top:70px; padding-bottom:70px">
 <a href="https://aws.amazon.com/what-is-cloud-computing"><img style="margin-left:70px" align="right" height="70px" width="190px" src="https://d0.awsstatic.com/logos/powered-by-aws.png" alt="Powered by AWS Cloud Computing"></a>
 </div>
-
-**This is the repo for Super Easy Forms 2.0. The First Version has been moved to [this other repo](https://github.com/gkpty/super-easy-forms-classic)**
 
 Super Easy Forms is a tool that generates serverless web forms (front-end and back-end) in seconds. it leverages CloudFormation templates to create all of your necessary resources in the AWS cloud including a A Dynamo DB table, an API Gateway endpoint, and a Lambda function. It also automatically generates a ready-to-go html contact form that you can copy-paste into your site. the tool is very easy to use and completely free as all the AWS resources created have a free tier.
 
