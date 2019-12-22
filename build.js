@@ -42,17 +42,7 @@ function createDir(dir, callback){
   }
 }
 
-function initBuild(){
-  createFile('./.env', '', function(err, data){
-    if(err) console.log(err)
-    else {
-      console.log(data)
-      createFile('./.gitignore', '.env', function(err, data){
-        if(err) console.log(err)
-        else console.log(data)
-      })
-    }
-  });
+function initBuild(region, profile, callback){
   createFile('./settings.json', '{}', function(err, data){
     if(err) console.log(err)
     else console.log(data)
@@ -61,6 +51,27 @@ function initBuild(){
     if(err) console.log(err)
     else console.log(data)
   })
+  let env_file = "";
+  /* if(region){
+    env_file += `\nAWS_REGION=${region}`
+  }
+  if(profile){
+    env_file += `\nAWS_PROFILE=${profile}`
+  } */
+  createFile('./.env', env_file, function(err, data){
+    if(err) console.log(err)
+    else {
+      console.log(data)
+      createFile('./.gitignore', '.env', function(err, data){
+        if(err) console.log(err)
+        else {
+          if(callback && typeof callback === 'function'){
+            callback(null, data);
+          }
+        }
+      })
+    }
+  });
 }
 
 module.exports = {
