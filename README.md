@@ -37,23 +37,11 @@ Super Easy Forms is a tool that generates serverless web forms (front-end and ba
 1. Create a a new directory for your super easy forms project. 
 2. Install super easy forms with npm. `npm install super-easy-forms`
 3. Install the super easy forms CLI with npm. `npm install -g super-easy-forms-cli`
-
-## Setup
-
-You must have an IAM user with administrator access to be able to use super-easy-forms.
-
-1. **Create the necesary local files** Run `$ sef build` from the root of the project.
-2. **Create an IAM user with administrator acces.** you can use the `sef iam profilename -c` command replacing profilename for the desired name of your IAM user. hold on to the access Id and secret key displayed.
-3. **Update the local profile in your machine.** The local profiles are stored in `~/.aws/credentials` in mac/linux or in `C:\Users\USER_NAME\.aws\credentials` in windows. you can create/edit this file by runing `sudo nano ~/.aws/credentials` or something similar. add the profile keys in the format shown bellow.
+4. **Run the build command** Run `$ sef build -r=your-aws-region -p=profile-name` from the root of the project. replace profile-name with the desired name of the IAM user and your-aws-region with the desired AWS region.
+5. Finish creating your IAM user in the AWS Console. If you had already created your IAM user you can ignore this step and close the browser window.
+6. **Update the local profile in your machine.** The local profiles are stored in `~/.aws/credentials` in mac/linux or in `C:\Users\USER_NAME\.aws\credentials` in windows. you can create/edit this file by runing `sudo nano ~/.aws/credentials`. add the profile keys in the format shown bellow.
 
         [profilename]
         aws_access_key_id = <YOUR_ACCESS_KEY_ID>
         aws_secret_access_key = <YOUR_SECRET_ACCESS_KEY>
-4. Add your AWS profile in the .env file of your project `AWS_PROFILE=default` replace default with the name of your IAM user
-
-      *Optionally you can add the IAM user’s credentials directly in the .env w/o creating the local profile.
-
-        AWS_ACCESS_KEY_ID=your-access-key
-        AWS_SECRET_ACCESS_KEY=your-secert-access-key
-5. Add your AWS region to .env and save the file. `AWS_REGION=us-east-1` replace us-east-1 if your using a different region.
 
