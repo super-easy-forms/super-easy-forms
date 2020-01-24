@@ -38,7 +38,7 @@ Super Easy Forms is a tool that generates serverless web forms (front-end and ba
 2. Go into your project's directory `cd project-name` and **install super easy forms** `npm install super-easy-forms`
 3. **Install the super easy forms CLI globally** `npm install -g super-easy-forms-cli`
 4. **Run the build command** Run `$ sef build -r=your-aws-region -p=profile-name` from the root of your project's directory. replace profile-name with the desired name of the IAM user and your-aws-region with the desired AWS region code.
-5. Finish creating your IAM user in the AWS Console. If you had already created your IAM user you can ignore this step and close the browser window.
+5. Finish creating your IAM user in the AWS Console and hold on to the access keys. If you had already created your IAM user you can ignore this step and close the browser window.
 6. **Update the local profile in your machine.** The local profiles are stored in `~/.aws/credentials` in mac/linux or in `C:\Users\USER_NAME\.aws\credentials` in windows. you can create/edit this file by runing `sudo nano ~/.aws/credentials`. add the profile keys in the format shown bellow.
 
         [profilename]
