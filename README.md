@@ -34,10 +34,10 @@ Super Easy Forms is a tool that generates serverless web forms (front-end and ba
 
 ## Installation
 
-1. Create a a new directory for your super easy forms project. 
-2. Install super easy forms with npm. `npm install super-easy-forms`
-3. Install the super easy forms CLI with npm. `npm install -g super-easy-forms-cli`
-4. **Run the build command** Run `$ sef build -r=your-aws-region -p=profile-name` from the root of the project. replace profile-name with the desired name of the IAM user and your-aws-region with the desired AWS region.
+1. Open up your terminal and create a new directory `mkdir project-name` replace project-name with the desired name for your project. 
+2. Go into your project's directory `cd project-name` and **install super easy forms** `npm install super-easy-forms`
+3. **Install the super easy forms CLI globally** `npm install -g super-easy-forms-cli`
+4. **Run the build command** Run `$ sef build -r=your-aws-region -p=profile-name` from the root of your project's directory. replace profile-name with the desired name of the IAM user and your-aws-region with the desired AWS region code.
 5. Finish creating your IAM user in the AWS Console. If you had already created your IAM user you can ignore this step and close the browser window.
 6. **Update the local profile in your machine.** The local profiles are stored in `~/.aws/credentials` in mac/linux or in `C:\Users\USER_NAME\.aws\credentials` in windows. you can create/edit this file by runing `sudo nano ~/.aws/credentials`. add the profile keys in the format shown bellow.
 
@@ -45,3 +45,22 @@ Super Easy Forms is a tool that generates serverless web forms (front-end and ba
         aws_access_key_id = <YOUR_ACCESS_KEY_ID>
         aws_secret_access_key = <YOUR_SECRET_ACCESS_KEY>
 
+## Usage
+        const SEF = require('super-easy-forms')
+
+        SEF.CreateForm(formName, options, function(err, data){
+                if(err) console.error(err)
+                else{
+                        //Do Something
+                }
+        })
+
+## Create a serverless contact form
+
+1. open up the terminal and go to the root of your project `cd your-project-name`
+2. run the command bellow
+3. Copy-paste the created form directly into your static website’s body wherever you want it.
+
+       sef fullform formname --email=your@email.com --fields=fullName=text=required,email=email=required,paymentMethod=select=required=visa/master_card/cash,paymentAmount=number=required --recipients=recipient1@email.com,recipient2@email.com
+
+This command creates the stack and the html for a form called formname. the form will have the fields Full Name, Email, Payment method (with options Visa, Master Card, or Cash) and payment amount. Whenever someone submits the form an email will be sent from your@email.com to recipient1@email.com and recipient2@email.com.
