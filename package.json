@@ -23,7 +23,7 @@
   },
   "homepage": "https://supereasyforms.com/",
   "dependencies": {
-    "aws-sdk": "^2.452.0",
+    "aws-sdk": "^2.610.0",
     "axios": "^0.19.2",
     "dotenv": "^8.0.0",
     "file-saver": "^2.0.1",
