@@ -24,11 +24,12 @@
   "homepage": "https://supereasyforms.com/",
   "dependencies": {
     "aws-sdk": "^2.452.0",
+    "axios": "^0.19.2",
     "dotenv": "^8.0.0",
     "file-saver": "^2.0.1",
     "jszip": "^3.2.1",
     "open": "^6.3.0",
-    "uuid": "^3.3.2"
+    "uuid": "^3.4.0"
   },
   "devDependencies": {
     "mocha": "^6.2.2"
