@@ -1,5 +1,5 @@
 var CreateForm = require('./lib/CreateForm');
-var {createLambda} = require('./lib/CreateLambda');
+var {createLambdaFunction, createLambdaBucket} = require('./lib/CreateLambda');
 var UpdateLambdaFunction = require('./lib/UpdateLambda');
 var CreateTemplate = require('./lib/CreateTemplate');
 var ValidateTemplate = require('./lib/ValidateTemplate');
@@ -18,7 +18,8 @@ var Iam = require('./lib/CreateIamUser')
 module.exports.GetSubmissions = GetSubmissions;
 module.exports.ExportSubmissions = ExportSubmissions;
 module.exports.CreateForm = CreateForm;
-module.exports.CreateLambdaFunction = createLambda;
+module.exports.CreateLambdaFunction = createLambdaFunction;
+module.exports.CreateLambdaBucket = createLambdaBucket;
 module.exports.UpdateLambdaFunction = UpdateLambdaFunction;
 module.exports.CreateTemplate = CreateTemplate;
 module.exports.ValidateTemplate = ValidateTemplate;
