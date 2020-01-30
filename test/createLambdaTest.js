@@ -1,7 +1,7 @@
 var assert = require('assert');
 var fs = require("fs")
 var {createDir} = require('./../build')
-var {createLambda} = require('./../lib/CreateLambda')
+var {createLambdaFunction} = require('./../lib/CreateLambda')
 //var AWS = require('aws-sdk-mock');
 
 describe('Check the createLambda method', function() {
@@ -12,7 +12,7 @@ describe('Check the createLambda method', function() {
   let args = {"email":"", "formFields":{}, "recipients":[]}
   describe('No params supplied', function() {
     it('Should produce an error', function(done) {
-      createLambda(formName, function(err, data){
+      createLambdaFunction(formName, function(err, data){
         if(err){
           assert.equal(err.message.includes("required parameter"), true);
           done()
@@ -29,7 +29,7 @@ describe('Check the createLambda method', function() {
 
   describe('Create lambda function from params', function() {
     it('should create a lambdaFunction in ./forms/formName/formNameFunction/index.js', function(done) {
-      createLambda(formName, args, function(err, data){
+      createLambdaFunction(formName, args, function(err, data){
         if(err){
           throw new Error(err)
         }
@@ -58,7 +58,7 @@ describe('Check the createLambda method', function() {
   });
   describe('create lambda from its config file', function() {
     it('should create a lambda function in ./forms/formName/formName.html', function(done) {
-      createLambda(formName, function(err, data){
+      createLambdaFunction(formName, function(err, data){
         if(err){
           throw new Error(err)
         }
