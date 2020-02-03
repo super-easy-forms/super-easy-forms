@@ -79,7 +79,7 @@ describe('Check the createLambda method', function() {
     deleteDir(`./forms/${formName}/${formName}Function`, function(filepath){
       fs.unlinkSync(filepath)
     })
-    fs.unlinkSync(`./forms/${formName}/${formName}Function.zip`)
+    //fs.unlinkSync(`./forms/${formName}/${formName}Function.zip`)
   })
 });
 
