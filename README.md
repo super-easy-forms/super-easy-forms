@@ -58,8 +58,11 @@ Super Easy Forms is a tool that generates serverless web forms (front-end and ba
 ## Create a serverless contact form
 
 1. open up the terminal and go to the root of your project `cd your-project-name`
-2. run the command bellow
-3. Copy-paste the created form directly into your static website’s body wherever you want it.
+2. run `sef init your-form-name` replace with the name you want to give to your new form. For example the doamin name followed by paymentform.
+3. fill in the following variables
+4. run `sef fullform formName`
+
+*Optionally you can provide your desired values directly as CLI flags as shown in the command bellow.
 
        sef fullform formname --email=your@email.com --fields=fullName=text=required,email=email=required,paymentMethod=select=required=visa/master_card/cash,paymentAmount=number=required --recipients=recipient1@email.com,recipient2@email.com
 
