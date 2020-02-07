@@ -101,13 +101,13 @@ function initBuild(region, profile, callback){
     createFile('./.env', env_file, function(err, data){
       if(err) throw new Error(err)
       else {
-        console.log(data)
+        //console.log(data)
         createFile('./.gitignore', '.env', function(err, data){
           if(err) throw new Error(err)
           else {
-            console.log(data)
+            //console.log(data)
             if(callback && typeof callback === 'function'){
-              callback(null, data);
+              callback(null, 'Success');
             }
           }
         })
