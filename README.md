@@ -9,23 +9,7 @@
 [**Read the Docs**](https://supereasyforms.com/docs.html)
 </div><br><br>
 
-Super Easy Forms is a tool that generates serverless web forms (front-end and back-end) in seconds. it leverages CloudFormation templates to create all of your necessary resources in the AWS cloud including a A Dynamo DB table, an API Gateway endpoint, and a Lambda function. It also automatically generates a ready-to-go html contact form that you can copy-paste into your site. the tool is very easy to use and completely free as all the AWS resources created have a free tier.
-
-## New Features
-- Updated to node 10.X
-- Easier installation Built in commands have been added to further facilitate installation/configuration/setup
-- [Documentation](https://supereasyforms.com/docs.html): Detailed documentation includes an API method glossary, CLI commands and everything else you need to use/integrate/collaborate with super-easy-forms.
-- Support for multiple Forms: Create and monitor as many forms as you want.
-- Export your form submissions: Command that lets you export the database table of your form as either JSON or CSV.
-- Reusable methods: Easily integrate super-easy-forms into your own project or build your own workflows using components from super-easy-forms.
-- Local config files: Allow you to easily monitor and update each of your forms
-- [Independent multi CLI](https://github.com/gkpty/super-easy-forms-cli): A separate package (super-easy-forms-cli) with multiple commands that have several options and flags allowing you to customize and create/update/delete any of the components in a form individually or together.
-- [CloudFormation template](https://aws.amazon.com/cloudformation/): Easily keep track of the multiple AWS resources for each one of your forms. You can also modify the templates directly to customize the resources in your form.
-- Input sanitation: Uses an AWS API Gateway Model and API validator to insure that the parameters supplied are the correct ones before the call even reaches the lambda function.
-- Support for all html types: Check [W3schools](https://www.w3schools.com/html/html_form_input_types.asp) for a list of all the valid html types
-- Support for html select with options: Add Select lists to your form and supply the options
-- Support for required attributes: Choose which fields in your form you want to make required
-- Smart labels: The parser will read your input fields and create labels for you by separating camel cased values and sepparating dashes/underscores and capitalizing first letters. E.g. first_name → First Name or  firstName → First Name
+Super Easy Forms is a tool that generates serverless web forms (front-end and back-end) in seconds. it leverages [CloudFormation](https://aws.amazon.com/cloudformation/) to create all of your necessary resources in the AWS cloud including a A Dynamo DB table, an API Gateway endpoint, and a Lambda function. It also automatically generates a ready-to-go html contact form that you can copy-paste into your site. the tool is fast, easy to use/integrate,  and completely free as all the AWS resources created have a [free tier](https://aws.amazon.com/free/). Version 2.0 now features increased usability, security, and flexibility.
 
 ## Pre-requisites
 
@@ -34,8 +18,9 @@ Super Easy Forms is a tool that generates serverless web forms (front-end and ba
 
 ## Installation
 
-1. Open up your terminal and create a new directory `mkdir project-name` replace project-name with the desired name for your project. 
-2. Go into your project's directory `cd project-name` and **install super easy forms** `npm install super-easy-forms`
+1. if you dont have an existing static website project you can create a new directory `mkdir project-name` replacing project-name with the desired name for your project. 
+2. Go into your desired project's directory `cd project-name` 
+**install super easy forms** `npm install super-easy-forms`
 3. **Install the super easy forms CLI globally** `npm install -g super-easy-forms-cli`
 4. **Run the build command** Run `$ sef build -r=your-aws-region -p=profile-name` from the root of your project's directory. replace profile-name with the desired name of the IAM user and your-aws-region with the desired AWS region code.
 5. Finish creating your IAM user in the AWS Console and hold on to the access keys. If you had already created your IAM user you can ignore this step and close the browser window.
@@ -45,7 +30,57 @@ Super Easy Forms is a tool that generates serverless web forms (front-end and ba
         aws_access_key_id = <YOUR_ACCESS_KEY_ID>
         aws_secret_access_key = <YOUR_SECRET_ACCESS_KEY>
 
-## Usage
+
+## Create a serverless form
+
+1. open up the terminal and go to the root of your project `cd your-project-name`
+2. run `sef init formname` replace formname with the name you want to give to your new form. For example the domain name followed by paymentform.
+3. edit the config file saved in `./forms/formname/config.json` and add values for the variables shown bellow following the same format. captcha, emailMessage and emailSubject are optional. 
+4. run `sef fullform formname`
+```
+{
+  "email":"your@email.com",
+  "recipients":["recipient1@email.com","recipient2@email.com"],
+  "formFields":{
+    "fullName":{
+      "type":"text",
+      "label":"Full Name",
+      "required":true
+    },
+    "email":{
+      "type":"email",
+      "label":"Email",
+      "required":false
+    },
+    "payment":{
+      "type":"select",
+      "label":"Payment",
+      "required":true,
+      "options":{
+        "visa":"Visa",
+        "master_card":"Master card",
+        "cash":"Cash"
+      }
+    },
+    "paymentAmount":{
+      "type":"number",
+      "label":"Payment Amount",
+      "required":true
+    }
+  },
+  "captcha":false,
+  "emailSubject":"",
+  "emailMessage":"",
+}
+```
+
+This creates the back-end and fornt-end for a form called formname. the form will have the fields Full Name, Email,Payment method (with options Visa, Master Card, or Cash) and payment amount. Whenever someone submits the form an email will be sent from your@email.com to recipient1@email.com and recipient2@email.com.
+
+Optionally you can provide your desired values directly as CLI flags without having to edit the config file as shown in the command bellow.
+
+       sef fullform formname --email=your@email.com --fields=fullName=text=required,email=email=required,paymentMethod=select=required=visa/master_card/cash,paymentAmount=number=required --recipients=recipient1@email.com,recipient2@email.com
+
+## Using the API
         const SEF = require('super-easy-forms')
 
         SEF.CreateForm(formName, options, function(err, data){
@@ -54,16 +89,3 @@ Super Easy Forms is a tool that generates serverless web forms (front-end and ba
                         //Do Something
                 }
         })
-
-## Create a serverless contact form
-
-1. open up the terminal and go to the root of your project `cd your-project-name`
-2. run `sef init your-form-name` replace with the name you want to give to your new form. For example the doamin name followed by paymentform.
-3. fill in the following variables
-4. run `sef fullform formName`
-
-*Optionally you can provide your desired values directly as CLI flags as shown in the command bellow.
-
-       sef fullform formname --email=your@email.com --fields=fullName=text=required,email=email=required,paymentMethod=select=required=visa/master_card/cash,paymentAmount=number=required --recipients=recipient1@email.com,recipient2@email.com
-
-This command creates the stack and the html for a form called formname. the form will have the fields Full Name, Email, Payment method (with options Visa, Master Card, or Cash) and payment amount. Whenever someone submits the form an email will be sent from your@email.com to recipient1@email.com and recipient2@email.com.
