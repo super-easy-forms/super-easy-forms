@@ -19,8 +19,7 @@ Super Easy Forms is a tool that generates serverless web forms (front-end and ba
 ## Installation
 
 1. if you dont have an existing static website project you can create a new directory `mkdir project-name` replacing project-name with the desired name for your project. 
-2. Go into your desired project's directory `cd project-name` 
-**install super easy forms** `npm install super-easy-forms`
+2. Go into your desired project's directory `cd project-name` and **install super easy forms** `npm install super-easy-forms`
 3. **Install the super easy forms CLI globally** `npm install -g super-easy-forms-cli`
 4. **Run the build command** Run `sef build -r=your-aws-region -p=profile-name` from the root of your project's directory. replace profile-name with the desired name of the IAM user and your-aws-region with the desired AWS region code.
 5. Finish creating your IAM user in the AWS Console and hold on to the access keys. If you had already created your IAM user you can ignore this step and close the browser window.
@@ -33,52 +32,24 @@ Super Easy Forms is a tool that generates serverless web forms (front-end and ba
 
 ## Create a serverless form
 
-1. open up the terminal and go to the root of your project `cd your-project-name`
-2. run `sef init formname` replace formname with the name you want to give to your new form. For example the domain name followed by paymentform.
-3. edit the config file saved in `./forms/formname/config.json` and add values for the variables shown bellow following the same format. captcha, emailMessage and emailSubject are optional. 
-4. run `sef fullform formname`
-```
-{
-  "email":"your@email.com",
-  "recipients":["recipient1@email.com","recipient2@email.com"],
-  "formFields":{
-    "fullName":{
-      "type":"text",
-      "label":"Full Name",
-      "required":true
-    },
-    "email":{
-      "type":"email",
-      "label":"Email",
-      "required":false
-    },
-    "payment":{
-      "type":"select",
-      "label":"Payment",
-      "required":true,
-      "options":{
-        "visa":"Visa",
-        "master_card":"Master card",
-        "cash":"Cash"
-      }
-    },
-    "paymentAmount":{
-      "type":"number",
-      "label":"Payment Amount",
-      "required":true
-    }
-  },
-  "captcha":false,
-  "emailSubject":"",
-  "emailMessage":"",
-}
-```
+1. run `sef init formname` replace formname with the name you want to give to your new form. For example the domain name followed by paymentform.
+2. edit the config file saved in `./forms/formname/config.json` and add values for the variables shown bellow following the same format. captcha, emailMessage and emailSubject are optional. 
+3. run `sef fullform formname`
 
-This creates the back-end and fornt-end for a form called formname. the form will have the fields Full Name, Email,Payment method (with options Visa, Master Card, or Cash) and payment amount. Whenever someone submits the form an email will be sent from your@email.com to recipient1@email.com and recipient2@email.com.
+        {
+          "email":"your@email.com",
+          "formFields":{
+            "fullName": {"type":"text", "label":"Full,Name", "required":true},
+            "email": {"type":"email","label":"Email","required":true},
+          },
+          "captcha":false,
+          "emailSubject":"",
+          "emailMessage":"",
+        }
 
-Optionally you can provide your desired values directly as CLI flags without having to edit the config file as shown in the command bellow.
+    Optionally you can provide your desired values directly as CLI flags without having to edit the config file as shown in the command bellow.
 
-       sef fullform formname --email=your@email.com --fields=fullName=text=required,email=email=required,paymentMethod=select=required=visa/master_card/cash,paymentAmount=number=required --recipients=recipient1@email.com,recipient2@email.com
+       sef fullform formname --email=your@email.com --fields=fullName=text=required,email=email=required
 
 ## Using the API
         const SEF = require('super-easy-forms')
