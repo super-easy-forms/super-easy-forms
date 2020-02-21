@@ -1,6 +1,6 @@
 {
   "name": "super-easy-forms",
-  "version": "2.0.3",
+  "version": "2.1.0",
   "description": "a script that generates serverless backends for contact forms using AWS",
   "main": "index.js",
   "scripts": {
@@ -23,12 +23,13 @@
   },
   "homepage": "https://supereasyforms.com/",
   "dependencies": {
-    "aws-sdk": "^2.452.0",
+    "archiver": "^3.1.1",
+    "aws-sdk": "^2.610.0",
+    "axios": "^0.19.2",
     "dotenv": "^8.0.0",
     "file-saver": "^2.0.1",
-    "jszip": "^3.2.1",
     "open": "^6.3.0",
-    "uuid": "^3.3.2"
+    "uuid": "^3.4.0"
   },
   "devDependencies": {
     "mocha": "^6.2.2"
