@@ -99,7 +99,7 @@ This creates the back-end and fornt-end for a form called formname. the form wil
 
 Optionally you can provide your desired values directly in the CLI flags without having to edit the config file as shown in the command bellow.
 
-       sef fullform formname --email=your@email.com --fields=fullName=text=required,email=email=required,paymentMethod=select=required=visa/master_card/cash,paymentAmount=number=required --recipients=recipient1@email.com,recipient2@email.com
+      sef fullform formname --email=your@email.com --fields=fullName=text=required,email=email=required,paymentMethod=select=required=visa/master_card/cash,paymentAmount=number=required --recipients=recipient1@email.com,recipient2@email.com
 
 ## Use the API
         const SEF = require('super-easy-forms')
@@ -224,11 +224,11 @@ The form and fullform commands in the CLI use the parseFields method which takes
 
 # Captcha
 
-Super easy forms allows you to easily integrate google's reCAPTCHA into your html forms. Before being able to use captcha in your forms make sure you have signed up for a reCAPTCHA key pair. [sign up for a reCAPTCHA key pair](http://www.google.com/recaptcha/admin/create)
+Super easy forms allows you to easily integrate google's reCAPTCHA service into your html forms. Before being able to use this feature make sure to [sign up for a reCAPTCHA key pair](http://www.google.com/recaptcha/admin/create)
 
 Once you have added a key pair for the correct domain of your respective project, add the following variables in your .env file by running `sudo nano .env` or opening the file in your text editor of choice.
 
-    RECAPCTHA_KEY=your_site_key
+    RECAPTCHA_KEY=your_site_key
     RECAPTCHA_SECRET=your_site_secret key
 
 now when you run a command from the CLI make sure to add the —recaptcha flag or -r shortcut. If you are using the API provide the captcha argument of the options param as true. If you are adding CAPTCHA to an already deployed form, make sure to also update your lambda function.
