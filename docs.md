@@ -99,7 +99,7 @@ This creates the back-end and fornt-end for a form called formname. the form wil
 
 Optionally you can provide your desired values directly in the CLI flags without having to edit the config file as shown in the command bellow.
 
-       sef fullform formname --email=your@email.com --fields=fullName=text=required,email=email=required,paymentMethod=select=required=visa/master_card/cash,paymentAmount=number=required --recipients=recipient1@email.com,recipient2@email.com
+      sef fullform formname --email=your@email.com --fields=fullName=text=required,email=email=required,paymentMethod=select=required=visa/master_card/cash,paymentAmount=number=required --recipients=recipient1@email.com,recipient2@email.com
 
 ## Use the API
         const SEF = require('super-easy-forms')
@@ -224,16 +224,16 @@ The form and fullform commands in the CLI use the parseFields method which takes
 
 # Captcha
 
-Super easy forms allows you to easily integrate google's reCAPTCHA into your html forms. Before being able to use captcha in your forms make sure you have signed up for a reCAPTCHA key pair. [sign up for a reCAPTCHA key pair](http://www.google.com/recaptcha/admin/create)
+Super easy forms allows you to easily integrate google's reCAPTCHA service into your html forms. Before being able to use this feature make sure to [sign up for a reCAPTCHA key pair](http://www.google.com/recaptcha/admin/create)
 
 Once you have added a key pair for the correct domain of your respective project, add the following variables in your .env file by running `sudo nano .env` or opening the file in your text editor of choice.
 
-    RECAPCTHA_KEY=your_site_key
-    RECAPTCHA_SECRET=your_site_secret key
+    RECAPTCHA_KEY=your_site_key
+    RECAPTCHA_SECRET=your_site_secret_key
 
 now when you run a command from the CLI make sure to add the —recaptcha flag or -r shortcut. If you are using the API provide the captcha argument of the options param as true. If you are adding CAPTCHA to an already deployed form, make sure to also update your lambda function.
 
-Please be aware that the captcha checkbox will not work unless the request is coming in from the domain you put when requesting your key pair.
+Please be aware that the captcha checkbox will not work unless the request is coming in from the domain you registered when requesting your key pair.
 
 
 # API Glossary
@@ -255,7 +255,7 @@ Please be aware that the captcha checkbox will not work unless the request is co
     3. **returns:** String: the html form as a string
 4. **CreateLambdaFunction(formName, options, callback):** creates a lambda function and saves it as a js file in the form folder
     1. **formName**: String: Required: the name of the form
-    2. **options** = {"email": "", "formFields":"", "recipients":[]}
+    2. **options** = {"email": "", "formFields":"", "recipients":[], "emailMessage":"", "emailSubject":"", "captcha":true|false, "zip":true|false, "functionBucket":true|false}
         1. **email:** String: Required: the email you will use to send submissions
         2. **formFields:** Object: Required: JSON object with the formFields. Check out the form generator section for the correct format.
         3. **recipients:** Array: Optional: an array of emails (strings). one or more recipients are not provided, the value provided for email will be used as the recipient.
