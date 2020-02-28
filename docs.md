@@ -33,18 +33,18 @@ In the last couple of years the introduction of new cloud services for storage, 
 # Installation
 ## Pre-requisites
 
-*  Make sure you have node.js (10.x +) and npm installed. You can checkout this [tutorial](https://medium.com/@lucaskay/install-node-and-npm-using-nvm-in-mac-or-linux-ubuntu-f0c85153e173) to install npm and node in mac, linux (debian/ubuntu).
-* Have an AWS account. If you don't have an AWS account, you can easily create one [here](https://portal.aws.amazon.com/billing/signup?#/start). Don't worry, everything you do with this project will fall within the AWS free tier limit! 
+- Make sure you have node.js (10.x +) and npm installed. You can checkout this [tutorial](https://medium.com/@lucaskay/install-node-and-npm-using-nvm-in-mac-or-linux-ubuntu-f0c85153e173) to install npm and node in mac, linux (debian/ubuntu).
+- Have an AWS account. If you don't have an AWS account, you can easily create one [here](https://portal.aws.amazon.com/billing/signup?#/start). Don't worry, everything you do with this project will fall within the AWS free tier limit! 
 
 ## Installation
 
 1. if you dont have an existing static website project you can create a new directory `mkdir project-name` replacing project-name with the desired name for your project. 
 2. Go into your desired project's directory `cd project-name` 
-**install super easy forms** `npm install super-easy-forms`
-3. **Install the super easy forms CLI globally** `npm install -g super-easy-forms-cli`
-4. **Run the build command** Run `$ sef build -r=your-aws-region -p=profile-name` from the root of your project's directory. replace profile-name with the desired name of the IAM user and your-aws-region with the desired AWS region code.
-5. Finish creating your IAM user in the AWS Console and hold on to the access keys. If you had already created your IAM user you can ignore this step and close the browser window.
-6. **Update the local profile in your machine.** The local profiles are stored in `~/.aws/credentials` in mac/linux or in `C:\Users\USER_NAME\.aws\credentials` in windows. you can create/edit this file by runing `sudo nano ~/.aws/credentials`. add the profile keys in the format shown bellow.
+3. **install super easy forms** `npm install super-easy-forms`
+4. **Install the super easy forms CLI globally** `npm install -g super-easy-forms-cli`
+5. **Run the build command** Run `$ sef build -r=your-aws-region -p=profile-name` from the root of your project's directory. replace profile-name with the desired name of the IAM user and your-aws-region with the desired AWS region code.
+6. Finish creating your IAM user in the AWS Console and hold on to the access keys. If you had already created your IAM user you can ignore this step and close the browser window.
+7. **Update the local profile in your machine.** The local profiles are stored in `~/.aws/credentials` in mac/linux or in `C:\Users\USER_NAME\.aws\credentials` in windows. you can create/edit this file by runing `sudo nano ~/.aws/credentials`. add the profile keys in the format shown bellow.
 
         [profilename]
         aws_access_key_id = <YOUR_ACCESS_KEY_ID>
@@ -58,6 +58,7 @@ In the last couple of years the introduction of new cloud services for storage, 
 2. run `sef init formname` replace formname with the name you want to give to your new form. For example the domain name followed by paymentform.
 3. edit the config file saved in `./forms/formname/config.json` and add values for the variables shown bellow following the same format. captcha, emailMessage and emailSubject are optional. 
 4. run `sef fullform formname`
+
 ```
 {
   "email":"your@email.com",
@@ -116,7 +117,7 @@ Optionally you can provide your desired values directly in the CLI flags without
 
 All forms will generate a folder for that form within your project. this folder will contain the forms config.json file which keeps track of all of that form’s variables.
 
-All of the super easy form commands make use of optional arguments and optional callbacks. if a required argument isn’t supplied to one of the methods that method will check the form`s local config file and use the value stored there. if the argument isn't provided in params and isn't found in the form’s config file it will throw an error.
+All of the super easy form commands make use of optional arguments and optional callbacks. if a required argument isn’t supplied to one of the methods that method will check the form's local config file and use the value stored there. if the argument isn't provided in params and isn't found in the form’s config file it will throw an error.
 
 All methods have the `function(formName, options, callback)` format and all  the callbacks have the `function(err,data)` format.
 
@@ -329,19 +330,19 @@ Please be aware that the captcha checkbox will not work unless the request is co
 
 # CLI Commands
 <!-- commands -->
-* [`sef build`](#sef-build)
-* [`sef delete NAME`](#sef-delete-name)
-* [`sef deploy NAME`](#sef-deploy-name)
-* [`sef email EMAIL [NAME]`](#sef-email-email-name)
-* [`sef form NAME`](#sef-form-name)
-* [`sef fullform NAME`](#sef-fullform-name)
-* [`sef help [COMMAND]`](#sef-help-command)
-* [`sef iam USER [REGION]`](#sef-iam-user-region)
-* [`sef init`](#sef-init)
-* [`sef lambda NAME [ACTION]`](#sef-lambda-name-action)
-* [`sef submissions NAME`](#sef-submissions-name)
-* [`sef template NAME`](#sef-template-name)
-* [`sef variable NAME VARIABLE VALUE`](#sef-variable-name-variable-value)
+- [`sef build`](#sef-build)
+- [`sef delete NAME`](#sef-delete-name)
+- [`sef deploy NAME`](#sef-deploy-name)
+- [`sef email EMAIL [NAME]`](#sef-email-email-name)
+- [`sef form NAME`](#sef-form-name)
+- [`sef fullform NAME`](#sef-fullform-name)
+- [`sef help [COMMAND]`](#sef-help-command)
+- [`sef iam USER [REGION]`](#sef-iam-user-region)
+- [`sef init`](#sef-init)
+- [`sef lambda NAME [ACTION]`](#sef-lambda-name-action)
+- [`sef submissions NAME`](#sef-submissions-name)
+- [`sef template NAME`](#sef-template-name)
+- [`sef variable NAME VARIABLE VALUE`](#sef-variable-name-variable-value)
 
 ## `sef build`
 
@@ -591,158 +592,6 @@ ARGUMENTS
 ```
 
 _See code: [src/commands/variable.js](https://github.com/gkpty/super-easy-forms-cli/blob/v1.0.5/src/commands/variable.js)_
-<!-- commandsstop -->
-* [`sef build`](#sef-build)
-* [`sef email`](#sef-email)
-* [`sef form NAME`](#sef-form-name)
-* [`sef fullform NAME`](#sef-fullform-name)
-* [`sef help [COMMAND]`](#sef-help-command)
-* [`sef lambda NAME`](#sef-lambda-name)
-* [`sef submissions`](#sef-submissions)
-* [`sef template`](#sef-template)
-
-## `sef build`
-
-Builds the required base files and directories.
-
-```
-USAGE
-  $ sef build
-```
-
-_See code: [src/commands/build.js](https://github.com/gkpty/super-easy-forms-cli/blob/v0.0.0/src/commands/build.js)_
-
-## `sef email`
-
-Describe the command here
-
-```
-USAGE
-  $ sef email
-
-OPTIONS
-  -n, --name=name  name to print
-
-DESCRIPTION
-  ...
-  Extra documentation goes here
-```
-
-_See code: [src/commands/email.js](https://github.com/gkpty/super-easy-forms-cli/blob/v0.0.0/src/commands/email.js)_
-
-## `sef form NAME`
-
-Builds an html form
-
-```
-USAGE
-  $ sef form NAME
-
-ARGUMENTS
-  NAME  name of the form - must be unique
-
-OPTIONS
-  -f, --fields=fields  Desired form formFields
-  -l, --labels         Automatically add labels to your form
-  -u, --url=url        The API endpoint endpointUrl for your form
-```
-
-_See code: [src/commands/form.js](https://github.com/gkpty/super-easy-forms-cli/blob/v0.0.0/src/commands/form.js)_
-
-## `sef fullform NAME`
-
-Builds an html form
-
-```
-USAGE
-  $ sef fullform NAME
-
-ARGUMENTS
-  NAME  name of the form - must be unique
-
-OPTIONS
-  -e, --email=email            Desired form formFields
-  -f, --fields=fields          Desired form formFields
-  -l, --labels                 Automatically add labels to your form
-  -r, --recipients=recipients  recipients that will recieve emails on your behalf.
-```
-
-_See code: [src/commands/fullform.js](https://github.com/gkpty/super-easy-forms-cli/blob/v0.0.0/src/commands/fullform.js)_
-
-## `sef help [COMMAND]`
-
-display help for sef
-
-```
-USAGE
-  $ sef help [COMMAND]
-
-ARGUMENTS
-  COMMAND  command to show help for
-
-OPTIONS
-  --all  see all commands in CLI
-```
-
-_See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v2.2.2/src/commands/help.ts)_
-
-## `sef lambda NAME`
-
-Builds an html form
-
-```
-USAGE
-  $ sef lambda NAME
-
-ARGUMENTS
-  NAME  name of the form - must be unique
-
-OPTIONS
-  -e, --email=email            Email address that will be used to send emails
-  -f, --fields=fields          Desired form formFields
-  -r, --recipients=recipients  Recipients that will recieve emails on your behalf.
-```
-
-_See code: [src/commands/lambda.js](https://github.com/gkpty/super-easy-forms-cli/blob/v0.0.0/src/commands/lambda.js)_
-
-## `sef submissions`
-
-Describe the command here
-
-```
-USAGE
-  $ sef submissions
-
-OPTIONS
-  -n, --name=name  name to print
-
-DESCRIPTION
-  ...
-  Extra documentation goes here
-```
-
-_See code: [src/commands/submissions.js](https://github.com/gkpty/super-easy-forms-cli/blob/v0.0.0/src/commands/submissions.js)_
-
-## `sef template`
-
-Describe the command here
-
-```
-USAGE
-  $ sef template
-
-OPTIONS
-  -n, --name=name  name to print
-
-DESCRIPTION
-  ...
-  Extra documentation goes here
-```
-
-_See code: [src/commands/template.js](https://github.com/gkpty/super-easy-forms-cli/blob/v0.0.0/src/commands/template.js)_
-
-
-
 
 
 # Troubleshooting
