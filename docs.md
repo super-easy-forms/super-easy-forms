@@ -1,14 +1,9 @@
 # Super Easy Forms Documentation
-
 ## What is super easy forms?
-
 Its a modular, open source tool that generates serverless web forms (front-end and back-end) in seconds. It leverages [CloudFormation](https://aws.amazon.com/cloudformation/) templates to create all of your necessary resources in the AWS cloud including a A Dynamo DB table, an API Gateway endpoint, and a lambda function. It also automatically generates a ready-to-go html contact form that you can copy-paste into your site. the tool is fast, easy to use/integrate,  and completely free as all the AWS resources created have a [free tier](https://aws.amazon.com/free/). Version 2.0 now features increased usability, security, and flexibility.
 
-
 ## Background
-
 In the last couple of years the introduction of new cloud services for storage, compute, and content delivery have been improving the usability of static websites. These services allow us to build tools which can bypass most of the limitations commonly associated with static websites. One such limitation is adding forms that can process submissions. We built Super Easy Forms because we needed a fast, modular, open source solution to add/update contact forms in all of our static websites. We hope you find it useful.
-
 
 ## New features in version 2.0
 - **Updated to node 10.X**
@@ -29,15 +24,12 @@ In the last couple of years the introduction of new cloud services for storage, 
 - **Custom email message/subject** you can customize the email message and subject that gets sent when someone submits a form.
 - **Optional** [**reCAPTCHA**](https://developers.google.com/recaptcha/intro)**:** Add Google’s ReCaptcha v2 to your contact form to insure that requests are only coming in from a trusted source i.e. your website and that the users submitting it are indeed humans.
 
-
 # Installation
 ## Pre-requisites
-
 - Make sure you have node.js (10.x +) and npm installed. You can checkout this [tutorial](https://medium.com/@lucaskay/install-node-and-npm-using-nvm-in-mac-or-linux-ubuntu-f0c85153e173) to install npm and node in mac, linux (debian/ubuntu).
 - Have an AWS account. If you don't have an AWS account, you can easily create one [here](https://portal.aws.amazon.com/billing/signup?#/start). Don't worry, everything you do with this project will fall within the AWS free tier limit! 
 
 ## Installation
-
 1. if you dont have an existing static website project you can create a new directory `mkdir project-name` replacing project-name with the desired name for your project. 
 2. Go into your desired project's directory `cd project-name` 
 3. **install super easy forms** `npm install super-easy-forms`
@@ -50,10 +42,8 @@ In the last couple of years the introduction of new cloud services for storage, 
         aws_access_key_id = <YOUR_ACCESS_KEY_ID>
         aws_secret_access_key = <YOUR_SECRET_ACCESS_KEY>
 
-
 # Usage
 ## Create a serverless form
-
 1. open up the terminal and go to the root of your project `cd your-project-name`
 2. run `sef init formname` replace formname with the name you want to give to your new form. For example the domain name followed by paymentform.
 3. edit the config file saved in `./forms/formname/config.json` and add values for the variables shown bellow following the same format. captcha, emailMessage and emailSubject are optional. 
@@ -95,11 +85,9 @@ In the last couple of years the introduction of new cloud services for storage, 
   "emailMessage":"",
 }
 ```
-
 This creates the back-end and fornt-end for a form called formname. the form will have the fields Full Name, Email,Payment method (with options Visa, Master Card, or Cash) and payment amount. Whenever someone submits the form an email will be sent from your@email.com to recipient1@email.com and recipient2@email.com.
 
 Optionally you can provide your desired values directly in the CLI flags without having to edit the config file as shown in the command bellow.
-
       sef fullform formname --email=your@email.com --fields=fullName=text=required,email=email=required,paymentMethod=select=required=visa/master_card/cash,paymentAmount=number=required --recipients=recipient1@email.com,recipient2@email.com
 
 ## Use the API
@@ -112,9 +100,7 @@ Optionally you can provide your desired values directly in the CLI flags without
                 }
         })
 
-
 ## Optional Arguments & Callbacks
-
 All forms will generate a folder for that form within your project. this folder will contain the forms config.json file which keeps track of all of that form’s variables.
 
 All of the super easy form commands make use of optional arguments and optional callbacks. if a required argument isn’t supplied to one of the methods that method will check the form's local config file and use the value stored there. if the argument isn't provided in params and isn't found in the form’s config file it will throw an error.
@@ -124,10 +110,8 @@ All methods have the `function(formName, options, callback)` format and all  the
 If a callback isn’t provided methods will return the data value or throw an error in the case of an error. If you don’t provide any options you can provide the callback as the second argument.
 
 # Project structure
-
-## Your new Super Easy Forms Project
+## Project Structure 
 At the root of the project you will find the forms folder which will contain all of your forms
-
     |- forms/
         |- yourFrom/
             |- exports/
@@ -144,8 +128,7 @@ At the root of the project you will find the forms folder which will contain all
     |- node_modules
         |- super_easy_forms/
             
-## The Config file
-
+## Form Config file
 A config.json file with all of the form variables is created for each of your forms. 
     {
       "email":"String",
@@ -162,29 +145,20 @@ A config.json file with all of the form variables is created for each of your fo
     }
 
 # Components
-
 ## The Lambda Function
 The CreateLambda method generates the node.js code for the lambda function  and places it in a directory with its reuqired modules. Then it zips the directory and uploads it to an S3 bucket.
-
 1. The lambda function will receive a JSON object with the form output.
 2. If you selected the captcha option, it will use axios to send a post request to google’s recaptcha server and verify the response.
 3. Then it will format the fields to be stored in dynamoDB and call the dynamoDB putItem method to save the item.
 4. If this operation is successful it will send an email message using SES to the desired recipients.
 
-
 ## The CloudFormation Template
-
 AWS CloudFormation is a IaC (Infrastructure as code) service from AWS that allows you to define stacks composed of AWS resources in a JSON or YAML file called a cloudformation template. This makes it easy to keep track of the multiple resources used by each of your forms. The cloudformation template is stored in each form’s directory in the file called template.json.
-
 
 ![Diagram exported from AWS CloudFormation Designer](https://paper-attachments.dropbox.com/s_B70B5B93F7E2794EC706951FA6D762D4D2818CCCBBF59F7D45472AC441AABAE2_1576391819245_template1-designer.png)
 
-
-
 ## The Form Generator
-
 The createForm function takes in a JSON object with the format shown bellow and outputs a responsive HTML form (bootstrap) with an inline JQuery handler. In the config file, you can add labels/placeholders and provide options for things like required fields, different html types and more. The HTML form is completely customizable as its pure HTML; no iframes!
-
     "formFields":{
         "fullName":{
           "type":"text",
@@ -212,23 +186,17 @@ The createForm function takes in a JSON object with the format shown bellow and 
           "required":true
         }
       },
-
 The form and fullform commands in the CLI use the parseFields method which takes in a string in the following format `--fields=fullName=text=required,email=email=required,paymentMethod=select=required=visa/master_card/cash,paymentAmount=number=required` and converts it to a JSON object with the required format be stored in the forms config file and passed to the createForm function. The labels option in the CLI adds human friendly labels to form inputs and to the select options by separating camel-cased characters, replacing underscores and dashes with spaces, and capitalizing first letters.
 
-
 # Registering emails
+SES is a service from AWS that allows you to send emails programmatically using any email provider. Please be aware that if you want to use AWS SES to send emails to external recipients (whose email addresses haven't been verified with SES in your AWS account) you must [move out of the AWS SES Sandbox](https://docs.aws.amazon.com/ses/latest/DeveloperGuide/request-production-access.html).  
 
- SES is a service from AWS that allows you to send emails programmatically using any email provider. Please be aware that if you want to use AWS SES to send emails to external recipients (whose email addresses haven't been verified with SES in your AWS account) you must [move out of the AWS SES Sandbox](https://docs.aws.amazon.com/ses/latest/DeveloperGuide/request-production-access.html).  
- 
- To verify a new email with AWS SES run `sef email formName your@email.com -n` replacing formName with the name of your form and your@email with the email you want to verify.
-
+To verify a new email with AWS SES run `sef email formName your@email.com -n` replacing formName with the name of your form and your@email with the email you want to verify.
 
 # Captcha
-
 Super easy forms allows you to easily integrate google's reCAPTCHA service into your html forms. Before being able to use this feature make sure to [sign up for a reCAPTCHA key pair](http://www.google.com/recaptcha/admin/create)
 
 Once you have added a key pair for the correct domain of your respective project, add the following variables in your .env file by running `sudo nano .env` or opening the file in your text editor of choice.
-
     RECAPTCHA_KEY=your_site_key
     RECAPTCHA_SECRET=your_site_secret_key
 
@@ -236,10 +204,7 @@ now when you run a command from the CLI make sure to add the —recaptcha flag o
 
 Please be aware that the captcha checkbox will not work unless the request is coming in from the domain you registered when requesting your key pair.
 
-
 # API Glossary
-
-
 1. **GetSubmissions(formName, callback):** Lists all of the responses recieved to stdout
     1. **formName**: String: Required: the name of the form
     2. **returns** an array of JSON Objects
@@ -329,25 +294,8 @@ Please be aware that the captcha checkbox will not work unless the request is co
     2. **returns**: String: `Succesfully updated the lambda function`
 
 # CLI Commands
-<!-- commands -->
-- [`sef build`](#sef-build)
-- [`sef delete NAME`](#sef-delete-name)
-- [`sef deploy NAME`](#sef-deploy-name)
-- [`sef email EMAIL [NAME]`](#sef-email-email-name)
-- [`sef form NAME`](#sef-form-name)
-- [`sef fullform NAME`](#sef-fullform-name)
-- [`sef help [COMMAND]`](#sef-help-command)
-- [`sef iam USER [REGION]`](#sef-iam-user-region)
-- [`sef init`](#sef-init)
-- [`sef lambda NAME [ACTION]`](#sef-lambda-name-action)
-- [`sef submissions NAME`](#sef-submissions-name)
-- [`sef template NAME`](#sef-template-name)
-- [`sef variable NAME VARIABLE VALUE`](#sef-variable-name-variable-value)
-
-## `sef build`
-
+## sef build
 Builds the required base files and directories.
-
 ```
 USAGE
   $ sef build
@@ -356,13 +304,11 @@ OPTIONS
   -p, --profile=profile  The name of the iam profile/user that you want to create
   -r, --region=region    The desired AWS region were your forms infrastructure will be deployed
 ```
-
 _See code: [src/commands/build.js](https://github.com/gkpty/super-easy-forms-cli/blob/v1.0.5/src/commands/build.js)_
 
-## `sef delete NAME`
 
+## sef delete NAME
 Deletes all resources in the AWS cloud for the desired form
-
 ```
 USAGE
   $ sef delete NAME
@@ -373,13 +319,11 @@ ARGUMENTS
 OPTIONS
   -r, --resources  Delete all of the back-end resources for your form in the cloud
 ```
-
 _See code: [src/commands/delete.js](https://github.com/gkpty/super-easy-forms-cli/blob/v1.0.5/src/commands/delete.js)_
 
-## `sef deploy NAME`
 
+## sef deploy NAME
 Deploys your stack in the AWS Cloud
-
 ```
 USAGE
   $ sef deploy NAME
@@ -391,13 +335,11 @@ OPTIONS
   -c, --create  Deploy a new cloudformation stack in the AWS cloud
   -u, --update  Update your stack in the AWS cloud
 ```
-
 _See code: [src/commands/deploy.js](https://github.com/gkpty/super-easy-forms-cli/blob/v1.0.5/src/commands/deploy.js)_
 
-## `sef email EMAIL [NAME]`
 
+## sef email EMAIL [NAME]
 Verifies/validates your email with AWS SES
-
 ```
 USAGE
   $ sef email EMAIL [NAME]
@@ -410,13 +352,11 @@ OPTIONS
   -n, --new       verifies a new email address to be used by AWS SES to send email
   -v, --validate  validates that the provided email address was verified with AWS SES
 ```
-
 _See code: [src/commands/email.js](https://github.com/gkpty/super-easy-forms-cli/blob/v1.0.5/src/commands/email.js)_
 
-## `sef form NAME`
 
+## sef form NAME
 Builds an html form
-
 ```
 USAGE
   $ sef form NAME
@@ -430,13 +370,11 @@ OPTIONS
   -l, --labels         Automatically add labels to your form
   -u, --url=url        The API endpoint endpointUrl for your form
 ```
-
 _See code: [src/commands/form.js](https://github.com/gkpty/super-easy-forms-cli/blob/v1.0.5/src/commands/form.js)_
 
-## `sef fullform NAME`
 
+## sef fullform NAME
 Generates an html form and saves it in the formNames folder
-
 ```
 USAGE
   $ sef fullform NAME
@@ -456,13 +394,11 @@ OPTIONS
 
   -s, --subject                the subject of the email message
 ```
-
 _See code: [src/commands/fullform.js](https://github.com/gkpty/super-easy-forms-cli/blob/v1.0.5/src/commands/fullform.js)_
 
-## `sef help [COMMAND]`
 
+## sef help [COMMAND]
 display help for sef
-
 ```
 USAGE
   $ sef help [COMMAND]
@@ -473,13 +409,11 @@ ARGUMENTS
 OPTIONS
   --all  see all commands in CLI
 ```
-
 _See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v2.2.2/src/commands/help.ts)_
 
-## `sef iam USER [REGION]`
 
+## sef iam USER [REGION]
 the --create flag will open up a window with the AWS console so that you confirm the creation of a user with the entered name.
-
 ```
 USAGE
   $ sef iam USER [REGION]
@@ -491,13 +425,11 @@ ARGUMENTS
 OPTIONS
   -c, --create  Helps you create an IAM user and adds its profile to the .env file
 ```
-
 _See code: [src/commands/iam.js](https://github.com/gkpty/super-easy-forms-cli/blob/v1.0.5/src/commands/iam.js)_
 
-## `sef init NAME`
 
+## sef init NAME
 Creates a config file with empty values for your form.
-
 ```
 USAGE
   $ sef init NAME
@@ -505,13 +437,11 @@ USAGE
 ARGUMENTS
   NAME    name of the form - must be unique
 ```
-
 _See code: [src/commands/init.js](https://github.com/gkpty/super-easy-forms-cli/blob/v1.0.5/src/commands/init.js)_
 
-## `sef lambda NAME [ACTION]`
 
+## sef lambda NAME [ACTION]
 Generates a lambda function and saves it as lambdaFunction.js in the formNames folder
-
 ```
 USAGE
   $ sef lambda NAME [ACTION]
@@ -535,13 +465,11 @@ OPTIONS
 
   -z, --zip                    zips the lambda function
 ```
-
 _See code: [src/commands/lambda.js](https://github.com/gkpty/super-easy-forms-cli/blob/v1.0.5/src/commands/lambda.js)_
 
-## `sef submissions NAME`
 
+## sef submissions NAME
 export or list all of the suibmissions you have had to date for a selected form
-
 ```
 USAGE
   $ sef submissions NAME
@@ -554,13 +482,11 @@ OPTIONS
   -f, --format=csv|json  Desired format csv|json
   -l, --list             print all submissions for the form to stdout
 ```
-
 _See code: [src/commands/submissions.js](https://github.com/gkpty/super-easy-forms-cli/blob/v1.0.5/src/commands/submissions.js)_
 
-## `sef template NAME`
 
+## sef template NAME
 validate/create/update your cloudformation template saved locally
-
 ```
 USAGE
   $ sef template NAME
@@ -574,13 +500,11 @@ OPTIONS
   -f, --fields=fields  Desired form formFields
   -v, --validate       Validate your cloudformation template with AWS
 ```
-
 _See code: [src/commands/template.js](https://github.com/gkpty/super-easy-forms-cli/blob/v1.0.5/src/commands/template.js)_
 
-## `sef variable NAME VARIABLE VALUE`
 
+## sef variable NAME VARIABLE VALUE
 Builds an html form
-
 ```
 USAGE
   $ sef variable NAME VARIABLE VALUE
@@ -590,12 +514,10 @@ ARGUMENTS
   VARIABLE  name of the variable
   VALUE     value of the variable
 ```
-
 _See code: [src/commands/variable.js](https://github.com/gkpty/super-easy-forms-cli/blob/v1.0.5/src/commands/variable.js)_
 
 
 # Troubleshooting
-
 If you have modified the super-easy-forms source code and your commands are failing for some reason, you can run the test suite with `npm test`. If this doesnt help you locate your errors youll have to debug your code. 
 
 If your forms arent being submitted you can these steps to troubleshoot:
