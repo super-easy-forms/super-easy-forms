@@ -1,6 +1,10 @@
 # Super Easy Forms Documentation
+[![License](http://img.shields.io/:license-mit-blue.svg?style=flat-square)](https://gkpty.mit-license.org)
+[![Build Status](https://travis-ci.com/gkpty/super-easy-forms.svg?branch=master)](https://travis-ci.com/gkpty/super-easy-forms)
+
+# Introduction
 ## What is super easy forms?
-Its a modular, open source tool that generates serverless web forms (front-end and back-end) in seconds. It leverages [CloudFormation](https://aws.amazon.com/cloudformation/) templates to create all of your necessary resources in the AWS cloud including a A Dynamo DB table, an API Gateway endpoint, and a lambda function. It also automatically generates a ready-to-go html contact form that you can copy-paste into your site. the tool is fast, easy to use/integrate,  and completely free as all the AWS resources created have a [free tier](https://aws.amazon.com/free/). Version 2.0 now features increased usability, security, and flexibility.
+Its a modular, open source tool that generates serverless web forms (front-end and back-end) in seconds. It leverages [CloudFormation](https://aws.amazon.com/cloudformation/) templates to create all of your necessary resources in the AWS cloud including a A Dynamo DB table, an API Gateway endpoint, and a lambda function. It also automatically generates a ready-to-go html contact form that you can copy-paste into your site. the tool is fast, easy to use/integrate,  and completely free as all the AWS resources created have a [free tier](https://aws.amazon.com/free/). Version 2 now features increased usability, security, and flexibility.
 
 ## Background
 In the last couple of years the introduction of new cloud services for storage, compute, and content delivery have been improving the usability of static websites. These services allow us to build tools which can bypass most of the limitations commonly associated with static websites. One such limitation is adding forms that can process submissions. We built Super Easy Forms because we needed a fast, modular, open source solution to add/update contact forms in all of our static websites. We hope you find it useful.
@@ -521,13 +525,13 @@ _See code: [src/commands/variable.js](https://github.com/gkpty/super-easy-forms-
 If you have modified the super-easy-forms source code and your commands are failing for some reason, you can run the test suite with `npm test`. If this doesnt help you locate your errors youll have to debug your code. 
 
 If your forms arent being submitted you can these steps to troubleshoot:
-1. Validate your cloud formation template you can use the template command with the --validate flag or the -v shortcut.
-2. Test your lambda function in the AWS console by using the test feature
-3. Test your API gateway endpoint in the AWS console by using the test feature.
-3. Test the API by using curl
-    curl -d '{"id":"", "firstName":"john","lastName":"doe", "email":"johndoe@email.com", "message":"hello world"}' -H 'Content-Type: application/json' https://your-api-url
-4. Test your API from an external form: insure that CORS is properly enabled in your API
-5. generate a form for your API and try submitting. check out the console in google chrome for any errors.
+1. Validate your cloud formation template you can use the template command with the --validate flag or the -v shortcut `sef template NAME -v`.
+2. Test the lambda function in the AWS lambda console by using the test feature.
+3. Test the API gateway endpoint in the AWS console by using the test feature.
+4. Test the API by using curl. Follow the format of the curl command bellow.
+5. Test the API from an external form: insure that CORS is properly enabled in the API.
+6. generate a form for your API and try submitting. check out the browser's console logs in google chrome for any errors.
+    curl -d '{"id":"", "fullName":"john doe", "email":"johndoe@email.com", "message":"hello world"}' -H 'Content-Type: application/json' https://your-api-url
 
 
 
