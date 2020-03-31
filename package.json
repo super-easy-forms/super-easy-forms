@@ -26,12 +26,10 @@
     "archiver": "^3.1.1",
     "aws-sdk": "^2.610.0",
     "axios": "^0.19.2",
-    "dotenv": "^8.0.0",
-    "file-saver": "^2.0.1",
-    "open": "^6.3.0",
-    "uuid": "^3.4.0"
+    "dotenv": "^8.2.0",
+    "uuid": "^7.0.2"
   },
   "devDependencies": {
-    "mocha": "^6.2.2"
+    "mocha": "*"
   }
 }
