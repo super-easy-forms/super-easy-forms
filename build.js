@@ -7,6 +7,7 @@ let regionSet = [
   "us-east-1",
   "us-west-1",
   "us-west-2",
+  "af-south-1",
   "ap-east-1",
   "ap-south-1",
   "ap-northeast-2",
