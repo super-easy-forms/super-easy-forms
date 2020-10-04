@@ -128,7 +128,6 @@ At the root of the project you will find the forms folder which will contain all
                 |node_modules/
     |- .env
     |- .gitignore
-    |- settings.json
     |- node_modules
         |- super_easy_forms/
             

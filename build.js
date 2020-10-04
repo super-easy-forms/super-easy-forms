@@ -73,10 +73,10 @@ function createDir(dir, callback){
 function initBuild(region, profile, callback){
   let env_file = "";
   try {
-    createFile('./settings.json', '{}', function(err, data){
+    /* createFile('./settings.json', '{}', function(err, data){
       if(err) throw new Error(err)
       else console.log(data)
-    })
+    }) */
     createDir('./forms', function(err, data){
       if(err) throw new Error(err)
       else console.log(data)
