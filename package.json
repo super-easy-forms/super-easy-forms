@@ -25,7 +25,7 @@
   "dependencies": {
     "archiver": "^3.1.1",
     "aws-sdk": "^2.610.0",
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "dotenv": "^8.2.0",
     "uuid": "^7.0.2"
   },
