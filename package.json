@@ -30,6 +30,6 @@
     "uuid": "^7.0.2"
   },
   "devDependencies": {
-    "mocha": "^7.1.1"
+    "mocha": "^10.2.0"
   }
 }
