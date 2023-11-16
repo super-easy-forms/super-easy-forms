@@ -1,5 +1,5 @@
 {
-  "name": "super-easy-forms",
+  "name": "super-easy-forms-johnvv",
   "version": "2.1.4",
   "description": "a script that generates serverless backends for contact forms using AWS",
   "main": "index.js",
@@ -10,7 +10,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/gkpty/serverless-form-generator.git"
+    "url": "git+https://github.com/ber98/super-easy-forms"
   },
   "keywords": [
     "node.js",
@@ -19,13 +19,13 @@
   "author": "gkpty",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/gkpty/serverless-form-generator/issues"
+    "url": "https://github.com/ber98/super-easy-forms/issues"
   },
   "homepage": "https://supereasyforms.com/",
   "dependencies": {
     "archiver": "^3.1.1",
     "aws-sdk": "^2.610.0",
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "dotenv": "^8.2.0",
     "uuid": "^7.0.2"
   },
